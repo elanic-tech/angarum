@@ -1,0 +1,10 @@
+#/usr/bin/bash
+
+if [ -z "$1" ]; then
+    echo "Format: ./generate partner_name"
+elif [ -f "$1.js" ]; then
+    echo "$1.js already exists"
+else
+    echo "Created $1.js"
+    cp "empty.js" "$1.js"
+fi

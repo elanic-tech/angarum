@@ -1,0 +1,21 @@
+* Common API Features:
+** DONE Place Order
+** DONE Track Order
+** DONE Cancel Order
+
+* Features
+** TODO Quick Common API Generator
+** DONE Custom version of logistic partners in each file
+** DONE Seperate Schema for each action
+** DONE Common output for every order, for every partner
+
+* API Integration
+** TODO Create, track, delete new order based on assign_logistic menu.
+** TODO Router for API to controller.
+** TODO Model for Logistics which stores each logistic request and:
+*** TODO Constructor maps from Order Ids and order_type (pb, ps, db, ds) to create a new Logistics Order object.
+** TODO Controller for:
+*** TODO Creating a Logistics Order object.
+*** TODO Creating an order for a partner through library.
+*** TODO Updating Logistics Order with awb
+*** TODO Returning resulting awb to client.
