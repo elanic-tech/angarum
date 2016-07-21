@@ -1,6 +1,6 @@
 {
   "name": "angarum",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A library which helps you focus on your delivery.",
   "main": "index.js",
   "scripts": {
@@ -10,6 +10,10 @@
     "Delivery",
     "API"
   ],
+    "repository" :{
+	"type" : "git",
+	"url" : "https://github.com/ppsreejith/angarum"
+    },
   "author": "Sreejith Pp",
   "license": "ISC",
   "dependencies": {
