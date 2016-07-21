@@ -1,6 +1,6 @@
 {
   "name": "angarum",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "A library which helps you focus on your delivery.",
   "main": "index.js",
   "scripts": {
@@ -28,5 +28,5 @@
   },
   "devDependencies": {
     "gulp": "^3.9.1"
-  },
+  }
 }
