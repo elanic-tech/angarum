@@ -29,8 +29,4 @@
   "devDependencies": {
     "gulp": "^3.9.1"
   },
-  "repository": {
-    "type": "git",
-    "url": "."
-  }
 }
