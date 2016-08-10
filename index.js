@@ -9,6 +9,7 @@ var partners = {
     'pigeon': require('./Partners/pigeon.js'),
     'delhivery': require('./Partners/delhivery.js'),
     'nuvoex': require('./Partners/nuvoex.js'),
+     'shadowfax': require('./Partners/shadowfax.js'),
 };
 
 //helper methods

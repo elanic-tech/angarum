@@ -2,11 +2,12 @@ require('dotenv').config();
 a = require("./index.js");
 
 partners = [
-    "Pickrr",
-    "Pyck",
-    "Pigeon",
-    "Delhivery",
-    "NuvoEx",
+   "Pickrr",
+   "Pyck",
+   "Pigeon",
+   "Delhivery",
+   "NuvoEx",
+    "ShadowFax",
 ];
 
 awbs = [
@@ -14,7 +15,8 @@ awbs = [
     "",
     ["UNIPINC358428", "UNIPINC358428"],
     ["988110029595", "988110029595"],
-    ["ELC0000900", "ELC0000900"]
+    ["ELC0000900", "ELC0000900"],
+    ["P54010228"],
 ];
 
 var test_order = {
@@ -22,7 +24,7 @@ var test_order = {
 }
 
 queue = {};
-function add(type) {
+function add(type) {    
     return function(res, body) {
 	if (res)
 	    body.add('response_code', res.statusCode);
@@ -46,13 +48,16 @@ function print_results() {
 
 for (ind in partners) {
     var name = partners[ind];
-    var order = new a.Order(test_order);
-    var track = new a.Track();
-    var cancel = new a.Cancel();
-    var tracking_status = new a.TrackingStatus({"awb_number" : awbs[ind]});
     var partner = a.Partner(name);
+
+    var order = new a.Order(test_order);
     partner.order(order, add(name + " place order"));
+
+    var cancel = new a.Cancel();
     partner.cancel(cancel, add(name + " cancel order"));
+
+    var track = new a.Track();    
+    var tracking_status = new a.TrackingStatus({"awb_number" : awbs[ind]});    
     partner.track(track, add(name + " track order"));
     partner.tracking_status(tracking_status, add(name + " tracking status order"));
 }
