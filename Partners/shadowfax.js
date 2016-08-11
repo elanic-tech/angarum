@@ -35,7 +35,7 @@ module.exports = Template.extend('Shadowfax', {
 		    // "from_mobile_number": "phone_number",		    
 		}, function(inp) {			
 	    	var req = {	    		
-	    		client_order_number: inp.client_order_number || "test order id",
+	    		client_order_number: inp.invoice_number,
 	    		warehouse_name: (inp.to_city.toLowerCase() == "new delhi") ? "Elanic New Delhi Warehouse" : "Elanic Bangalore Warehouse",	    		
 	    		skus_attributes: [
 	    			{
@@ -45,16 +45,15 @@ module.exports = Template.extend('Shadowfax', {
 	    			}
 	    		],
 	    		address_attributes: {
-	    			name: inp.from_name || "test name",
-	    			address_line: inp.from_address || "test address",
-	    			pincode: inp.from_pin_code || "560076",
-	    			city: inp.from_city || "Bangalore",
-	    			state: inp.from_state || "Karnataka",
-	    			country: inp.from_country || "India",
-	    			phone_number: inp.from_mobile_number || "9876543210",
+	    			name: inp.from_name,
+	    			address_line: inp.from_address,
+	    			pincode: inp.from_pin_code,
+	    			city: inp.from_city,
+	    			state: inp.from_state,
+	    			country: inp.from_country,
+	    			phone_number: inp.from_mobile_number,
 	    		},
-	    	};
-	    	console.log(req);
+	    	};	    	
 	    	return req;
 		});
 
@@ -66,8 +65,7 @@ module.exports = Template.extend('Shadowfax', {
 		    if (out.success)
 				out.err = null;
 		    else
-				out.err = out["errors"];
-			console.log(out);
+				out.err = out["errors"];			
 		    return out;
 		});
 
@@ -91,8 +89,8 @@ module.exports = Template.extend('Shadowfax', {
 		return host + "/api/v1/requests/" + awb;
     },
 
-    single_tracking_status: function(params, cb) {    	
-		var url = "http://reverse.shadowfax.in/api/v1/requests/"+params.get().awb_number;		
+    single_tracking_status: function(params, cb) {
+		var url = host + "/api/v1/requests/"+params.get().awb_number;		
 		var awb = params.get().awb_number;
 		var headers = {
 			// "Host":"reverse.shadowfax.in",

@@ -2,21 +2,23 @@ require('dotenv').config();
 a = require("./index.js");
 
 partners = [
-   "Pickrr",
-   "Pyck",
-   "Pigeon",
-   "Delhivery",
-   "NuvoEx",
-    "ShadowFax",
+   // "Pickrr",
+   // "Pyck",
+   // "Pigeon",
+   // "Delhivery",
+   // "NuvoEx",
+   // "ShadowFax",
+   "XpressBees",
 ];
 
 awbs = [
-    ["2176623089901", "2176623089901"],
-    "",
-    ["UNIPINC358428", "UNIPINC358428"],
-    ["988110029595", "988110029595"],
-    ["ELC0000900", "ELC0000900"],
-    ["P54010228"],
+    // ["2176623089901", "2176623089901"],
+    // "",
+    // ["UNIPINC358428", "UNIPINC358428"],
+    // ["988110029595", "988110029595"],
+    // ["ELC0000900", "ELC0000900"],
+    // ["P54010228"],
+    ["125316104170"],
 ];
 
 var test_order = {
@@ -53,8 +55,8 @@ for (ind in partners) {
     var order = new a.Order(test_order);
     partner.order(order, add(name + " place order"));
 
-    var cancel = new a.Cancel();
-    partner.cancel(cancel, add(name + " cancel order"));
+    // var cancel = new a.Cancel();
+    // partner.cancel(cancel, add(name + " cancel order"));
 
     var track = new a.Track();    
     var tracking_status = new a.TrackingStatus({"awb_number" : awbs[ind]});    
