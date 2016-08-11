@@ -14,9 +14,14 @@ module.exports = Schema.extend('Order_schema', {
 	    service_type: "",
 	    item_name: "",
 	    quantity: "",
-	    reasons: "",
-
+	    reasons: "",	    
+	    
 	    order_time: "",
+	    order_type: "",
+	    is_cod: "",
+	    cod_amount: "",
+	    declared_value: "",
+	    
 	    from_name : "",
 	    from_address: "",
 	    from_city: "",
@@ -24,17 +29,14 @@ module.exports = Schema.extend('Order_schema', {
 	    from_country: "",
 	    from_mobile_number: "",
 	    from_pin_code: "",
+
 	    to_name: "",
 	    to_address: "",
 	    to_city: "",
 	    to_state: "",
 	    to_country: "",
 	    to_mobile_number: "",
-	    to_pin_code: "",
-	    order_type: "",
-	    is_cod: "",
-	    cod_amount: "",
-	    declared_value: "",
+	    to_pin_code: "",	   	    
 
 	    //optional
 	    declaration: "I hereby declare that the above mentioned information is true and correct and value declared(value) is for transportation purpose and has no commercial value.Signature:",
