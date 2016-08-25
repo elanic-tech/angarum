@@ -31,6 +31,7 @@ module.exports = Template.extend('NuvoEx', {
 	    "item_name": "PACKAGE DESCRIPTION",
 	    "declared_value": "PACKAGE VALUE",
 	    "reasons": "Reason for Return",
+	    "quantity": "quantity"
 	}, function(inp) {
 	    awb = inp.AWB;
 	    var city = inp["to_city"].toLowerCase();
@@ -65,7 +66,7 @@ module.exports = Template.extend('NuvoEx', {
     },
 
     track: function(params, cb) {
-	params.set({ "tracking_url": this.get_tracking_url(params.get().awb_number) });
+	params.set({"tracking_url": this.get_tracking_url(params.get().awb_number) });
 	return cb(null, params);
     },
 

@@ -8,7 +8,7 @@ var token = process.env['XPRESSBEES_TOKEN'];
 // Declare partner specific variables here.
 // Check out other partners for more information.
 
-module.exports = Template.extend('Partner_name', {
+module.exports = Template.extend('XpressBees', {
 
     init: function() {
 	this._super(host);
@@ -21,9 +21,7 @@ module.exports = Template.extend('Partner_name', {
 		    // "from_mapping_1" : "to_mapping_1",
 		    // "from_mapping_2" : "to_mapping_2",
 		}, function(inp) {
-		 //    return _.extend({
-			// "auth_token": 'sfwerlkjwevs',
-		 //    }, inp);
+		 
 		 	var req = {
 		 		XBkey: token,
 		 		ReverseManifestData: {
@@ -62,27 +60,21 @@ module.exports = Template.extend('Partner_name', {
 					ProductCategory: "",
 					ProductDescription: "",
 		 		}
-		 	};		
-			return req;	 
+		 	};
+		 	return req;	 
 		});
 
-		params.out_map({
-		    // "waybill": "awb",
-		    // "reference_number": "msg",
-		}, function(out) {	 
+		params.out_map({}, function(out) {	 
 		 	out.success = (out.PushReverseManifestDetails[0].ReturnMessage === 'successful');
 		 	out.awb = out.PushReverseManifestDetails[0].AWBNo;
-		 	if(!out.success) out.err = out.PushReverseManifestDetails[0].ReturnMessage;	 	
+		 	if(!out.success) out.err = out.PushReverseManifestDetails[0].ReturnMessage;			
 		 	return out;
-		});
-		console.log(params);
+		});		
 		return this.post_req(url, params, cb);
     },
 
     track: function(params, cb) {
-	params.set({
-	    "tracking_url": this.get_tracking_url(params.get().awb_number),
-	});
+	params.set({"tracking_url": this.get_tracking_url(params.get().awb_number) });
 	return cb(null, params);
     },
 
@@ -92,61 +84,61 @@ module.exports = Template.extend('Partner_name', {
 
     single_tracking_status: function(params, cb) {
 		var url = host + "/GetReverseManifestStatus";
+		// // var url = "http://xbclientapi.xpressbees.com/ElanicService.svc/GetShipmentStatus";
+		// var url = "http://114.143.206.69:803/ElanicService.svc/GetShipmentStatus";
 		params.map([], {
-			"awb_number" : "AWBNumber",
-		},function(inp) {
+			"awb_number" : "AWBNo",
+		},function(inp) {			
 			inp.XBkey = token;
-			// console.log(inp);
+			console.log(inp);
 			return inp;			
 		});
-		// params._obj.XBkey = token;
-		// params._obj.AWBNumber = awb;
-		// console.log(params);
-
-		params.out_map({
-		    // "err": "error",
+		
+		params.out_map({		    
 		}, function(out) {
-			// if (String == out.constructor) 
-			// 	out = JSON.parse(out);				
-			// console.log(out);
-			return out;
-			// if(out.pickup_request_state_histories) {
-			// 	var details = out.pickup_request_state_histories.map(function(scan) {
-			// 		return {
-			// 			"time": scan.created_at,
-			// 			"status": scan.state,
-			// 			"location": scan.current_location,
-			// 			"description": scan.comment || "",
-			// 	    };				 
-			// 	});
-			// 	var res = {
-			// 		success: true,
-			// 		awb: awb,
-			// 		details: details
-			// 	};								
-			// }
-			// return res;
+			var response = {};
+			if (out.ShipmentStatusDetails) {
+				response.success = true;
+				response.awb = out.ShipmentStatusDetails[0].AWBNO;				
+				var details = [];
+				var key = {};
+				var obj = {};
+				for (var i=0; i<out.ShipmentStatusDetails.length; i++) {
+					obj = out.ShipmentStatusDetails[i];
+					key.time = obj.StatusDate;
+					key.status = obj.Status;
+					key.description = obj.TransporterRemark;
+					key.location = obj.CurrentLocation;
+				    details.push(key);
+				}
+				response.details = details;
+		    } else {
+				response.success = false;
+				response.error = "Invalid AWB";
+		    }
+		    console.log(response);
+		    return response;
 		});
 		return this.post_req(url, params, cb, {url: url})
     },
 
     cancel: function(params, cb) {
-	var url = "/api/packages/cancel/";
-	params.map(["to_be_omitted_1", "to_be_omitted_2"], {
-	    "from_mapping_1" : "to_mapping_1",
-	    "from_mapping_2" : "to_mapping_2",
-	}, function(inp) {
-	    return _.extend({
-		"auth_token": 'sfwerlkjwevs',
-	    }, inp);
-	});
+		var url = "/api/packages/cancel/";
+		params.map(["to_be_omitted_1", "to_be_omitted_2"], {
+		    "from_mapping_1" : "to_mapping_1",
+		    "from_mapping_2" : "to_mapping_2",
+		}, function(inp) {
+		    return _.extend({
+			"auth_token": 'sfwerlkjwevs',
+		    }, inp);
+		});
 
-	params.out_map({}, function(out) {
-	    out.success = !Boolean(out.err);
-	    return out;
-	});
-	
-	return this.post_req(url, params, cb);
+		params.out_map({}, function(out) {
+		    out.success = !Boolean(out.err);
+		    return out;
+		});
+		
+		return this.post_req(url, params, cb);
     },
 
 });
