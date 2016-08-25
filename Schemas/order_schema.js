@@ -45,8 +45,8 @@ module.exports = Schema.extend('Order_schema', {
 	    breadth: "",
 	    height: "",
 
-//	    from_email: "",
-//	    to_email: "",
+	    // from_email: "",
+	    // to_email: "",
 	};
     },
 
