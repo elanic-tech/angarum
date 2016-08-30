@@ -20,11 +20,21 @@ var handle = function(cb, params) {
     };
     return function (err, res, body) {
 	if (!err) {
-	    params.output(body)
-	    cb(res, params);
+	    try {
+		params.output(body)
+	    } catch (e) {
+		params.set({
+		    success: false,
+		    err: body
+		});
+	    }
 	}
 	else
-	    error(err);
+	    params.set({
+		success: false,
+		err: err
+	    });
+	return cb(res, params);
     }
 };
 
