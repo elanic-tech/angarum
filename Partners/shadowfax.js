@@ -62,10 +62,13 @@ module.exports = Template.extend('Shadowfax', {
 		    // "reference_number": "msg",
 		}, function(out) {			
 		    out.success = (out["errors"]) ? false : true;
-		    if (out.success)
-				out.err = null;
+		    if (out.success) {
+			out.err = null;
+			out.awb = out.client_request_id;
+			out.tracking_url = "http://track.shadowfax.in/track?order=return&trackingId="+out.awb;
+		    }
 		    else
-				out.err = out["errors"];			
+			out.err = out["errors"];
 		    return out;
 		});
 
