@@ -47,6 +47,16 @@ module.exports = Class.extend('Schema', {
     },
 
     output: function(out) {
+	if (String == out.constructor) {
+	    try {
+		out = JSON.parse(out);
+	    } catch (e){
+		out = {
+		    err: "Not a valid JSON object",
+		    success: false,
+		};
+	    }
+	}
 	if (this._outfunc)
 	    out = this._outfunc(out);
 	this.set(_.extend(this.get_out_config(), out));
