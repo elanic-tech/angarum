@@ -17,7 +17,7 @@ module.exports = Template.extend('pigeon', {
     order: function(params, cb) {
 	var that = this;
 
-	params.map(["invoice_date", "order_time", "service_type", "item_name"], {
+	params.map(["invoice_date", "order_time", "service_type"], {
 	    "invoice_number" : "invoice",
 	    "item_name" : "product_detail",
 	    "cod_amount": "cod_collection",
@@ -31,12 +31,15 @@ module.exports = Template.extend('pigeon', {
 	    else
 		inp["payment_type"] = "cod";
 	    */
+	    inp["weight"] = "400";
 	    if (inp.is_cod)
 		inp["payment_type"] = "cod";
 	    else {
 		inp["payment_type"] = "noncod"; //unclear
 		inp["cod_collection"] = 0;
 	    }
+	    inp["cod_amount"] = inp["cod_collection"];
+	    inp["declared_value"] |= 0;
 	    inp_details = _.extend({
 		shipment_details: [inp],
 	    }, defaults);
@@ -49,7 +52,7 @@ module.exports = Template.extend('pigeon', {
 	    var data = out.serviceable_data;
 	    if (data) {
 		if (!data[0].success)
-		    data[0].err = "Not serviceable";
+		    data[0].err = data[0].msg;
 		out = data[0];
 	    }
 	    else
@@ -87,7 +90,7 @@ module.exports = Template.extend('pigeon', {
 		    return out;
 		});
 		that.post_req("/ecom-api/place-order/", params, function(res, body) {
-		    
+		    var shipping_label = "";
 		    //body.add("success", true);
 		    if(body.get().success) {
 			params = _.clone(inp_params, true);
@@ -99,6 +102,7 @@ module.exports = Template.extend('pigeon', {
 				if (!data[0].success)
 				    data[0].err = "Not fetched";
 				out = data[0];
+				shipping_label = out.shipping_label;
 			    }
 			    else
 				out.success = false;
@@ -118,6 +122,7 @@ module.exports = Template.extend('pigeon', {
 					if (!data[0].success)
 					    data[0].err = "Not Acknowledged";
 					out = data[0];
+					out.tracking_url = shipping_label;
 				    }
 				    else
 					out.success = false;
