@@ -210,8 +210,10 @@ module.exports = Template.extend('pigeon', {
 		out.err = out.error;
 		out.success = false
 	    }
-	    else
-		out = out.data[0][0];
+	    else {
+		out = out.data[0];
+		out.err = out.message;
+	    }
 	    return out;
 	});
 	
