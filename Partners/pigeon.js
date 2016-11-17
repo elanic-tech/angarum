@@ -61,6 +61,7 @@ module.exports = Template.extend('pigeon', {
 	});
 	
 	var inp_params = _.clone(params, true);
+	var partner_name = "";
         repeat_func = function(res, body, ct) {
 
 	    var res_orig = res, body_orig = body;
@@ -75,6 +76,7 @@ module.exports = Template.extend('pigeon', {
 	    
 	    //body.add("success", true);
 	    if(body.get().success) {
+		partner_name = body.get().partner;
 		params = _.clone(inp_params, true);
 		params.out_map({
 		    "error" : "err",
@@ -102,6 +104,7 @@ module.exports = Template.extend('pigeon', {
 				if (!data[0].success)
 				    data[0].err = "Not fetched";
 				out = data[0];
+				out.message = partner_name;
 				shipping_label = out.shipping_label;
 			    }
 			    else
