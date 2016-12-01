@@ -126,6 +126,7 @@ module.exports = Template.extend('pigeon', {
 					    data[0].err = "Not Acknowledged";
 					out = data[0];
 					out.tracking_url = shipping_label;
+					out.message = partner_name;
 				    }
 				    else
 					out.success = false;
