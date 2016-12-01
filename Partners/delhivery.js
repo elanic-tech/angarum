@@ -50,7 +50,7 @@ module.exports = Template.extend('Delhivery', {
 	    "item_name": "product_desc",
 	}, function(inp) {
 	    var ship = _.extend(_.pick(inp, ["waybill", "to_name", "order", "product_desc", "order_date", "total_amount", "cod_amount", "to_add", "to_city", "to_state", "to_country", "to_phone", "to_pin", "weight", "quantity"]), return_details);
-	    var pickup = _.pick(inp, ["from_add", "from_city", "from_country", "from_name", "from_phone", "from_pin"]);
+	    var pickup = _.pick(inp, ["from_add", "from_city", "from_state", "from_country", "from_name", "from_phone", "from_pin"]);
 	    for (item in ship) {
 		if (item.indexOf("to_") == 0) {
 		    ship[item.slice(3)] = ship[item];
@@ -66,6 +66,13 @@ module.exports = Template.extend('Delhivery', {
 	    if (inp.order_type.indexOf("pickup") > 0) {
 		ship.package_type = "pickup";
 		ship.cod_amount = 0;
+		if (inp.order_type.indexOf("return") == 0) {
+		    ["add", "name", "city", "state", "country", "phone", "pin"].forEach(function(item) {
+			temp = ship[item];
+			ship[item] = pickup[item];
+			pickup[item] = temp;
+		    });
+		}
 	    }
 	    else {
 		ship.package_type = "pre-paid";
