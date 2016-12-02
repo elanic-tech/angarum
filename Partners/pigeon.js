@@ -62,35 +62,30 @@ module.exports = Template.extend('pigeon', {
 	
 	var inp_params = _.clone(params, true);
 	var partner_name = "";
-        repeat_func = function(res, body, ct) {
-
-	    var res_orig = res, body_orig = body;
+        repeat_func = function(ct) {
 	    ct = ct || 0;
 	    if (ct >= 5) {
 		params.set({
 		    err: "Not fetched after " + ct + " repeats",
 		    success: false,
 		});
-		return cb(res, params);
+		return cb(null, params);
 	    }
-	    
-	    //body.add("success", true);
-	    if(body.get().success) {
-		partner_name = body.get().partner;
-		params = _.clone(inp_params, true);
-		params.out_map({
-		    "error" : "err",
-		}, function(out) {
-		    var data = out.orders_data;
-		    if (data) {
-			if (!data[0].success)
-			    data[0].err = "Not placed";
-			out = data[0];
-		    }
-		    else
-			out.success = false;
-		    return out;
-		});
+	    params = _.clone(inp_params, true);
+	    params.out_map({
+		"error" : "err",
+	    }, function(out) {
+		var data = out.orders_data;
+		if (data) {
+		    if (!data[0].success)
+			data[0].err = "Not placed";
+		    out = data[0];
+		    partner_name = out.partner;
+		}
+		else
+		    out.success = false;
+		return out;
+	    });
 		that.post_req("/ecom-api/place-order/", params, function(res, body) {
 		    var shipping_label = "";
 		    //body.add("success", true);
@@ -143,7 +138,7 @@ module.exports = Template.extend('pigeon', {
 			    }
 			    else {
 				return setTimeout(function() {
-				    return repeat_func(res_orig, body_orig, ct+1);
+				    return repeat_func(ct+1);
 				}, 500);
 			    }
 			});
@@ -151,11 +146,8 @@ module.exports = Template.extend('pigeon', {
 		    else
 			return cb(res, body);
 		});
-	    }
-	    else
-		return cb(res, body);
 	};
-	return this.check_serviceable(params, repeat_func);
+	return repeat_func();
     },
 
     check_serviceable: function(params, cb) {
