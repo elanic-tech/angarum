@@ -53,13 +53,13 @@ module.exports = Template.extend('Delhivery', {
 	    var pickup = _.pick(inp, ["to_add", "to_city", "to_state", "to_country", "to_name", "to_phone", "to_pin"]);
 	    for (item in ship) {
 		if (item.indexOf("from_") == 0) {
-		    ship[item.slice(3)] = ship[item];
+		    ship[item.slice(5)] = ship[item];
 		    delete ship[item];
 		}
 	    }	    
 	    for (item in pickup) {
 		if (item.indexOf("to_") == 0) {
-		    pickup[item.slice(5)] = pickup[item];
+		    pickup[item.slice(3)] = pickup[item];
 		    delete pickup[item];
 		}
 	    }
