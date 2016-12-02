@@ -80,7 +80,7 @@ module.exports = Template.extend('pigeon', {
 		    if (!data[0].success)
 			data[0].err = "Not placed";
 		    out = data[0];
-		    partner_name = out.partner;
+		    partner_name = out.awb_detail && out.awb_detail.partner;
 		}
 		else
 		    out.success = false;
