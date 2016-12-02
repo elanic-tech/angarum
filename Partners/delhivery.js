@@ -63,25 +63,26 @@ module.exports = Template.extend('Delhivery', {
 		    delete pickup[item];
 		}
 	    }
-	    if (inp.order_type.indexOf("pickup") > 0) {
-		ship.package_type = "pickup";
-		ship.cod_amount = 0;
-		/* if (inp.order_type.indexOf("return") == 0) {
-		   ["add", "name", "city", "state", "country", "phone", "pin"].forEach(function(item) {
-		   temp = ship[item];
-		   ship[item] = pickup[item];
-		   pickup[item] = temp;
-		   });
-		   }*/
-	    }
-	    else {
-		ship.package_type = "pre-paid";
-		if (inp.is_cod)
-		    ship.package_type = "cod";
-		else
-		    ship.cod_amount = 0;
-	    }
-	    ship.payment_mode = ship.package_type;
+	    /* if (inp.order_type.indexOf("pickup") > 0) {
+	       ship.package_type = "pickup";
+	       ship.cod_amount = 0;
+	       if (inp.order_type.indexOf("return") == 0) {
+	       ["add", "name", "city", "state", "country", "phone", "pin"].forEach(function(item) {
+	       temp = ship[item];
+	       ship[item] = pickup[item];
+	       pickup[item] = temp;
+	       });
+	       }
+	       }
+	       else {
+	       ship.package_type = "pre-paid";
+	       if (inp.is_cod)
+	       ship.package_type = "cod";
+	       else
+	       ship.cod_amount = 0;
+	       }*/
+	    ship.package_type = "pickup";
+	    ship.payment_mode = "pickup";
 	    pickup.name = "ELANIC";
 	    return _.extend({
 		"data": JSON.stringify({
