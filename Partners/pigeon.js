@@ -99,7 +99,7 @@ module.exports = Template.extend('pigeon', {
 				if (!data[0].success)
 				    data[0].err = "Not fetched";
 				out = data[0];
-				out.message = partner_name;
+				out.msg = partner_name;
 				shipping_label = out.shipping_label;
 			    }
 			    else
@@ -121,7 +121,7 @@ module.exports = Template.extend('pigeon', {
 					    data[0].err = "Not Acknowledged";
 					out = data[0];
 					out.tracking_url = shipping_label;
-					out.message = partner_name;
+					out.msg = partner_name;
 				    }
 				    else
 					out.success = false;
