@@ -83,7 +83,10 @@ module.exports = Template.extend('Delhivery', {
 	       }*/
 	    ship.package_type = "pickup";
 	    ship.payment_mode = "pickup";
-	    pickup.name = "ELANIC";
+	    if (pickup.city && pickup.city.toLowerCase() == 'new delhi')
+		pickup.name = "Elanic Services Pvt. Ltd-DEL";
+	    else
+		pickup.name = "ELANIC";
 	    return _.extend({
 		"data": JSON.stringify({
 		    "pickup_location": pickup,
