@@ -35,7 +35,7 @@ module.exports = Template.extend('pigeon', {
 	    if (inp.is_cod)
 		inp["payment_type"] = "cod";
 	    else {
-		inp["payment_type"] = "noncod"; //unclear
+		inp["payment_type"] = "prepaid"; //unclear
 		inp["cod_collection"] = 0;
 	    }
 	    inp["cod_amount"] = inp["cod_collection"];
