@@ -1,7 +1,7 @@
 var Template = require('./template.js');
 var querystring = require('querystring');
 var _ = require("lodash");
-
+var request = require('request');
 var host = process.env['DELHIVERY_HOST'];
 var return_details = {
 /*    "client": "Elanic",
@@ -31,7 +31,6 @@ module.exports = Template.extend('Delhivery', {
     
     order: function(params, cb) {
 	var url = "/cmu/push/json/?" + querystring.stringify(_.pick(defaults, ["token"]));
-
 
 	
 	// Check out Order schema file for more information.
@@ -81,8 +80,8 @@ module.exports = Template.extend('Delhivery', {
 	       else
 	       ship.cod_amount = 0;
 	       }*/
-	    ship.package_type = "pickup";
-	    ship.payment_mode = "pickup";
+	    ship.package_type = (inp.order_type === 'delivery') ? "pre-paid" : "pickup";
+	    ship.payment_mode = (inp.order_type === 'delivery') ? "pre-paid" : "pickup";
 	    if (pickup.city && pickup.city.toLowerCase() == 'new delhi')
 		pickup.name = "Elanic Services Pvt. Ltd-DEL";
 	    else
@@ -133,7 +132,6 @@ module.exports = Template.extend('Delhivery', {
 	}, function(out) {
 	    if (String == out.constructor)
 		out = JSON.parse(out);
-	    
 	    out.success = Boolean(out.ShipmentData);
 	    if (out.ShipmentData && out.ShipmentData.constructor == Array && out.ShipmentData.length > 0) {
 		var details = out.ShipmentData[0].Shipment.Scans.map(function(scan) {
@@ -155,24 +153,47 @@ module.exports = Template.extend('Delhivery', {
     },
 
     cancel: function(params, cb) {
-	params.set({success: false, err: "Error link not available"});
-	return cb(null, params); //unclear
-	var url = "/api/p/edit/";
-	params.map([], {
-	    "awb" : "waybill",
-	}, function(inp) {
-	    inp.cancellation = true;
-	    return _.extend(inp, defaults);
-	});
+	var options = {
+	  url: 'https://track.delhivery.com/api/p/edit',
+	  method: 'POST',
+	  json: true,
+	  body: {"waybill":params.get().awb,"cancellation": "true"},
+	  headers: {
+	    'Content-Type': 'application/json',
+	    'Authorization': "Token " + defaults.token
+	  },
+	};
+	function callback(error, response, body) {
+	  if (error) {
+	    params.set({
+		success: true
+	    });
+	    cb(response,params);
+	  }
+	  params.output(body)
+	  params.set({
+		success: true
+	    });
+	  cb(response,params);
+	}
+ 
+	return request(options, callback);
+	// var url = "/api/p/edit/";
+	// params.map([], {
+	//     "awb" : "waybill",
+	// }, function(inp) {
+	//     _.extend(inp,{"cancellation" : "true"});
+	//     return inp;
+	// });
 
-	params.out_map({
-	    "error": "err",
-	}, function(out) {
-	    out.success = (out.success == "True");
-	    return out;
-	});
+	// params.out_map({
+	//     "error": "err",
+	// }, function(out) {
+	//     out.success = (out.success == "True");
+	//     return out;
+	// });
 	
-	return this.post_req(url, params, cb, {headers: {"Authorization": "Token " + defaults.token}});
+	// return this.post_req(url, params, cb, {headers: {"Authorization": "Token " + defaults.token}});
     },
 
 });
