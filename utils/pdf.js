@@ -11,7 +11,7 @@ var s3_upload = s3WriteStream({
 
 var ejs_options = {};
 
-var renderBarcodeHtml = fs.readFileSync('../views/shipping_label.html', 'UTF-8');
+var renderBarcodeHtml = fs.readFileSync(__dirname + '/../views/shipping-label.html', 'UTF-8');
 var renderLabelTemplate = ejs.compile(renderBarcodeHtml, ejs_options);
 
 const pdf_options = {
@@ -71,4 +71,4 @@ function parseOrder(object,done) {
 	});
 };
 
-exports.generatePdf = generate;
+exports.generatePdf = parseOrder;
