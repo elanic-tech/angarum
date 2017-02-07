@@ -4,7 +4,7 @@ var _ = require("lodash");
 var moment = require("moment");
 var host = process.env['XPRESSBEES_HOST'];
 var token = process.env['XPRESSBEES_TOKEN'];
-
+var pdf = require('../utils/pdf');
 // Declare partner specific variables here.
 // Check out other partners for more information.
 
@@ -15,7 +15,7 @@ module.exports = Template.extend('XpressBees', {
 	},
 	
 	order: function(params, cb) {
-		var url;
+		var url,tracking_url;
 		// Check out Order schema file for more information.
 		params.map([], {
 			// "from_mapping_1" : "to_mapping_1",
@@ -108,12 +108,21 @@ module.exports = Template.extend('XpressBees', {
 					}
 				};
 			}
-			return req;	 
+			if(inp.order_type === 'delivery' || inp.order_type === 'sbs') {
+				pdf.generatePdf(inp,function(err,url){
+					tracking_url = url;
+					return req;	 
+				});
+			}
+			else {
+				return req;
+			}
 		});
 
 		params.out_map({}, function(out) {
 			out.success = (out[url][0].ReturnMessage === 'successful');
 			out.awb = out[url][0].AWBNo;
+			out.tracking_url = tracking_url;
 			if(!out.success) out.err = out.url[0].ReturnMessage;			
 			return out;
 		});		

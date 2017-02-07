@@ -3,6 +3,7 @@ var querystring = require('querystring');
 var _ = require("lodash");
 var request = require('request');
 var host = process.env['DELHIVERY_HOST'];
+var pdf = require('../utils/pdf');
 var return_details = {
 /*    "client": "Elanic",
     "return_add": "",
@@ -31,7 +32,7 @@ module.exports = Template.extend('Delhivery', {
     
     order: function(params, cb) {
 	var url = "/cmu/push/json/?" + querystring.stringify(_.pick(defaults, ["token"]));
-
+	var tracking_url="";
 	
 	// Check out Order schema file for more information.
 	params.map([], {
@@ -80,18 +81,36 @@ module.exports = Template.extend('Delhivery', {
 	       else
 	       ship.cod_amount = 0;
 	       }*/
-	    ship.package_type = (inp.order_type === 'delivery') ? "pre-paid" : "pickup";
-	    ship.payment_mode = (inp.order_type === 'delivery') ? "pre-paid" : "pickup";
+	    ship.package_type = (inp.order_type === 'delivery' || inp.order_type === 'sbs') ? "pre-paid" : "pickup";
+	    ship.payment_mode = (inp.order_type === 'delivery' || inp.order_type === 'sbs') ? "pre-paid" : "pickup";
+	    if((inp.is_cod) {
+	    	ship.package_type = "cod";
+	    	ship.payment_mode = "cod";
+	    	ship.cod_amount = inp.cod_amount;
+	    }
 	    if (pickup.city && pickup.city.toLowerCase() == 'new delhi')
 		pickup.name = "Elanic Services Pvt. Ltd-DEL";
 	    else
 		pickup.name = "ELANIC";
-	    return _.extend({
-		"data": JSON.stringify({
-		    "pickup_location": pickup,
-		    "shipments": [ship],
-		})
-	    }, defaults);
+		if(inp.order_type === 'delivery' || inp.order_type === 'sbs') {
+				pdf.generatePdf(ds,function(err,url){
+			  	tracking_url = url;
+			    return _.extend({
+				"data": JSON.stringify({
+				    "pickup_location": pickup,
+				    "shipments": [ship],
+				})
+			    }, defaults);
+			});
+		}
+		else {
+			return _.extend({
+			"data": JSON.stringify({
+			    "pickup_location": pickup,
+			    "shipments": [ship],
+			})
+		    }, defaults);
+		}
 	});
 
 	
@@ -102,6 +121,7 @@ module.exports = Template.extend('Delhivery', {
 		out = JSON.parse(out);
 	    if (out.packages && out.packages.length > 0)
 		out.awb = out.packages[0].waybill;
+		out.tracking_url = tracking_url;
 	    if (out.success) {
 		out.err = null;
 	    }
