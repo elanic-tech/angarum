@@ -83,7 +83,7 @@ module.exports = Template.extend('Delhivery', {
 	       }*/
 	    ship.package_type = (inp.order_type === 'delivery' || inp.order_type === 'sbs') ? "pre-paid" : "pickup";
 	    ship.payment_mode = (inp.order_type === 'delivery' || inp.order_type === 'sbs') ? "pre-paid" : "pickup";
-	    if((inp.is_cod) {
+	    if(inp.is_cod) {
 	    	ship.package_type = "cod";
 	    	ship.payment_mode = "cod";
 	    	ship.cod_amount = inp.cod_amount;
