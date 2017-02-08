@@ -17,6 +17,7 @@
   "author": "Sreejith Pp",
   "license": "ISC",
   "dependencies": {
+    "async": "^2.1.4",
     "cheerio": "^0.20.0",
     "class.extend": "^0.9.2",
     "dotenv": "^2.0.0",

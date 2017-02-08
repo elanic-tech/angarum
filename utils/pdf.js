@@ -26,13 +26,12 @@ const pdf_options = {
 			console.log(err);
 			return cb(err);
 		} else {
-			var s3_file_name = data.partner +'/' + data.awb + '-shipping-label.pdf';
-			var templateUrl = 'https://s3-ap-southeast-1.amazonaws.com/' + process.env['AWS_S3_LOGISTIC_BUCKET_NAME'] + '/' + s3_file_name;
+			var s3_file_name = data.partner +'/'+ data.awb + '-shipping-label.pdf';
+			var templateUrl = 'https://s3.ap-south-1.amazonaws.com/' + process.env['AWS_S3_LOGISTIC_BUCKET_NAME'] + '/' + s3_file_name;
 			var s3stream = stream.pipe(s3_upload(s3_file_name));
-			s3stream.on('finish', () => {
+			s3stream.on('finish',function() {
 				cb(err,templateUrl);
 			});
-			
 		}
 	});
 }
@@ -40,29 +39,29 @@ const pdf_options = {
 function parseOrder(object,done) {
 	var data = {};
 	data.partner = object.partner_name;
-	data.awb = object.waybill;
+	data.awb = object.reference_number;
 	data.invoice_id = object.orders[0];
 	data.routing_code = object.order_ids[0];
-	data.product_desc = object.product_desc;
+	data.product_desc = object.item_name;
 	data.cod_amount = object.cod_amount;
 	data.payment_mode = (object.is_cod) ? "code" : "prepaid";
 	data.declaration = object.declaration;
 	data.fromAddress = {
 		name : object.from_name,
-		address : object.from_add,
+		address : object.from_address,
 		city : object.from_city,
 		state : object.from_state,
-		pin : object.from_pin,
-		number : object.from_phone,
+		pin : object.from_pin_code,
+		number : object.from_mobile_number,
 		email : 'None'
 	}
 	data.toAddress = {
 		name : object.to_name,
-		address : object.to_add,
+		address : object.to_address,
 		city : object.to_city,
 		state : object.to_state,
-		pin : object.to_pin,
-		number : object.to_phone,
+		pin : object.to_pin_code,
+		number : object.to_mobile_number,
 		email : 'None'
 	}
 	const result = renderLabelTemplate(data);
