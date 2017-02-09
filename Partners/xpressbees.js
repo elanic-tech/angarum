@@ -130,10 +130,10 @@ module.exports = Template.extend('XpressBees', {
 				out.success = (out[url][0].ReturnMessage === 'successful');
 				out.awb = out[url][0].AWBNo;
 				out.tracking_url = (tracking_url) ? tracking_url : '';
-				if(!out.success) out.err = out.url[0].ReturnMessage;			
+				if(!out.success) out.err = out[url][0].ReturnMessage;			
 				return out;
 			});		
-			return self.post_req("/" + url, params, cb);
+			return self.post_req(host + "/" + url, params, cb);
 		});
 	},
 
@@ -152,7 +152,7 @@ module.exports = Template.extend('XpressBees', {
 		// var url = "http://114.143.206.69:803/ElanicService.svc/GetShipmentStatus";
 		if(params.get().order_type === 'delivery' || params.get().order_type === 'sbs') {
 			var options = {
-			  url: 'http://114.143.206.69:803/StandardForwardStagingService.svc/GetShipmentStatus',
+			  url: host + '/GetShipmentStatus',
 			  method: 'POST',
 			  json: true,
 			  body: {"AWBNo":params.get().awb_number,"XBkey": token},
@@ -238,7 +238,7 @@ module.exports = Template.extend('XpressBees', {
 		var url = 'RTONotifyShipment';
 		//if(params.get().order_type === 'delivery' || params.get().order_type === 'sbs') {
 			var options = {
-			  url: 'http://114.143.206.69:803/StandardForwardStagingService.svc/RTONotifyShipment',
+			  url: host + '/RTONotifyShipment',
 			  method: 'POST',
 			  json: true,
 			  body: {"AWBNumber":params.get().awb,"XBkey": token,"RTOReason": "Cancelled by the user"},
