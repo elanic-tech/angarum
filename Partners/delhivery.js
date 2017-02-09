@@ -43,6 +43,9 @@ module.exports = Template.extend('Delhivery', {
 					callback(err,url);
 				});
 			}
+			else {
+				callback();
+			}
 		}],function(err,results) {
 		// Check out Order schema file for more information.
 		params.map([], {

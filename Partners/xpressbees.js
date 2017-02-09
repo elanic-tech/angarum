@@ -28,6 +28,9 @@ module.exports = Template.extend('XpressBees', {
 					callback(err,url);
 				});
 			}
+			else {
+				callback();
+			}
 		}],function(err,results) {
 			params.map([], {
 				// "from_mapping_1" : "to_mapping_1",
@@ -68,14 +71,14 @@ module.exports = Template.extend('XpressBees', {
 							"OctroiMRP": inp.declared_value,
 							"BillableWeight": 0,
 							"VolWeight": 0,
-							"PhyWeight": 0,
-							"ShipLength": 0,
-							"ShipWidth": 0,
-							"ShipHeight": 0,
+							"PhyWeight": 0.4,
+							"ShipLength": 15,
+							"ShipWidth": 15,
+							"ShipHeight": 15,
 							"AirWayBillNO": inp.reference_number,
 							"ServiceType": "SD",
 							"Quantity": inp.quantity,
-							"PickupVendorCode": "M34"
+							"PickupVendorCode": "Elanic123"
 						}
 					}
 				}
