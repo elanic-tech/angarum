@@ -27,7 +27,7 @@ const pdf_options = {
 			return cb(err);
 		} else {
 			var s3_file_name = data.partner +'/'+ data.awb + '-shipping-label.pdf';
-			var templateUrl = 'https://s3.ap-south-1.amazonaws.com/' + process.env['AWS_S3_LOGISTIC_BUCKET_NAME'] + '/' + s3_file_name;
+			var templateUrl = 'https://s3.ap-southeast-1.amazonaws.com/' + process.env['AWS_S3_LOGISTIC_BUCKET_NAME'] + '/' + s3_file_name;
 			var s3stream = stream.pipe(s3_upload(s3_file_name));
 			s3stream.on('finish',function() {
 				cb(err,templateUrl);
@@ -44,7 +44,7 @@ function parseOrder(object,done) {
 	data.routing_code = object.order_ids[0];
 	data.product_desc = object.item_name;
 	data.cod_amount = object.cod_amount;
-	data.payment_mode = (object.is_cod) ? "code" : "prepaid";
+	data.payment_mode = (object.is_cod) ? "cod" : "prepaid";
 	data.declaration = object.declaration;
 	data.fromAddress = {
 		name : object.from_name,

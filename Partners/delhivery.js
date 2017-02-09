@@ -185,7 +185,7 @@ module.exports = Template.extend('Delhivery', {
 	function callback(error, response, body) {
 	  if (error) {
 	    params.set({
-		success: true
+		success: false
 	    });
 	    cb(response,params);
 	  }

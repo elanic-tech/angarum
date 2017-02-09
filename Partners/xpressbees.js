@@ -2,6 +2,7 @@ var Template = require('./template.js');
 var querystring = require('querystring');
 var _ = require("lodash");
 var moment = require("moment");
+var request = require('request');
 var host = process.env['XPRESSBEES_HOST'];
 var token = process.env['XPRESSBEES_TOKEN'];
 var pdf = require('../utils/pdf');
@@ -146,41 +147,65 @@ module.exports = Template.extend('XpressBees', {
 		var url,type;
 		// // var url = "http://xbclientapi.xpressbees.com/ElanicService.svc/GetShipmentStatus";
 		// var url = "http://114.143.206.69:803/ElanicService.svc/GetShipmentStatus";
-		params.map([], {
-			"awb_number" : "AWBNo",
-		},function(inp) {
-			type = inp.order_type;	
-			url = (inp.order_type === 'delivery' || inp.order_type === 'sbs') ?  host + "/GetShipmentStatus" :  host + "/GetReverseManifestStatus";	
-			delete inp.order_type;
-			inp.XBkey = token;
-			return inp;			
-		});
-		
-		params.out_map({		    
-		}, function(out) {
-			var response = {};
-			if(type === 'delivery' || type === 'sbs') {
-				if(out.ShipmentStatusDetails[0].ReturnMessage === 'Successful') {
-					response.success = true;
+		if(params.get().order_type === 'delivery' || params.get().order_type === 'sbs') {
+			var options = {
+			  url: 'http://114.143.206.69:803/StandardForwardStagingService.svc/GetShipmentStatus',
+			  method: 'POST',
+			  json: true,
+			  body: {"AWBNo":params.get().awb_number,"XBkey": token},
+			  headers: {
+			    'Content-Type': 'application/json'
+			  },
+			};
+			function callback(error, response, body) {
+			  if (error) {
+			    params.set({
+				success: false
+			    });
+			    cb(response,params);
+			  }
+			  	var out_response = {};
+			  	if(body.ShipmentStatusDetails[0].ReturnMessage === 'Successful') {
+					out_response.success = true;
 					var details = [];
 					var key = {};
 					var obj = {};
-					for (var i=0; i<out.ShipmentStatusDetails.length; i++) {
-						obj = out.ShipmentStatusDetails[i];
+					for (var i=0; i<body.ShipmentStatusDetails.length; i++) {
+						obj = body.ShipmentStatusDetails[i];
 						key.time = obj.StatusDate;
 						key.status = obj.Status;
 						key.description = obj.TransporterRemark;
 						key.location = obj.CurrentLocation;
 						details.push(key);
 					}
-					response.details = details;
+					out_response.details = details;
 				}
 				else {
-					esponse.success = false;
-					response.error = out.ShipmentStatusDetails[0].ReturnMessage;
+					out_response.success = false;
+					out_response.error = body.ShipmentStatusDetails[0].ReturnMessage;
 				}
-			}
-			else {
+			  params.output(out_response)
+			  params.set({
+				success: true
+			    });
+			  cb(response,params);
+			};
+			return request(options, callback);
+		}
+		else {
+			params.map([], {
+				"awb_number" : "AWBNo",
+			},function(inp) {
+				type = inp.order_type;	
+				url = host + "/GetReverseManifestStatus";	
+				delete inp.order_type;
+				inp.XBkey = token;
+				return inp;			
+			});
+			
+			params.out_map({	    
+			}, function(out) {
+				var response = {};
 				if (out.ShipmentStatusDetails) {
 					response.success = true;
 					response.awb = out.ShipmentStatusDetails[0].AWBNO;				
@@ -200,32 +225,59 @@ module.exports = Template.extend('XpressBees', {
 					response.success = false;
 					response.error = "Invalid AWB";
 				}
-			}
-			return response;
-		});
-		return this.post_req(url, params, cb, {url: url})
+				return response;
+			});
+			return this.post_req(url, params, cb, {url: url})
+		}
 	},
 
 	cancel: function(params, cb) {
-		var url = "RTONotifyShipment";
-		params.map([], {
-		}, function(inp) {
-			var req = {
-				XBkey: token,
-				AWBNumber: inp.awb,
-				RTOReason: "Cancelled by the user"
-			}
-			return req;
-		});
+		var url = 'RTONotifyShipment';
+		//if(params.get().order_type === 'delivery' || params.get().order_type === 'sbs') {
+			var options = {
+			  url: 'http://114.143.206.69:803/StandardForwardStagingService.svc/RTONotifyShipment',
+			  method: 'POST',
+			  json: true,
+			  body: {"AWBNumber":params.get().awb,"XBkey": token,"RTOReason": "Cancelled by the user"},
+			  headers: {
+			    'Content-Type': 'application/json'
+			  },
+			};
+			function callback(error, response, body) {
+			  if (error) {
+			    params.set({
+				success: false
+			    });
+			    cb(response,params);
+			  }
+			  params.output(body)
+			  params.set({
+				success: true
+			    });
+			  cb(response,params);
+			};
+			return request(options, callback);
+		// }
+		// else {
+		// 	params.map([], {
+		// 	}, function(inp) {
+		// 		var req = {
+		// 			XBkey: token,
+		// 			AWBNumber: inp.awb,
+		// 			RTOReason: "Cancelled by the user"
+		// 		}
+		// 		return req;
+		// 	});
 
-		params.out_map({}, function(out) {
-			out.success = (out[url][0].ReturnMessage === 'successful');
-			out.awb = out[url][0].AWBNumber;
-			if(!out.success) out.err = out.url[0].ReturnMessage;			
-			return out;
-		});
-		
-		return this.post_req("/" + url, params, cb);
+		// 	params.out_map({}, function(out) {
+		// 		out.success = (out[url][0].ReturnMessage === 'successful');
+		// 		out.awb = out[url][0].AWBNumber;
+		// 		if(!out.success) out.err = out.url[0].ReturnMessage;			
+		// 		return out;
+		// 	});
+			
+		// 	return this.post_req("/" + url, params, cb);
+		// }
 	},
 
 });
