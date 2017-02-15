@@ -61,6 +61,9 @@
           <td colspan="2" >
             <div class="bold">COD-COLLECT : Rs <%= cod_amount %></div>
             <div class="bold">PAYMENT MODE : <%= payment_mode %></div>
+            <% if(destination_code) { %>
+            <div class="bold">DEST CODE : <%= destination_code %></div>
+            <% } %>
             <div class="bold">ROUTING CODE : <%= routing_code %></div>
           </td>
         </tr>

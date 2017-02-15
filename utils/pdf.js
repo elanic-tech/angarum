@@ -64,6 +64,9 @@ function parseOrder(object,done) {
 		number : object.to_mobile_number,
 		email : 'None'
 	}
+	if(object.destination_code) {
+		data.destination_code = object.destination_code;
+	}
 	const result = renderLabelTemplate(data);
 	generatePDF('label', data, result,function(err,url) {
 		done(err,url);
