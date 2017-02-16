@@ -66,7 +66,7 @@ module.exports = Template.extend('XpressBees', {
 							"RTOPinCode": inp.from_pin_code,
 							"ProductMRP": inp.declared_value,
 							"ProductGroup": inp.item_name,
-							"ProductDesc": inp.product_desc,
+							"ProductDesc": inp.item_name,
 							"NetPayment": inp.cod_amount,
 							"OctroiMRP": inp.declared_value,
 							"BillableWeight": 0,

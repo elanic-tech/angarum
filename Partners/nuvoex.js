@@ -35,7 +35,7 @@ module.exports = Template.extend('NuvoEx', {
 	}, function(inp) {
 	    awb = inp.AWB;
 	    var city = inp["to_city"].toLowerCase();
-	    inp["weight"] = Number(inp.weight);
+	    inp["Weight"] = Number(inp.Weight);
 	    if (city.indexOf("new delhi") >= 0)
 		inp["Dest Code"] = "ELC WH - DELHI"
 	    else if (city.indexOf("bangalore") >= 0)
