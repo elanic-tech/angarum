@@ -46,6 +46,7 @@ function parseOrder(object,done) {
 	data.cod_amount = object.cod_amount;
 	data.payment_mode = (object.is_cod) ? "cod" : "prepaid";
 	data.declaration = object.declaration;
+	data.destination_code = (object.destination_code) ? object.destination_code : undefined;
 	data.fromAddress = {
 		name : object.from_name,
 		address : object.from_address,
@@ -63,9 +64,6 @@ function parseOrder(object,done) {
 		pin : object.to_pin_code,
 		number : object.to_mobile_number,
 		email : 'None'
-	}
-	if(object.destination_code) {
-		data.destination_code = object.destination_code;
 	}
 	const result = renderLabelTemplate(data);
 	generatePDF('label', data, result,function(err,url) {
