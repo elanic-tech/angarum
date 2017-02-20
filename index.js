@@ -11,6 +11,8 @@ var partners = {
     'nuvoex': require('./Partners/nuvoex.js'),
     'shadowfax': require('./Partners/shadowfax.js'),
     'xpressbees': require('./Partners/xpressbees.js'),
+    'fedex': require('./Partners/fedex.js'),
+    'ecomexpress': require('./Partners/ecomexpress.js'),
 };
 
 //helper methods

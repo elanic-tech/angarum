@@ -52,19 +52,18 @@
           <td colspan="2"><div class="title" align="center">Elanic</div></td>
         </tr>
         <tr class="pad">
-          <td colspan="2"><div><canvas class="canvas" id="barcode"></canvas><p align="center"> <%= awb %> </p></div></td>
-          <td colspan="2">
+          <td style="width: 34%" colspan="2"><div><canvas align="center" id="barcode"></canvas><p align="center"> <%= awb %> </p></div></td>
+          <td style="width: 33%" colspan="2">
             <div class="bold">COURIER PARTNER : <%= partner %></div>
             <div class="bold">CLIENT INVOICE : <%= invoice_id %></div>
             <div class="bold">PRODUCT :  <%= product_desc %></div>
           </td>
-          <td colspan="2" >
+          <td style="width: 33%" colspan="2" >
             <div class="bold">COD-COLLECT : Rs <%= cod_amount %></div>
             <div class="bold">PAYMENT MODE : <%= payment_mode %></div>
             <% if(destination_code) { %>
             <div class="bold">DEST CODE : <%= destination_code %></div>
             <% } %>
-            <div class="bold">ROUTING CODE : <%= routing_code %></div>
           </td>
         </tr>
         <tr class="pad">
@@ -106,7 +105,7 @@
   <script>
     JsBarcode("#barcode",<%= awb %>,{
       displayValue : false,
-      height : 30
+      height : 40
     });         
   </script>
 </html>

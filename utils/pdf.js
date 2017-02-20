@@ -27,7 +27,7 @@ const pdf_options = {
 			return cb(err);
 		} else {
 			var s3_file_name = data.partner +'/'+ data.awb + '-shipping-label.pdf';
-			var templateUrl = 'https://s3.ap-southeast-1.amazonaws.com/' + process.env['AWS_S3_LOGISTIC_BUCKET_NAME'] + '/' + s3_file_name;
+			var templateUrl = process.env['AWS_S3_LABEL_URL_PATH'] + process.env['AWS_S3_LOGISTIC_BUCKET_NAME'] + '/' + s3_file_name;
 			var s3stream = stream.pipe(s3_upload(s3_file_name));
 			s3stream.on('finish',function() {
 				cb(err,templateUrl);
