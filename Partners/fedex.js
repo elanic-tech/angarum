@@ -12,7 +12,7 @@ var defaults = {
 	imperial: false,
 	currency: 'INR',
 	language: 'en-US',
-	environment: 'sandbox',
+	environment: 'live',
 	key: 'HBDyYDQoX6wtokgn',
 	password: '32BMozzCxiriIqPajJQOUXnAp',
 	account_number: '510087682',
@@ -98,7 +98,7 @@ module.exports = Template.extend('FedEx', {
 		  RequestedShipment: {
 		    ShipTimestamp: new Date(date.getTime() + (24*60*60*1000)).toISOString(),
 		    DropoffType: 'REGULAR_PICKUP',
-		    ServiceType: 'STANDARD_OVERNIGHT',
+		    ServiceType: 'PRIORITY_OVERNIGHT',
 		    PackagingType: 'YOUR_PACKAGING',
 		    Shipper: {
 		      Contact: {

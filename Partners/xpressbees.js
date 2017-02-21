@@ -17,124 +17,133 @@ module.exports = Template.extend('XpressBees', {
 	},
 	
 	order: function(params, cb) {
-		var url,tracking_url;
 		var self = this;
-		// Check out Order schema file for more information.
-		async.parallel([
-		function generatePDF(callback) {
-			if(params.get().order_type === 'delivery' || params.get().order_type === 'sbs') {
-				pdf.generatePdf(params.get(),function(err,url){
-					tracking_url = url;
-					callback(err,url);
-				});
+		var inp = params.get();
+		var url = (inp.order_type === 'delivery' || inp.order_type === 'sbs') ? "AddManifestDetails" : "PushReverseManifestDetails" ;
+		if(inp.order_type === 'delivery' || inp.order_type === 'sbs') {
+			var date = new Date();
+			var req = {
+				XBkey: token,
+				ManifestDetails: {
+					"ManifestID": moment(date).format('YYYY') + moment(date).format('MM') + moment(date).format('DD'),
+					"OrderType": (inp.is_cod) ? "COD" : "PrePaid",
+					"OrderNo": inp.invoice_number,
+					"PaymentStatus": (inp.is_cod) ? "COD" : "PrePaid",
+					"PickupVendor": inp.from_name,
+					"PickVendorPhoneNo": inp.from_mobile_number,
+					"PickVendorAddress": inp.from_address,
+					"PickVendorCity": inp.from_city,
+					"PickVendorState": inp.from_state,
+					"PickVendorPinCode": inp.from_pin_code,
+					"CustomerName": inp.to_name,
+					"CustomerAddress": inp.to_address,
+					"CustomerCity": inp.to_city,
+					"CustomerState": inp.to_state,
+					"ZipCode": inp.to_pin_code,
+					"CustomerMobileNo": inp.to_mobile_number,
+					"RTOName": inp.from_name,
+					"RTOMobileNo": inp.from_mobile_number,
+					"RTOAddress": inp.from_address,
+					"RTOToCity": inp.from_city,
+					"RTOToState": inp.from_state,
+					"RTOPinCode": inp.from_pin_code,
+					"ProductMRP": inp.declared_value,
+					"ProductGroup": inp.item_name,
+					"ProductDesc": inp.item_name,
+					"NetPayment": inp.cod_amount,
+					"OctroiMRP": inp.declared_value,
+					"BillableWeight": 0,
+					"VolWeight": 0,
+					"PhyWeight": 0.4,
+					"ShipLength": 15,
+					"ShipWidth": 15,
+					"ShipHeight": 15,
+					"AirWayBillNO": inp.reference_number,
+					"ServiceType": "SD",
+					"Quantity": inp.quantity,
+					"PickupVendorCode": "Elanic123"
+				}
+			}
+		}
+		else {
+			var req = {
+				XBkey: token,
+				ReverseManifestData: {
+					AWB_No: inp.reference_number,
+					Order_ID: inp.invoice_number,
+					Return_Reason: "",
+						
+					Destination_Address: inp.to_address,
+					Destination_City: inp.to_city,
+					Destination_Country: inp.to_country,
+					Destination_Name: inp.to_name,
+					Destination_Phone: inp.to_mobile_number,
+					Destination_Pincode: inp.to_pin_code,
+					Destination_State: inp.to_state,
+										
+					Pickup_Landmark: "",
+					Pickup_Address: inp.from_address,
+					Pickup_City: inp.from_city,
+					Pickup_Country: inp.from_country,
+					Pickup_Name: inp.from_name,
+					Pickup_Phone: inp.from_mobile_number,
+					Pickup_Pincode: inp.from_pin_code,
+					Pickup_State: inp.from_state,
+					Pickup_Email: "",
+						
+					Length: 0,
+					Width: 0,
+					Height: 0,
+					PhyWeight: 0,
+					VolWeight: 0,
+					ProductId: inp.reference_number,
+					ProductQty: inp.quantity,
+					ProductName: inp.item_name,
+					ProductMRP: inp.declared_value,
+					NetPayment: inp.cod_amount,
+					ProductCategory: "",
+					ProductDescription: "",
+				}
+			};
+		}
+		var options = {
+			url: host + "/" + url,
+		    body: req,
+		    json: true,
+		    method: 'POST'	
+		}
+		
+		function callback(error, response, body) {
+			if (error) {
+			    params.set({
+				success: false,
+				err : body.AddManifestDetails[0].ReturnMessage
+			    });
+			    cb(response,params);
 			}
 			else {
-				callback();
-			}
-		}],function(err,results) {
-			params.map([], {
-				// "from_mapping_1" : "to_mapping_1",
-				// "from_mapping_2" : "to_mapping_2",
-			}, function(inp) {
-				url = (inp.order_type === 'delivery' || inp.order_type === 'sbs') ? "AddManifestDetails" : "PushReverseManifestDetails" ;
-				if(inp.order_type === 'delivery' || inp.order_type === 'sbs') {
-					var date = new Date();
-					var req = {
-						XBkey: token,
-						ManifestDetails: {
-							"ManifestID": moment(date).format('YYYY') + moment(date).format('MM') + moment(date).format('DD'),
-							"OrderType": (inp.is_cod) ? "COD" : "PrePaid",
-							"OrderNo": inp.invoice_number,
-							"PaymentStatus": (inp.is_cod) ? "COD" : "PrePaid",
-							"PickupVendor": inp.from_name,
-							"PickVendorPhoneNo": inp.from_mobile_number,
-							"PickVendorAddress": inp.from_address,
-							"PickVendorCity": inp.from_city,
-							"PickVendorState": inp.from_state,
-							"PickVendorPinCode": inp.from_pin_code,
-							"CustomerName": inp.to_name,
-							"CustomerAddress": inp.to_address,
-							"CustomerCity": inp.to_city,
-							"CustomerState": inp.to_state,
-							"ZipCode": inp.to_pin_code,
-							"CustomerMobileNo": inp.to_mobile_number,
-							"RTOName": inp.from_name,
-							"RTOMobileNo": inp.from_mobile_number,
-							"RTOAddress": inp.from_address,
-							"RTOToCity": inp.from_city,
-							"RTOToState": inp.from_state,
-							"RTOPinCode": inp.from_pin_code,
-							"ProductMRP": inp.declared_value,
-							"ProductGroup": inp.item_name,
-							"ProductDesc": inp.item_name,
-							"NetPayment": inp.cod_amount,
-							"OctroiMRP": inp.declared_value,
-							"BillableWeight": 0,
-							"VolWeight": 0,
-							"PhyWeight": 0.4,
-							"ShipLength": 15,
-							"ShipWidth": 15,
-							"ShipHeight": 15,
-							"AirWayBillNO": inp.reference_number,
-							"ServiceType": "SD",
-							"Quantity": inp.quantity,
-							"PickupVendorCode": "Elanic123"
-						}
-					}
+				if(params.get().order_type === 'delivery' || params.get().order_type === 'sbs') {
+					pdf.generatePdf(params.get(),function(err,tracking_url){
+						params.output(body)
+						params.set({
+							success: true,
+							awb : inp.reference_number,
+							tracking_url : tracking_url
+						});
+						cb(response,params);
+					});
 				}
 				else {
-					var req = {
-						XBkey: token,
-						ReverseManifestData: {
-							AWB_No: inp.reference_number,
-							Order_ID: inp.invoice_number,
-							Return_Reason: "",
-								
-							Destination_Address: inp.to_address,
-							Destination_City: inp.to_city,
-							Destination_Country: inp.to_country,
-							Destination_Name: inp.to_name,
-							Destination_Phone: inp.to_mobile_number,
-							Destination_Pincode: inp.to_pin_code,
-							Destination_State: inp.to_state,
-												
-							Pickup_Landmark: "",
-							Pickup_Address: inp.from_address,
-							Pickup_City: inp.from_city,
-							Pickup_Country: inp.from_country,
-							Pickup_Name: inp.from_name,
-							Pickup_Phone: inp.from_mobile_number,
-							Pickup_Pincode: inp.from_pin_code,
-							Pickup_State: inp.from_state,
-							Pickup_Email: "",
-								
-							Length: 0,
-							Width: 0,
-							Height: 0,
-							PhyWeight: 0,
-							VolWeight: 0,
-							ProductId: inp.reference_number,
-							ProductQty: inp.quantity,
-							ProductName: inp.item_name,
-							ProductMRP: inp.declared_value,
-							NetPayment: inp.cod_amount,
-							ProductCategory: "",
-							ProductDescription: "",
-						}
-					};
+					params.output(body)
+					params.set({
+						success: true,
+						awb : inp.reference_number
+					});
+					cb(response,params);
 				}
-				return req;
-			});
-
-			params.out_map({}, function(out) {
-				out.success = (out[url][0].ReturnMessage === 'successful');
-				out.awb = out[url][0].AWBNo;
-				out.tracking_url = (tracking_url) ? tracking_url : '';
-				if(!out.success) out.err = out[url][0].ReturnMessage;			
-				return out;
-			});		
-			return self.post_req(host + "/" + url, params, cb);
-		});
+			}
+		}
+		return request(options, callback);
 	},
 
 	track: function(params, cb) {

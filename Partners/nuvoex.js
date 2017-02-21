@@ -36,6 +36,7 @@ module.exports = Template.extend('NuvoEx', {
 	    awb = inp.AWB;
 	    var city = inp["to_city"].toLowerCase();
 	    inp["Weight"] = Number(inp.Weight);
+	    inp["Reason for Return"] = (inp["Reason for Return"]) ? inp["Reason for Return"] : "Not Applicable";
 	    if (city.indexOf("new delhi") >= 0)
 		inp["Dest Code"] = "ELC WH - DELHI"
 	    else if (city.indexOf("bangalore") >= 0)
