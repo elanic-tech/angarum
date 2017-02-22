@@ -13,10 +13,10 @@ var defaults = {
 	currency: 'INR',
 	language: 'en-US',
 	environment: 'live',
-	key: 'HBDyYDQoX6wtokgn',
-	password: '32BMozzCxiriIqPajJQOUXnAp',
-	account_number: '510087682',
-	meter_number: '118500827',
+	key: process.env['FEDEX_AUTH_KEY'],
+	password: process.env['FEDEX_PASSWORD'],
+	account_number: process.env['FEDEX_ACCOUNT_NUMBER'],
+	meter_number: process.env['FEDEX_METER_NUMBER'],
 	user_agent: 'Elanic'
 };
 
@@ -153,7 +153,7 @@ module.exports = Template.extend('FedEx', {
 		    		Amount :'20'
 		    	},
 		    	CommercialInvoice : {
-		    		Purpose : 'SOLD'
+		    		Purpose : 'Not Sold'
 		    	},
 		    	Commodities : {
 		    		Name : inp.item_name,
