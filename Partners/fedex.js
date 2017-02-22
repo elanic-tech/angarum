@@ -153,7 +153,7 @@ module.exports = Template.extend('FedEx', {
 		    		Amount :'20'
 		    	},
 		    	CommercialInvoice : {
-		    		Purpose : 'Not Sold'
+		    		Purpose : 'NOT_SOLD'
 		    	},
 		    	Commodities : {
 		    		Name : inp.item_name,

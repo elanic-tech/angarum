@@ -104,10 +104,8 @@ module.exports = Template.extend('EcomExpress', {
 			.send('username='+username+'')
 			.send('password='+password+'')
 			.end(function (response) {
-				console.log(response.body);
 			  parser(response.body,function(err,result){
 				  var shipments = result;
-				  console.log(result);
 				  if(shipments.success === false) {
 				  	params.set({
 						success: false,
