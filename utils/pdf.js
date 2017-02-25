@@ -15,8 +15,8 @@ var renderBarcodeHtml = fs.readFileSync(__dirname + '/../views/shipping-label.ht
 var renderLabelTemplate = ejs.compile(renderBarcodeHtml, ejs_options);
 
 const pdf_options = {
-	format: 'Letter',
-	orientation: "landscape"
+  "format": "A4", 
+  "orientation": "portrait"
 };
 //
 // Helper to generate and upload to amazon s3.

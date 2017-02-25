@@ -13,13 +13,12 @@
       }
       .page {
         position: relative;
-        height: 80%;
-        width: 90%;
+        width: 14cm;
         margin: auto;
         display: block;
         page-break-after: auto;
         overflow: hidden;
-        padding: 50px;
+        padding-top : 25px;
         color: rgb(51,51,51);
         font-size: 13px;
         line-height: 18px;
@@ -27,18 +26,18 @@
 
       @media print, screen {
         body {}
-        .page { margin: "auto"; height: 80%; width: 90%;}
-        .title { font-style: 12px; margin-bottom: 10px; font-weight: bold;}
-        .subtitle { font-size: 11px; margin-bottom: 20px;}
-        .mb20 { margin-bottom: 9px;}
-        .text { font-size: 11px; padding-left: 10px;padding-bottom: 5px;}
-        .tiny-text { font-size: 9px;}
+        .page { margin: "auto"; padding-top : 25px; width: 14cm;}
+        .title { font-style: 10px; margin-bottom: 8px; font-weight: bold;}
+        .subtitle { font-size: 9px; margin-bottom: 20px;}
+        .mb20 { margin-bottom: 7px;}
+        .text { font-size: 9px; padding-left: 10px;padding-bottom: 5px;}
+        .tiny-text { font-size: 7px;}
         .pad { padding: 9px; position: relative; }
         .canvas { margin-left: 10px; }
-        .bold { font-weight: bold; font-size: 12px; padding: 10px; font-family: 'Helvetica Neue', Arial, Sans serif;}
-        .declare-text-bold { font-weight: bold; font-size: 11px; font-family: 'Helvetica Neue', Arial, Sans serif; }
-        .declare-text { font-size: 11px;  }
-        .declare-div {padding : 25px;}
+        .bold { font-weight: bold; font-size: 10px; padding: 10px; font-family: 'Helvetica Neue', Arial, Sans serif;}
+        .declare-text-bold { font-weight: bold; font-size: 9px; font-family: 'Helvetica Neue', Arial, Sans serif; }
+        .declare-text { font-size: 9px;  }
+        .declare-div {padding : 5px;}
         .table {  }
       }
       }
@@ -92,9 +91,9 @@
           <td colspan="6">
           <div class="declare-div">
             <div><span class="declare-text-bold">Self Declaration Form : To whomsoever it may concern</span></div>
-            <div><span class="declare-text">Name :</span><span class="declare-text"><%= fromAddress.name + " " + fromAddress.address %></span></div>
-            <div><span class="declare-text">PIN :</span><span class="declare-text"><%= fromAddress.pin + " "%></span>
-            <span class="declare-text">Mobile Number : <%= fromAddress.number + " " %></span><span class="declare-text">Email : <%=  fromAddress.email %></span></div>
+            <div><span class="declare-text">Name :</span><span class="declare-text"><%= toAddress.name + " " + toAddress.address %></span></div>
+            <div><span class="declare-text">PIN :</span><span class="declare-text"><%= toAddress.pin + " "%></span>
+            <span class="declare-text">Mobile Number : <%= toAddress.number + " " %></span><span class="declare-text">Email : <%=  toAddress.email %></span></div>
             <div><span class="tiny-text"><%= declaration %></span></div>
           </div>
           </td>

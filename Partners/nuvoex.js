@@ -37,6 +37,15 @@ module.exports = Template.extend('NuvoEx', {
 	    var city = inp["to_city"].toLowerCase();
 	    inp["Weight"] = Number(inp.Weight);
 	    inp["Reason for Return"] = (inp["Reason for Return"]) ? inp["Reason for Return"] : "Not Applicable";
+	    var item_details = {
+	    	"item_id" : inp.order_ids[0],
+	    	"product_name" : inp["PACKAGE DESCRIPTION"],
+	    	"quantity" : inp.quantity
+	    }
+	    var item_object = inp.order_ids[0]+"";
+	    inp["item_details"] = {};
+	    inp["item_details"][item_object] = item_details;
+	    inp["qc type"] = "doorstep";
 	    if (city.indexOf("new delhi") >= 0)
 		inp["Dest Code"] = "ELC WH - DELHI"
 	    else if (city.indexOf("bangalore") >= 0)
