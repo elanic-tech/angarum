@@ -30,8 +30,7 @@ module.exports = Template.extend('NuvoEx', {
 	    "weight": "Weight",
 	    "item_name": "PACKAGE DESCRIPTION",
 	    "declared_value": "PACKAGE VALUE",
-	    "reasons": "Reason for Return",
-	    "quantity": "quantity"
+	    "reasons": "Reason for Return"
 	}, function(inp) {
 	    awb = inp.AWB;
 	    var city = inp["to_city"].toLowerCase();
