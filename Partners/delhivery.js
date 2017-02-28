@@ -163,7 +163,7 @@ module.exports = Template.extend('Delhivery', {
 		    scan = scan.ScanDetail;
 		    return {
 			"time": scan.ScanDateTime,
-			"status": scan.Scan,
+			"status": (params.get().order_type === 'delivery') ? scan.ScanType + "-" + scan.Scan : scan.Scan,
 			"location": scan.ScannedLocation,
 			"description": scan.Instructions,
 		    };

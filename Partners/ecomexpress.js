@@ -113,10 +113,8 @@ module.exports = Template.extend('EcomExpress', {
 					});
 				  }
 				  else {
+				  	result.success = true;
 				  	params.output(result);
-					params.set({
-						success: true
-					});
 				  }
 				  cb(response,params);
 			  })
@@ -139,10 +137,8 @@ module.exports = Template.extend('EcomExpress', {
 				});
 			  }
 			  else {
+			  	response.body.success = true;
 			  	params.output(response.body);
-				params.set({
-					success: true
-				});
 			  }
 			  cb(response,params);
 		});

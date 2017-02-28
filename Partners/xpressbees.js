@@ -124,21 +124,21 @@ module.exports = Template.extend('XpressBees', {
 			else {
 				if(params.get().order_type === 'delivery' || params.get().order_type === 'sbs') {
 					pdf.generatePdf(params.get(),function(err,tracking_url){
-						params.output(body)
-						params.set({
-							success: true,
-							awb : inp.reference_number,
-							tracking_url : tracking_url
-						});
+						params.output(body);
+						var obj = params.get();
+						obj.tracking_url = tracking_url;
+						obj.awb = inp.reference_number;
+						obj.success = true;
+						params.set(obj);
 						cb(response,params);
 					});
 				}
 				else {
 					params.output(body)
-					params.set({
-						success: true,
-						awb : inp.reference_number
-					});
+					var obj = params.get();
+					obj.awb = inp.reference_number;
+					obj.success = true;
+					params.set(obj);
 					cb(response,params);
 				}
 			}
@@ -197,9 +197,6 @@ module.exports = Template.extend('XpressBees', {
 					out_response.error = body.ShipmentStatusDetails[0].ReturnMessage;
 				}
 			  params.output(out_response)
-			  params.set({
-				success: true
-			    });
 			  cb(response,params);
 			};
 			return request(options, callback);
@@ -226,7 +223,8 @@ module.exports = Template.extend('XpressBees', {
 					var obj = {};
 					for (var i=0; i<out.ShipmentStatusDetails.length; i++) {
 						obj = out.ShipmentStatusDetails[i];
-						key.time = obj.StatusDate;
+						var date = obj.StatusDate.toString().split("-");
+						key.time = new Date(date[2], Number(date[1]) - 1,Number(date[0]) + 1);
 						key.status = obj.Status;
 						key.description = obj.TransporterRemark;
 						key.location = obj.CurrentLocation;
