@@ -18,7 +18,7 @@
         display: block;
         page-break-after: auto;
         overflow: hidden;
-        padding-top : 25px;
+        padding-top : 15px;
         color: rgb(51,51,51);
         font-size: 13px;
         line-height: 18px;
@@ -26,7 +26,7 @@
 
       @media print, screen {
         body {}
-        .page { margin: "auto"; padding-top : 25px; width: 14cm;}
+        .page { margin: "auto"; padding-top : 15px; width: 14cm;}
         .title { font-style: 10px; margin-bottom: 8px; font-weight: bold;}
         .subtitle { font-size: 9px; margin-bottom: 20px;}
         .mb20 { margin-bottom: 7px;}
@@ -34,7 +34,7 @@
         .tiny-text { font-size: 7px;}
         .pad { padding: 9px; position: relative; }
         .canvas { margin-left: 10px; }
-        .bold { font-weight: bold; font-size: 10px; padding: 10px; font-family: 'Helvetica Neue', Arial, Sans serif;}
+        .bold { font-weight: bold; font-size: 8px; padding: 6px; font-family: 'Helvetica Neue', Arial, Sans serif;}
         .declare-text-bold { font-weight: bold; font-size: 9px; font-family: 'Helvetica Neue', Arial, Sans serif; }
         .declare-text { font-size: 9px;  }
         .declare-div {padding : 5px;}
@@ -104,6 +104,7 @@
   <script>
     JsBarcode("#barcode",<%= awb %>,{
       displayValue : false,
+      width : 1.5,
       height : 40
     });         
   </script>
