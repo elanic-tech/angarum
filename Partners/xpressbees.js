@@ -114,7 +114,7 @@ module.exports = Template.extend('XpressBees', {
 		}
 		
 		function callback(error, response, body) {
-			if (error) {
+			if (error || _.isEmpty(body.AddManifestDetails) || body.AddManifestDetails[0].ReturnMessage !== 'successful') {
 			    params.set({
 				success: false,
 				err : body.AddManifestDetails[0].ReturnMessage
@@ -184,7 +184,8 @@ module.exports = Template.extend('XpressBees', {
 					var obj = {};
 					for (var i=0; i<body.ShipmentStatusDetails.length; i++) {
 						obj = body.ShipmentStatusDetails[i];
-						key.time = obj.StatusDate;
+						var date = obj.StatusDate.toString().split("-");
+						key.time = new Date(date[2], Number(date[1]) - 1,Number(date[0]) + 1);
 						key.status = obj.Status;
 						key.description = obj.TransporterRemark;
 						key.location = obj.CurrentLocation;
@@ -223,8 +224,7 @@ module.exports = Template.extend('XpressBees', {
 					var obj = {};
 					for (var i=0; i<out.ShipmentStatusDetails.length; i++) {
 						obj = out.ShipmentStatusDetails[i];
-						var date = obj.StatusDate.toString().split("-");
-						key.time = new Date(date[2], Number(date[1]) - 1,Number(date[0]) + 1);
+						key.time = obj.StatusDate;
 						key.status = obj.Status;
 						key.description = obj.TransporterRemark;
 						key.location = obj.CurrentLocation;
