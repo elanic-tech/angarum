@@ -186,7 +186,7 @@ module.exports = Template.extend('XpressBees', {
 						obj = body.ShipmentStatusDetails[i];
 						var date = obj.StatusDate.toString().split("-");
 						key.time = new Date(date[2], Number(date[1]) - 1,Number(date[0]) + 1);
-						key.status = obj.Status;
+						key.status = obj.StatusCode;
 						key.description = obj.TransporterRemark;
 						key.location = obj.CurrentLocation;
 						details.push(key);
