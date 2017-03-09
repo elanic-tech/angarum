@@ -5,7 +5,15 @@ var username = process.env["NUVOEX_USERNAME"];
 var password = process.env["NUVOEX_PASSWORD"];
 var host = process.env["NUVOEX_HOST"];
 var auth = "Basic " + new Buffer(username + ":" + password).toString('base64');
-
+var cities = [
+'mumbai',
+'navimumbai',
+'lonavala',
+'dombivali',
+'thane',
+'nerul',
+'bhiwandi oul'
+]
 // Declare partner specific variables here.
 // Check out other partners for more information.
 
@@ -46,8 +54,8 @@ module.exports = Template.extend('NuvoEx', {
 	    inp["item_details"] = {};
 	    inp["item_details"][item_object] = item_details;
 	    inp["qc type"] = "doorstep";
-	    if (from_city.indexOf("navimumbai") || from_city.indexOf("thane") || from_city.indexOf("mumbai"))
-		inp["Dest Code"] = "ELC FEDEX"
+	    if(_.includes(cities,from_city))
+	    inp["Dest Code"] = "ELC FEDEX"
 	    else if (city.indexOf("new delhi") >= 0)
 		inp["Dest Code"] = "ELC WH - DELHI"
 	    else if (city.indexOf("bangalore") >= 0)
