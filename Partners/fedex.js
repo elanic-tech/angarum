@@ -266,10 +266,21 @@ module.exports = Template.extend('FedEx', {
 		        if(err || result.HighestSeverity === 'ERROR') {
 		        	return handleResponseError(params,result, cb);
 		        }
+		        var details = [];
+		        var key = {};
+		        var obj = {};
+		        for (var i=0; i<result.CompletedTrackDetails[0].TrackDetails.length; i++) {
+		        	obj = result.CompletedTrackDetails[0].TrackDetails[i];
+		        	key.status = obj.StatusDetail.Code;
+		        	key.time = obj.StatusDetail.CreationTime;
+		        	key.description = obj.StatusDetail.Description;
+		        	key.location = obj.StatusDetail.Location;
+		        	details.push(obj);
+		        }
 		        params.set({
 	        		success : true,
 	        		err : null,
-	        		details : result.CompletedTrackDetails[0].TrackDetails[0].StatusDetail,
+	        		details : details,
 	        		awb : params.get().awb_number
 	        	});
 	        	return cb(result,params);
