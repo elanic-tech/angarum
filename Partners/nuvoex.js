@@ -34,6 +34,7 @@ module.exports = Template.extend('NuvoEx', {
 	}, function(inp) {
 	    awb = inp.AWB;
 	    var city = inp["to_city"].toLowerCase();
+	    console.log('City is : ',city);
 	    inp["Weight"] = Number(inp.Weight);
 	    inp["Reason for Return"] = (inp["Reason for Return"]) ? inp["Reason for Return"] : "Not Applicable";
 	    var item_details = {
@@ -45,14 +46,15 @@ module.exports = Template.extend('NuvoEx', {
 	    inp["item_details"] = {};
 	    inp["item_details"][item_object] = item_details;
 	    inp["qc type"] = "doorstep";
-	    if (city.indexOf("new delhi") >= 0)
+	    if (city.indexOf("navimumbai") || city.indexOf("thane") || city.indexOf("mumbai"))
+		inp["Dest Code"] = "ELC FEDEX"
+	    else if (city.indexOf("new delhi") >= 0)
 		inp["Dest Code"] = "ELC WH - DELHI"
 	    else if (city.indexOf("bangalore") >= 0)
 		inp["Dest Code"] = "ELC WH - BANGALORE"
-		else if (city.indexOf("navimumbai") || city.indexOf("thane") || city.indexOf("mumbai"))
-		inp["Dest Code"] = "ELC FEDEX"
 	    else
 		inp["Dest Code"] = "ELC WH - BANGALORE"
+		console.log(inp);
 	    return {
 		data: JSON.stringify([inp]),
 	    };
