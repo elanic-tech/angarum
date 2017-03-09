@@ -94,6 +94,10 @@ module.exports = Template.extend('FedEx', {
     order: function(params, cb) {
 		var inp = params.get();
 		var date = new Date();
+		var from_street_line_1 = inp.from_address.substring(0,35);
+		inp.from_address = inp.from_address.substring(35);
+		var to_street_line_1 = inp.to_address.substring(0,35);
+		inp.to_address = inp.to_address.substring(35);
 		var data = {
 		  RequestedShipment: {
 		    ShipTimestamp: new Date(date.getTime() + (24*60*60*1000)).toISOString(),
@@ -107,7 +111,8 @@ module.exports = Template.extend('FedEx', {
 		      },
 		      Address: {
 		        StreetLines: [
-		          inp.from_address
+		        	from_street_line_1,
+		        	inp.from_address
 		        ],
 		        City: inp.from_city,
 		        StateOrProvinceCode: inp.from_state,
@@ -122,7 +127,8 @@ module.exports = Template.extend('FedEx', {
 		      },
 		      Address: {
 		        StreetLines: [
-		          inp.to_address
+		        	to_street_line_1,
+		        	inp.to_address
 		        ],
 		        City: inp.to_city,
 		        StateOrProvinceCode: inp.to_state,
