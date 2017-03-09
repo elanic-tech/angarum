@@ -49,7 +49,7 @@ module.exports = Template.extend('NuvoEx', {
 		inp["Dest Code"] = "ELC WH - DELHI"
 	    else if (city.indexOf("bangalore") >= 0)
 		inp["Dest Code"] = "ELC WH - BANGALORE"
-		else if (city.indexOf("Navimumbai") || city.indexOf("Thane") || city.indexOf("Mumbai"))
+		else if (city.indexOf("navimumbai") || city.indexOf("thane") || city.indexOf("mumbai"))
 		inp["Dest Code"] = "ELC FEDEX"
 	    else
 		inp["Dest Code"] = "ELC WH - BANGALORE"
