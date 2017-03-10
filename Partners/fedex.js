@@ -274,7 +274,7 @@ module.exports = Template.extend('FedEx', {
 		        	key.status = obj.StatusDetail.Code;
 		        	key.time = obj.StatusDetail.CreationTime;
 		        	key.description = obj.StatusDetail.Description;
-		        	key.location = obj.StatusDetail.Location;
+		        	key.location = obj.StatusDetail.Location.City;
 		        	details.push(key);
 		        }
 		        params.set({
