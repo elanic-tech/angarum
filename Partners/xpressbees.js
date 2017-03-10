@@ -184,8 +184,10 @@ module.exports = Template.extend('XpressBees', {
 					var obj = {};
 					for (var i=0; i<body.ShipmentStatusDetails.length; i++) {
 						obj = body.ShipmentStatusDetails[i];
-						var date = obj.StatusDate.toString().split("-");
-						key.time = new Date(date[2], Number(date[1]) - 1,Number(date[0]) + 1);
+						var date_string = obj.StatusDate.toString().split("-");
+						var date = new Date(date_string[2], Number(date_string[1]) - 1,Number(date_string[0]) + 1);
+						date.setHours(obj.StatusTime.substring(0,2),obj.StatusTime.substring(2),0);
+						key.time = date;
 						key.status = obj.StatusCode;
 						key.description = obj.TransporterRemark;
 						key.location = obj.CurrentLocation;
