@@ -185,7 +185,7 @@ module.exports = Template.extend('XpressBees', {
 					for (var i=0; i<body.ShipmentStatusDetails.length; i++) {
 						obj = body.ShipmentStatusDetails[i];
 						var date_string = obj.StatusDate.toString().split("-");
-						var date = new Date(date_string[2], Number(date_string[1]) - 1,Number(date_string[0]) + 1);
+						var date = new Date(date_string[2], Number(date_string[1]) - 1,Number(date_string[0]) + 1,-18,30,0);
 						date.setHours(obj.StatusTime.substring(0,2),obj.StatusTime.substring(2),0);
 						key.time = date;
 						key.status = obj.StatusCode;
