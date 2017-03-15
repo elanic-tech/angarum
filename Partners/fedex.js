@@ -254,7 +254,8 @@ module.exports = Template.extend('FedEx', {
 		      		Type: 'TRACKING_NUMBER_OR_DOORTAG',
 		      		Value: params.get().awb_number
 		    	}
-		    }
+		    },
+		    ProcessingOptions: 'INCLUDE_DETAILED_SCANS'
 		}
 		soap.createClient(path.join(__dirname,  'wsdl', 'TrackService_v12.wsdl'), {endpoint: hosts[defaults.environment] + '/web-services'}, function(err, client) {
 		    if (err) {
@@ -269,12 +270,12 @@ module.exports = Template.extend('FedEx', {
 		        var details = [];
 		        var key = {};
 		        var obj = {};
-		        for (var i=0; i<result.CompletedTrackDetails[0].TrackDetails.length; i++) {
-		        	obj = result.CompletedTrackDetails[0].TrackDetails[i];
-		        	key.status = obj.StatusDetail.Code;
-		        	key.time = obj.StatusDetail.CreationTime;
-		        	key.description = obj.StatusDetail.Description;
-		        	key.location = obj.StatusDetail.Location.City;
+		        for (var i=0; i<result.CompletedTrackDetails[0].TrackDetails[0].Events.length; i++) {
+		        	obj = result.CompletedTrackDetails[0].TrackDetails[0].Events[i];
+		        	key.status = obj.EventType;
+		        	key.time = obj.Timestamp;
+		        	key.description = obj.EventDescription;
+		        	key.location = obj.Address.City;
 		        	details.push(key);
 		        }
 		        params.set({
