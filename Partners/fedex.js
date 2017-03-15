@@ -268,10 +268,10 @@ module.exports = Template.extend('FedEx', {
 		        	return handleResponseError(params,result, cb);
 		        }
 		        var details = [];
-		        var key = {};
 		        var obj = {};
 		        for (var i=0; i<result.CompletedTrackDetails[0].TrackDetails[0].Events.length; i++) {
 		        	obj = result.CompletedTrackDetails[0].TrackDetails[0].Events[i];
+		        	var key = {};
 		        	key.status = obj.EventType;
 		        	key.time = obj.Timestamp;
 		        	key.description = obj.EventDescription;
