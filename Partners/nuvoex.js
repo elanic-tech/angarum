@@ -56,10 +56,10 @@ module.exports = Template.extend('NuvoEx', {
 	    inp["qc type"] = "doorstep";
 	    if(_.includes(cities,from_city))
 	    inp["Dest Code"] = "ELC FEDEX"
+		else if(from_city.indexOf('kolkata') >= 0)
+		inp["Dest Code"] = "ELC Fedex KOL"
 	    else if (city.indexOf("new delhi") >= 0)
 		inp["Dest Code"] = "ELC WH - DELHI"
-	    else if (city.indexOf("bangalore") >= 0)
-		inp["Dest Code"] = "ELC WH - BANGALORE"
 	    else
 		inp["Dest Code"] = "ELC WH - BANGALORE"
 	    return {
