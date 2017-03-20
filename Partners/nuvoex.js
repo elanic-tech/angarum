@@ -12,7 +12,8 @@ var cities = [
 'dombivali',
 'thane',
 'nerul',
-'bhiwandi oul'
+'bhiwandi oul',
+'raigarh(mh)'
 ]
 
 var kolkata_cities = [
