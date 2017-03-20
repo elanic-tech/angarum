@@ -14,6 +14,18 @@ var cities = [
 'nerul',
 'bhiwandi oul'
 ]
+
+var kolkata_cities = [
+'Kolkata',
+'Garia',
+'South 24 Parganas',
+'Howrah City',
+'Howrah Countryside',
+'Bally',
+'Hooghly',
+'North Pargana',
+'Howrah',
+]
 // Declare partner specific variables here.
 // Check out other partners for more information.
 
@@ -56,7 +68,7 @@ module.exports = Template.extend('NuvoEx', {
 	    inp["qc type"] = "doorstep";
 	    if(_.includes(cities,from_city))
 	    inp["Dest Code"] = "ELC FEDEX"
-		else if(from_city.indexOf('kolkata') >= 0)
+		else if(_.includes(kolkata_cities,from_city))
 		inp["Dest Code"] = "ELC Fedex KOL"
 	    else if (city.indexOf("new delhi") >= 0)
 		inp["Dest Code"] = "ELC WH - DELHI"
