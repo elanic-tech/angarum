@@ -1,9 +1,7 @@
 This Library attempts to unify the API of different delivery providers in India.
 
-##Installation
+## Installation
 npm install angarum
-
-##Instructions
 
 To add a new partner, use
 
@@ -11,7 +9,7 @@ To add a new partner, use
 
 To generate a new partner as partner_name.js . Preferably use lower case letters and underscore.
 
-##Usage
+## Usage
 ```javascript
 var ang = require("angarum");
 
