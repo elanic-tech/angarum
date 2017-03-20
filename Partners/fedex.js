@@ -6,7 +6,7 @@ var parser = require('xml2js');
 var soap = require('soap');
 var path = require('path');
 var Putter = require('base64-string-s3');
-
+var async = require('async');
 
 var defaults = {
 	imperial: false,
@@ -67,6 +67,28 @@ function generateAuthentication(data,resource) {
       };
     }
     return _.extend(params, data);
+}
+
+function track_awb(awb,cb) {
+	var data = {
+	  	SelectionDetails: {
+	    	PackageIdentifier: {
+	      		Type: 'TRACKING_NUMBER_OR_DOORTAG',
+	      		Value: awb
+	    	}
+	    },
+	    ProcessingOptions: 'INCLUDE_DETAILED_SCANS'
+	}
+	soap.createClient(path.join(__dirname,  'wsdl', 'TrackService_v12.wsdl'), {endpoint: hosts[defaults.environment] + '/web-services'}, function(err, client) {
+	    if (err) {
+	    	return cb(err);
+	    }
+	    var resource =  { version: {ServiceId: 'trck', Major: 12, Intermediate: 0, Minor: 0}};
+		var track_object = generateAuthentication(data,resource);
+	    client.track(track_object, function(err, result) {
+	    	return cb(err,result);
+	    });
+	});
 }
 
 function upload_label_to_s3(shipping_object,done) {
@@ -248,36 +270,53 @@ module.exports = Template.extend('FedEx', {
 	return host + "/api/packages/track/?awb=" + awb;
     },
     single_tracking_status: function(params, cb) {
-		var data = {
-		  	SelectionDetails: {
-		    	PackageIdentifier: {
-		      		Type: 'TRACKING_NUMBER_OR_DOORTAG',
-		      		Value: params.get().awb_number
-		    	}
-		    },
-		    ProcessingOptions: 'INCLUDE_DETAILED_SCANS'
-		}
-		soap.createClient(path.join(__dirname,  'wsdl', 'TrackService_v12.wsdl'), {endpoint: hosts[defaults.environment] + '/web-services'}, function(err, client) {
-		    if (err) {
-		    	return cb(err, params);
-		    }
-		    var resource =  { version: {ServiceId: 'trck', Major: 12, Intermediate: 0, Minor: 0}};
-			var track_object = generateAuthentication(data,resource);
-		    client.track(track_object, function(err, result) {
-		        if(err || result.HighestSeverity === 'ERROR') {
-		        	return handleResponseError(params,result, cb);
-		        }
-		        var details = [];
-		        var obj = {};
-		        for (var i=0; i<result.CompletedTrackDetails[0].TrackDetails[0].Events.length; i++) {
-		        	obj = result.CompletedTrackDetails[0].TrackDetails[0].Events[i];
-		        	var key = {};
-		        	key.status = obj.EventType;
-		        	key.time = obj.Timestamp;
-		        	key.description = obj.EventDescription;
-		        	key.location = obj.Address.City;
-		        	details.push(key);
-		        }
+		track_awb(params.get().awb_number,function(err,result) {
+			if(err || result.HighestSeverity === 'ERROR') {
+	        	return handleResponseError(params,result, cb);
+	        }
+	        var details = [];
+	        var obj = {};
+	        var return_awb;
+	        if(result.CompletedTrackDetails[0].TrackDetails[0].OtherIdentifiers) {
+	        	return_awb = result.CompletedTrackDetails[0].TrackDetails[0].OtherIdentifiers[0].PackageIdentifier.Value;
+	    	}
+	        async.parallel([
+	        	function track_return_awb(callback) {
+	        		if(return_awb) {
+	        			track_awb(return_awb,function(err,result) {
+	        				callback(err,result);
+	        			});
+	        		}
+	        		else {
+	        			callback();
+	        		}
+	        	}
+	        	],function(err,results) {
+	        	if(err || (results[0] && results[0].HighestSeverity === 'ERROR')) {
+	        		return handleResponseError(params,results[0], cb);
+	        	}
+	        	if(results[0] && results[0].CompletedTrackDetails[0].TrackDetails[0].Events) {
+	        		for (var i=0; i<results[0].CompletedTrackDetails[0].TrackDetails[0].Events.length; i++) {
+			        	obj = results[0].CompletedTrackDetails[0].TrackDetails[0].Events[i];
+			        	var key = {};
+			        	key.status = obj.EventType;
+			        	key.time = obj.Timestamp;
+			        	key.description = obj.EventDescription;
+			        	key.location = obj.Address.City;
+			        	details.push(key);
+			        }
+	        	}
+	        	if(result.CompletedTrackDetails[0].TrackDetails[0].Events) {
+			        for (var i=0; i<result.CompletedTrackDetails[0].TrackDetails[0].Events.length; i++) {
+			        	obj = result.CompletedTrackDetails[0].TrackDetails[0].Events[i];
+			        	var key = {};
+			        	key.status = obj.EventType;
+			        	key.time = obj.Timestamp;
+			        	key.description = obj.EventDescription;
+			        	key.location = obj.Address.City;
+			        	details.push(key);
+			        }
+			    }
 		        params.set({
 	        		success : true,
 	        		err : null,
@@ -285,8 +324,8 @@ module.exports = Template.extend('FedEx', {
 	        		awb : params.get().awb_number
 	        	});
 	        	return cb(result,params);
-		    });
-		});
+	        });
+	    })
     },
     cancel: function(params, cb) {
 		var data = {

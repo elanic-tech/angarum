@@ -7,6 +7,7 @@ var unirest = require('unirest');
 var pdf = require('../utils/pdf');
 var username = process.env['ECOMEXPRESS_USERNAME'];
 var password = process.env['ECOMEXPRESS_PASSWORD'];
+var async = require('async');
 
 module.exports = Template.extend('EcomExpress', {
 
@@ -97,27 +98,43 @@ module.exports = Template.extend('EcomExpress', {
     },
 
     single_tracking_status: function(params, cb) {
-		var url = host + "track_me/api/mawb/";
-		unirest.post(url)
-			.header('Content-Type','application/x-www-form-urlencoded')
-			.send('awb='+params.get().awb_number+'')
-			.send('username='+username+'')
-			.send('password='+password+'')
-			.end(function (response) {
-			  parser(response.body,function(err,result){
-				  var shipments = result;
-				  if(shipments.success === false) {
-				  	params.set({
-						success: false,
-						err : shipments[0].reason
-					});
-				  }
-				  else {
-				  	result.success = true;
-				  	params.output(result);
-				  }
-				  cb(response,params);
-			  })
+		track_awb(params.get().awb_number,params,function(err,result) {
+			if(err || _.isEmpty(result['ecomexpress-objects'].object)) {
+				return cb(result,err);
+			}
+			var details = [];
+		  	var indexes = getIndex(result);
+		  	var scan_index = indexes.index;
+		  	var ref_awb = indexes.ref_awb;
+		  	async.parallel([
+	        	function track_return_awb(callback) {
+	        		if(ref_awb) {
+	        			track_awb(ref_awb,params,function(err,result) {
+	        				callback(err,result);
+	        			});
+	        		}
+	        		else {
+	        			callback();
+	        		}
+	        	}
+	        	],function(err,results) {
+	        	if(err) {
+					return cb(results[0],err);
+				}
+				if(ref_awb && results.length > 0 && results[0]['ecomexpress-objects'].object) {
+					indexes = getIndex(results[0]);
+					var ref_scan_index = indexes.index;
+					details.push(getDetails(results[0],ref_scan_index));
+				}
+				details.push(getDetails(result,scan_index));
+				params.set({
+					success: true,
+					err : null,
+					awb : params.get().awb_number,
+					details : details
+				});
+				cb(result,params);
+			});
 		});
     },
 
@@ -145,3 +162,78 @@ module.exports = Template.extend('EcomExpress', {
     },
 
 });
+
+function track_awb(awb,params,done) {
+	var url = host + "track_me/api/mawbd/";
+	unirest.post(url)
+		.header('Content-Type','application/x-www-form-urlencoded')
+		.send('awb='+awb+'')
+		.send('username='+username+'')
+		.send('password='+password+'')
+		.end(function (response) {
+		  parser(response.body,function(err,result){
+		  	if(err) {
+				params.set({
+					success: false,
+					err : err
+				});
+				return done(params);
+			}
+		  	done(null,result);
+		  });
+	});
+}
+
+function getIndex(result) {
+	var results = {};
+	results.index = -1;
+	_.map(result['ecomexpress-objects'].object[0].field,function(o,ind){
+  		if(o.$.name === 'scans') {
+  			results.index = ind;
+  		}
+  		if(o.$.name === 'ref_awb') {
+  			results.ref_awb = o._;
+  		}
+	});
+	return results;
+}
+
+function getDetails(result,scan_index) {
+	var details = [];
+	var obj = {};
+	if(scan_index >= 0) {
+		var scans = result['ecomexpress-objects'].object[0].field[scan_index];
+	  	for(var i = 0;i<scans.object.length;i++) {
+	  		obj = scans.object[i];
+	  		var key = {};
+	  		var reason_code;
+	  		for(var j = 0;j<obj.field.length;j++) {
+		  		if(obj.field[j].$.name === 'location') {
+		  			key.location = obj.field[j]._;
+		  		}
+		  		if(obj.field[j].$.name === 'updated_on') {
+		  			key.time = formatDate(obj.field[j]._);
+		  		}
+		  		if(obj.field[j].$.name === 'status') {
+		  			key.description =  obj.field[j]._;
+		  		}
+		  		if(obj.field[j].$.name === 'reason_code') {
+		  			reason_code =  obj.field[j]._;
+		  		}
+		  	}
+		  	key.status = key.description + '-' + reason_code;
+	  		details.push(key);
+		}
+	}
+	return details;
+}
+
+function formatDate(time) {
+	var date_parts = time.split(/[ ,]+/);
+	var date = new Date(date_parts[0] + " " + date_parts[1] + " " + date_parts[2]);
+	date.setDate(date.getDate() + 1);
+	date.setHours(-18,-30,0);
+	var time_parts = date_parts[3].split(':');
+	date.setHours(time_parts[0],time_parts[1]);
+	return date;
+}
