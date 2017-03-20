@@ -16,15 +16,15 @@ var cities = [
 ]
 
 var kolkata_cities = [
-'Kolkata',
-'Garia',
-'South 24 Parganas',
-'Howrah City',
-'Howrah Countryside',
-'Bally',
-'Hooghly',
-'North Pargana',
-'Howrah',
+'kolkata',
+'garia',
+'south 24 parganas',
+'howrah city',
+'howrah countryside',
+'bally',
+'hooghly',
+'north pargana',
+'howrah',
 ]
 // Declare partner specific variables here.
 // Check out other partners for more information.
