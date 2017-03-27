@@ -174,10 +174,10 @@ module.exports = Template.extend('XpressBees', {
 			    params.set({
 				success: false
 			    });
-			    cb(response,params);
+			    return cb(response,params);
 			  }
 			  	var out_response = {};
-			  	if(body.ShipmentStatusDetails[0].ReturnMessage === 'Successful') {
+			  	if(body && body.ShipmentStatusDetails[0].ReturnMessage === 'Successful') {
 					out_response.success = true;
 					var details = [];
 					var key = {};
@@ -197,7 +197,7 @@ module.exports = Template.extend('XpressBees', {
 				}
 				else {
 					out_response.success = false;
-					out_response.error = body.ShipmentStatusDetails[0].ReturnMessage;
+					out_response.error = (body) ? body.ShipmentStatusDetails[0].ReturnMessage : '';
 				}
 			  params.output(out_response)
 			  cb(response,params);
