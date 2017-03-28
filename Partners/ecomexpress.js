@@ -166,7 +166,7 @@ module.exports = Template.extend('EcomExpress', {
 });
 
 function track_awb(awb,params,done) {
-	var url = host + "track_me/api/mawbd/";
+	var url = 'http://plapi.ecomexpress.in/track_me/api/mawbd/';
 	unirest.post(url)
 		.header('Content-Type','application/x-www-form-urlencoded')
 		.send('awb='+awb+'')
