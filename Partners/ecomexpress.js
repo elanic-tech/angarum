@@ -124,9 +124,9 @@ module.exports = Template.extend('EcomExpress', {
 				if(ref_awb && results.length > 0 && results[0]['ecomexpress-objects'].object) {
 					indexes = getIndex(results[0]);
 					var ref_scan_index = indexes.index;
-					details.push.apply(details,getDetails(results[0],ref_scan_index,'RTO-'));
+					details.push.apply(details,getDetails(results[0],ref_scan_index,'RTO'));
 				}
-				details.push.apply(details,getDetails(result,scan_index));
+				details.push.apply(details,getDetails(result,scan_index,'forward'));
 				params.set({
 					success: true,
 					err : null,
@@ -219,11 +219,11 @@ function getDetails(result,scan_index,type) {
 		  		if(obj.field[j].$.name === 'status') {
 		  			key.description =  obj.field[j]._;
 		  		}
-		  		if(obj.field[j].$.name === 'reason_code') {
-		  			reason_code =  obj.field[j]._;
+		  		if(obj.field[j].$.name === 'reason_code_number') {
+		  			reason_code =  (obj.field[j]._) ? obj.field[j]._.slice(-3) : '';
 		  		}
 		  	}
-		  	key.status = (type) ? type +"" + reason_code : reason_code;
+		  	key.status = (type === 'RTO') ? type +"-" + reason_code : reason_code;
 	  		details.push(key);
 		}
 	}

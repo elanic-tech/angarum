@@ -89,7 +89,7 @@ module.exports = Template.extend('Shadowfax', {
     },
 
     get_tracking_url: function(awb) {    	
-		return host + "/api/v1/requests/" + awb;
+		return host + "/api/v2/clients/requests/" + awb;
     },
 
     single_tracking_status: function(params, cb) {
@@ -100,7 +100,7 @@ module.exports = Template.extend('Shadowfax', {
 			// "Connection":"keep-alive",
 			// "Accept":"application/json, text/javascript, */*; q=0.01",
 			// "Origin":"http://track.shadowfax.in",
-			"Authorization":"Token token=" + process.env["SHADOWFAX_INTERNAL_TOKEN"],
+			"Authorization":"Token token="+process.env["SHADOWFAX_TOKEN"],
 			// "User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.82 Safari/537.36",
 			// "Referer":"http://track.shadowfax.in/track?order=return&trackingId=" + awb,
 			// "Accept-Encoding":"gzip, deflate, sdch",
@@ -133,7 +133,7 @@ module.exports = Template.extend('Shadowfax', {
     },
 
     cancel: function(params, cb) {
-		var url = "/api/packages/cancel/";
+		var url = host + "/api/v2/clients/requests/mark_cancel";
 		params.map(["to_be_omitted_1", "to_be_omitted_2"], {
 		    "from_mapping_1" : "to_mapping_1",
 		    "from_mapping_2" : "to_mapping_2",
