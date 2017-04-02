@@ -60,7 +60,8 @@ module.exports = Template.extend('Shadowfax', {
 		params.out_map({
 		    // "client_request_id": "awb",
 		    // "reference_number": "msg",
-		}, function(out) {			
+		}, function(out) {		
+			console.log('shadowfax response:',JSON.stringify(out));	
 		    out.success = (out["errors"]) ? false : true;
 		    if (out.success) {
 			out.err = null;
@@ -77,7 +78,7 @@ module.exports = Template.extend('Shadowfax', {
 		    "Authorization": "Token token=" + token,
 		    "Content-type": "application/json"
 		};
-
+		console.log('shadowfax request:',JSON.stringify(params.get()));	
 		return this.post_req(url, params, cb, { headers: headers });
     },
 
@@ -93,7 +94,7 @@ module.exports = Template.extend('Shadowfax', {
     },
 
     single_tracking_status: function(params, cb) {
-		var url = host + "/api/v1/requests/"+params.get().awb_number;		
+		var url = host + "/api/v2/clients/requests/"+params.get().awb_number;		
 		var awb = params.get().awb_number;
 		var headers = {
 			// "Host":"reverse.shadowfax.in",
