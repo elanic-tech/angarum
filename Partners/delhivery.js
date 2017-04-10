@@ -92,7 +92,7 @@ module.exports = Template.extend('Delhivery', {
 	    if (pickup.city && pickup.city.toLowerCase() == 'new delhi')
 		pickup.name = "Elanic Services Pvt. Ltd-DEL";
 	    else
-		pickup.name = "ELANIC";
+		pickup.name = "ELANIC BLR";
 		return _.extend({
 		"data": JSON.stringify({
 		    "pickup_location": pickup,
