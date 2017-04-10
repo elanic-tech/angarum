@@ -51,7 +51,13 @@ module.exports = Template.extend('Delhivery', {
 	    "item_name": "product_desc",
 	}, function(inp) {
 	    var ship = _.extend(_.pick(inp, ["waybill", "from_name", "order", "product_desc", "order_date", "total_amount", "cod_amount", "from_add", "from_city", "from_state", "from_country", "from_phone", "from_pin", "weight", "quantity"]), return_details);
-	    var pickup = _.pick(inp, ["to_add", "to_city", "to_state", "to_country", "to_name", "to_phone", "to_pin"]);
+	    var pickup = {};
+	    if(input.order_type === 'delivery' || input.order_type === 'sbs') {
+	    	pickup = _.pick(inp, ["from_add", "from_city", "from_state", "from_country", "from_name", "from_phone", "from_pin"]);
+	    }
+	    else {
+	    	pickup = _.pick(inp, ["to_add", "to_city", "to_state", "to_country", "to_name", "to_phone", "to_pin"]);
+	    }
 	    for (item in ship) {
 		if (item.indexOf("from_") == 0) {
 		    ship[item.slice(5)] = ship[item];
