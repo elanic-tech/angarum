@@ -54,7 +54,7 @@ module.exports = Template.extend('Delhivery', {
 	    	var ship = _.extend(_.pick(inp, ["waybill", "to_name", "order", "product_desc", "order_date", "total_amount", "cod_amount", "to_add", "to_city", "to_state", "to_country", "to_phone", "to_pin", "weight", "quantity"]), return_details);
 	    	var pickup = _.pick(inp, ["from_add", "from_city", "from_state", "from_country", "from_name", "from_phone", "from_pin"]);    
 		    console.log(ship);
-		    for (item in ship) {
+		    for (item in shipments) {
 			if (item.indexOf("to_") == 0) {
 			    ship[item.slice(3)] = ship[item];
 			    delete ship[item];
@@ -107,6 +107,9 @@ module.exports = Template.extend('Delhivery', {
 	    	ship.package_type = "cod";
 	    	ship.payment_mode = "cod";
 	    	ship.cod_amount = inp.cod_amount;
+	    }
+	    if(inp.order_type === 'delivery' || inp.order_type === 'sbs'){
+	    	ship.total_amount = inp.declared_value;
 	    }
 	    if (pickup.city && pickup.city.toLowerCase() == 'new delhi')
 		pickup.name = "Elanic Services Pvt. Ltd-DEL";
