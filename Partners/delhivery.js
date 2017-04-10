@@ -50,26 +50,39 @@ module.exports = Template.extend('Delhivery', {
 	    "declared_Value": "total_amount",
 	    "item_name": "product_desc",
 	}, function(inp) {
-	    var ship = _.extend(_.pick(inp, ["waybill", "from_name", "order", "product_desc", "order_date", "total_amount", "cod_amount", "from_add", "from_city", "from_state", "from_country", "from_phone", "from_pin", "weight", "quantity"]), return_details);
-	    var pickup = {};
-	    if(input.order_type === 'delivery' || input.order_type === 'sbs') {
-	    	pickup = _.pick(inp, ["from_add", "from_city", "from_state", "from_country", "from_name", "from_phone", "from_pin"]);
+	     if(input.order_type === 'delivery' || input.order_type === 'sbs') {
+	    	var ship = _.extend(_.pick(inp, ["waybill", "to_name", "order", "product_desc", "order_date", "total_amount", "cod_amount", "to_add", "to_city", "to_state", "to_country", "to_phone", "to_pin", "weight", "quantity"]), return_details);
+	    	var pickup = _.pick(inp, ["from_add", "from_city", "from_state", "from_country", "from_name", "from_phone", "from_pin"]);    
+		    console.log(ship);
+		    for (item in ship) {
+			if (item.indexOf("to_") == 0) {
+			    ship[item.slice(3)] = ship[item];
+			    delete ship[item];
+			}
+		    }	    
+		    for (item in pickup) {
+			if (item.indexOf("from_") == 0) {
+			    pickup[item.slice(5)] = pickup[item];
+			    delete pickup[item];
+			}
+		    }
 	    }
 	    else {
-	    	pickup = _.pick(inp, ["to_add", "to_city", "to_state", "to_country", "to_name", "to_phone", "to_pin"]);
-	    }
-	    for (item in ship) {
-		if (item.indexOf("from_") == 0) {
-		    ship[item.slice(5)] = ship[item];
-		    delete ship[item];
+	    	var ship = _.extend(_.pick(inp, ["waybill", "from_name", "order", "product_desc", "order_date", "total_amount", "cod_amount", "from_add", "from_city", "from_state", "from_country", "from_phone", "from_pin", "weight", "quantity"]), return_details);
+		    var pickup = _.pick(inp, ["to_add", "to_city", "to_state", "to_country", "to_name", "to_phone", "to_pin"]);
+		    for (item in ship) {
+			if (item.indexOf("from_") == 0) {
+			    ship[item.slice(5)] = ship[item];
+			    delete ship[item];
+			}
+		    }	    
+		    for (item in pickup) {
+			if (item.indexOf("to_") == 0) {
+			    pickup[item.slice(3)] = pickup[item];
+			    delete pickup[item];
+			}
+		    }
 		}
-	    }	    
-	    for (item in pickup) {
-		if (item.indexOf("to_") == 0) {
-		    pickup[item.slice(3)] = pickup[item];
-		    delete pickup[item];
-		}
-	    }
 	    /* if (inp.order_type.indexOf("pickup") > 0) {
 	       ship.package_type = "pickup";
 	       ship.cod_amount = 0;
