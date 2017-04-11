@@ -14,6 +14,9 @@ var ejs_options = {};
 var renderBarcodeHtml = fs.readFileSync(__dirname + '/../views/shipping-label.html', 'UTF-8');
 var renderLabelTemplate = ejs.compile(renderBarcodeHtml, ejs_options);
 
+var renderFedexBarcodeHtml = fs.readFileSync(__dirname + '/../views/fedex-shipping-label.html', 'UTF-8');
+var renderFedexLabelTemplate = ejs.compile(renderFedexBarcodeHtml, ejs_options);
+
 const pdf_options = {
   "format": "A4", 
   "orientation": "portrait"
@@ -35,6 +38,17 @@ const pdf_options = {
 		}
 	});
 }
+
+function GetFormattedDate() {
+	var todayTime = new Date();
+	var month = todayTime.getMonth() + 1;
+	var day = todayTime.getDate() + 1;
+	var year = todayTime.getFullYear();
+	day = (day.toString().length === 1) ? "0" + day+"" : day;
+	month = (month.toString().length === 1) ? "0" + month+"" : month;
+	return month + "/" + day + "/" + year;
+}
+
 // Helper to parse order and generate pdf
 function parseOrder(object,done) {
 	var data = {};
@@ -71,4 +85,61 @@ function parseOrder(object,done) {
 	});
 };
 
+// Helper to parse order and generate pdf
+function parseFedexOrder(object,done) {
+	var data = {};
+	var today = new Date().toDateString();
+	var date_part = today.split(" ");
+	data.partner = object.partner_name;
+	data.awb = object.awb.replace(/(.{4})/g,"$1 ");
+	data.cod_awb = object.cod_awb.replace(/(.{4})/g,"$1 ");
+	data.barcodeValue = object.barcodeValue;
+	data.codBarcodeValue = object.codBarcodeValue;
+	data.payment_mode = (object.is_cod) ? "COD" : "PREPAID";
+	data.cod_payment_mode = (object.is_cod) ? "COD RETURN" : "";
+	data.declaration = object.declaration;
+	data.is_cod = object.is_cod;
+	data.formId = object.formId;
+	data.codFormId = object.codFormId;
+	data.routing = object.routing_number;
+	data.date = date_part[1] + " " + date_part[2] + ", " + date_part[3];
+	data.service_type = (object.is_cod) ? 'STANDARD OVERNIGHT' : 'PRIORITY OVERNIGHT';
+	data.cod_service_type = (object.is_cod) ? object.cod_service_type.split("_").join(" ") : '';
+	data.weight =  "0.4KG";
+	data.carrier = object.carrier;
+	data.meter = object.meter_number;
+	data.invoice_id = object.orders[0];
+	data.routing_code = object.order_ids[0];
+	data.product_desc = object.item_name;
+	data.cod_amount = object.cod_amount;
+	data.declaration = object.declaration;
+	data.shipDate = GetFormattedDate();
+	data.AirportId = object.AirportId;
+	data.AstraPlannedServiceLevel = object.AstraPlannedServiceLevel;
+	data.CountryCode = object.CountryCode;
+	data.fromAddress = {
+		name : object.from_name,
+		address : object.from_address,
+		city : object.from_city,
+		state : object.from_state,
+		pin : object.from_pin_code,
+		number : object.from_mobile_number,
+		email : 'None'
+	}
+	data.toAddress = {
+		name : object.to_name,
+		address : object.to_address,
+		city : object.to_city,
+		state : object.to_state,
+		pin : object.to_pin_code,
+		number : object.to_mobile_number,
+		email : 'None'
+	}
+	const result = renderFedexLabelTemplate(data);
+	generatePDF('label', data, result,function(err,url) {
+		done(err,url);
+	});
+};
+
+exports.generateFedexPdf = parseFedexOrder;
 exports.generatePdf = parseOrder;

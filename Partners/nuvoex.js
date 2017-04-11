@@ -68,13 +68,18 @@ module.exports = Template.extend('NuvoEx', {
 	    inp["item_details"][item_object] = item_details;
 	    inp["qc type"] = "doorstep";
 	    if(_.includes(cities,from_city))
-	    inp["Dest Code"] = "ELC FEDEX"
+	    inp["vendor code"] = "ELC FEDEX"
 		else if(_.includes(kolkata_cities,from_city))
-		inp["Dest Code"] = "ELC Fedex KOL"
+		inp["vendor code"] = "ELC Fedex KOL"
 	    else if (city.indexOf("new delhi") >= 0)
-		inp["Dest Code"] = "ELC WH - DELHI"
+		inp["vendor code"] = "ELC WH - DELHI"
 	    else
-		inp["Dest Code"] = "ELC WH - BANGALORE"
+		inp["vendor code"] = "ELC WH - BANGALORE"
+		inp["Vendor name"] = inp["to_name"];
+		inp["vendor owner name"] = inp["to_name"];
+		inp["vendor pincode"] = inp["to_pin_code"];
+		inp["vendor address"] = inp["to_address"];
+		inp["vendor phone"] = inp["to_mobile_number"];
 	    return {
 		data: JSON.stringify([inp]),
 	    };

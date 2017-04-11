@@ -161,7 +161,7 @@ module.exports = Template.extend('XpressBees', {
 		// var url = "http://114.143.206.69:803/ElanicService.svc/GetShipmentStatus";
 		if(params.get().order_type === 'delivery' || params.get().order_type === 'sbs') {
 			var options = {
-			  url: host + '/GetShipmentStatus',
+			  url: host + '/GetShipmentSummaryDetails',
 			  method: 'POST',
 			  json: true,
 			  body: {"AWBNo":params.get().awb_number,"XBkey": token},
@@ -177,6 +177,7 @@ module.exports = Template.extend('XpressBees', {
 			    return cb(response,params);
 			  }
 			  	var out_response = {};
+			  	console.log(JSON.stringifiy(body));
 			  	if(body && body.ShipmentStatusDetails[0].ReturnMessage === 'Successful') {
 					out_response.success = true;
 					var details = [];
@@ -189,8 +190,8 @@ module.exports = Template.extend('XpressBees', {
 						date.setHours(obj.StatusTime.substring(0,2),obj.StatusTime.substring(2),0);
 						key.time = date;
 						key.status = obj.StatusCode;
-						key.description = obj.TransporterRemark;
-						key.location = obj.CurrentLocation;
+						key.description = (obj.TransporterRemark) ? obj.TransporterRemark : '';
+						key.location = obj.Location;
 						details.push(key);
 					}
 					out_response.details = details;

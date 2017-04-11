@@ -1,0 +1,226 @@
+<html>
+  <head>
+      <meta charset="utf8">
+      <title>Shipping Label</title>
+      <script type="text/javascript" src="https://cdn.jsdelivr.net/jsbarcode/3.5.8/JsBarcode.all.min.js"></script>
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Helvetica Neue', Arial, Sans serif;
+        -webkit-print-color-adjust: exact;
+        box-sizing: border-box;
+      }
+      .page {
+        position: relative;
+        margin: auto;
+        width: 14cm;
+        display: block;
+        padding-top : 15px;
+        page-break-after: auto;
+        overflow: hidden;
+        color: rgb(51,51,51);
+        font-size: 11px;
+        line-height: 18px;
+      }
+
+      @media print, screen {
+        body {}
+        .page { margin: "auto"; padding-top : 15px; width: 14cm;}
+        .title { font-style: 10px; margin-bottom: 8px; font-weight: bold;}
+        .subtitle { font-size: 9px; margin-bottom: 20px;}
+        .mb20 { margin-bottom: 7px;}
+        .text { font-size: 9px; padding-left: 10px;padding-bottom: 1px;}
+        .tiny-text { font-size: 7px;}
+        .label-upper {font-size: 9px;margin-top: 8px;padding: 0px;}
+        .label-medium {font-size: 9px;padding: 0px;}
+        .label-down {font-size: 8px;padding: 0px;}
+        .pad { padding: 9px; position: relative; }
+        .canvas { margin-left: 10px; }
+        .bold { font-weight: bold; font-size: 8px; padding: 6px; font-family: 'Helvetica Neue', Arial, Sans serif;}
+        .declare-text-bold { font-weight: bold; font-size: 9px; font-family: 'Helvetica Neue', Arial, Sans serif; }
+        .codbold { font-weight: bold; font-size: 10px; padding: 6px; font-family: 'Helvetica Neue', Arial, Sans serif;padding-top: 40px;}
+        .declare-text { font-size: 9px;  }
+        .declare-div {padding : 5px;}
+        .form {margin-left:44px;}
+        .fedex_meter {margin-left:18px;}
+        .awb {margin-left: 0px;}
+        .mode {margin-left: 17px;}
+        .auto_awb {margin:0px;font-size: 10px;margin-left: 40px;}
+        .table {border-collapse: collapse;}
+        .boldText {font-weight: bold;}
+        .partner {font-size: 12px;font-weight: 400;padding-left: 10px;}
+        .shipdate {font-size: 9px;padding-left: 10px;}
+        .weight {font-size: 9px;padding-left: 10px;}
+        .elanic {position: absolute;right: 0px;}
+        .border {border: solid thin;border-right:solid;}
+        .ship-to-padding {padding-top: 5px;margin-top:9px; }
+        .service-area {margin-left: 100px;}
+        .routing {font-size: 15px;font-weight: 400;}
+        .barcode {margin-right: 33px;width: 235px;height: 70px;}
+        .topincode {margin-left: 32px;}
+        .codbarcode {margin-bottom: 10px;width: 235px;height: 70px;}
+        .logo {background-image: url("../../../../../images/elanic.jpg");background-repeat: no-repeat;}
+        .track__info {
+          display: flex;
+          flex-direction: column;
+        }
+        .track__info > div {
+          flex: 1 1 0px;
+        }
+        .track__info .placeholder {
+          flex: 2 2 0px;
+        }
+      }
+      </style>
+  </head>
+  <body>
+    <div class="page">
+      <table class="table" cellpadding="0" cellspacing="0">
+        <tr class="pad">
+          <td style="width: 50%" colspan="3">
+            <img src="http://elanic.in/images/logo.png" width="100px" height="32px">
+          </td>
+          <td style="width: 16%" colspan="1"></td>
+          <td style="width: 34%" colspan="2">
+            <div class="text boldText">Elanic</div>
+            <div class="text">Name : <%= fromAddress.name %></div>
+            <div class="text">Address : <%= fromAddress.address %></div>
+            <div class="text">City : <%= fromAddress.city %>  State : <%= fromAddress.state %> PIN : <%= fromAddress.pin %></div>
+            <div class="text">Contact : <%= fromAddress.number %></div>
+          </td>
+        </tr>
+        <tr class="pad border">
+          <td style="width: 50%" colspan="3">
+            <div class="partner">Carrier: FedEx</div>
+            <div class="shipdate">Ship Date: <%= shipDate %></div>
+            <div class="weight">Weight: <%= weight %></div>
+            <div class="text ship-to-padding"><span class="boldText">Order No.</span><%= invoice_id %> dated <%= date %></div>
+            <div class="text boldText">Ship To:</div>
+            <div class="text">Name : <%= toAddress.name %></div>
+            <div class="text">Address : <%= toAddress.address %> City : <%= toAddress.city %></div>
+            <div class="text">State : <%= toAddress.state %> PIN : <%= toAddress.pin %></div>
+            <div class="text">Contact : <%= toAddress.number %></div>
+          </td>
+          <td style="width: 50%" colspan="3">
+            <div>
+              <table>
+                <td colspan="1">
+                  <div class="label-upper awb" align="left">TRK: <%= awb %> </div>
+                </td>
+                <td colspan="1">
+                  <div class="label-upper mode" align="center">FORM ID: <%= formId %></div>
+                </td>
+                <td colspan="1">
+                  <div class="label-upper form" align="right"><%= payment_mode %> </div>
+                </td>
+              </table>
+            </div>
+            <div>
+              <table>
+                <td colspan="1">
+                  <div class="label-medium awb boldText" align="left"><%= service_type %></div>
+                </td>
+                <td colspan="1">
+                <div class="label-medium mode" align="center"></div>
+                </td>
+                <td colspan="1">
+                  <div class="label-medium service-area" align="right"><%= AstraPlannedServiceLevel %> </div>
+                </td>
+              </table>
+              <table>
+                <td colspan="1">
+                  <div class="label-medium awb routing" align="left"><%= routing %> </div>
+                </td>
+                <td colspan="1">
+                  <div class="label-medium mode" align="center">-<%= CountryCode %><span class="topincode"><%= toAddress.pin %></span></div>
+                </td>
+                <td colspan="1">
+                  <div class="label-medium form" align="right"><%= AirportId %> </div>
+                </td>
+              </table>
+            </div>
+            <div>
+              <canvas class="barcode" align="center" id="barcode"></canvas>
+            </div>
+            <div>
+              <table>
+                <td colspan="1">
+                  <div class="label-down" align="left">Bill T/C :Sender</div>
+                </td>
+                <td colspan="1">
+                  <div class="label-down mode" align="center">Bill D/T :Sender</div>
+                </td>
+                <td colspan="1">
+                  <div class="label-down fedex_meter" align="right">Fedex Meter: <%= meter %> </div>
+                </td>
+              </table>
+            </div>
+          </td>
+        </tr>
+        <% if(is_cod) { %>
+        <tr class="pad border">
+          <td style="width: 50%" colspan="3">
+            <div class="codbold"><p>C.O.D CASH ON DELIVERY COD AMOUNT : <%= cod_amount %> INR</p></div>
+          </td>
+          <td style="width: 50%" colspan="3">
+            <div>
+              <table>
+                <td colspan="1">
+                  <div class="label-upper awb" align="left">TRK#: <%= cod_awb %> </div>
+                </td>
+                <td colspan="1">
+                  <div class="label-upper mode" align="center"></div>
+                </td>
+                <td colspan="1">
+                  <div class="label-upper form" align="right">FORM ID: <%= codFormId %> </div>
+                </td>
+              </table>
+              <table>
+                <td colspan="1">
+                  <div class="label-medium awb boldText" align="left"><%= cod_service_type %> </div>
+                </td>
+                <td colspan="1">
+                  <div class="label-medium mode" align="center"></div>
+                </td>
+                <td colspan="1">
+                  <div class="label-medium form" align="right"><%= cod_payment_mode %> </div>
+                </td>
+              </table>
+            </div>
+            <div>
+              <canvas class="codbarcode" align="center" id="cod_barcode"></canvas>
+            </div>
+          </td>
+        </tr>
+        <% } %>
+        <tr class="pad border">
+          <td colspan="6">
+            <div class="declare-div">
+              <div><span class="declare-text-bold">Terms and Conditions:</span></div>
+              <div><span class="tiny-text">Subject to the "Conditions of Carriage", which limits the liability of FedEx for loss, delay or damage to the consignment. Visit www.fedex.com/in to view the Conditions of Carriage.</span></div>
+            </div>
+          </td>
+        </tr>
+      </table>
+      </div>
+  </body>
+  <script>
+    JsBarcode("#barcode",'<%= barcodeValue %>',{
+      format: "CODE128",
+      displayValue : false,
+      margin:0,
+      width : 2,
+      height : 70
+    });
+    if(<%= is_cod %>) {
+    JsBarcode("#cod_barcode",'<%= codBarcodeValue %>',{
+      format: "CODE128",
+      displayValue : false,
+      margin : 0,
+      width : 2,
+      height : 70
+    });  
+    }        
+  </script>
+</html>
