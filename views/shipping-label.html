@@ -33,7 +33,7 @@
         .text { font-size: 9px; padding-left: 10px;padding-bottom: 5px;}
         .tiny-text { font-size: 7px;}
         .pad { padding: 9px; position: relative; }
-        .canvas { margin-left: 10px; }
+        .canvas { width: 200px; }
         .bold { font-weight: bold; font-size: 8px; padding: 6px; font-family: 'Helvetica Neue', Arial, Sans serif;}
         .declare-text-bold { font-weight: bold; font-size: 9px; font-family: 'Helvetica Neue', Arial, Sans serif; }
         .declare-text { font-size: 9px;  }
@@ -51,7 +51,7 @@
           <td colspan="2"><div class="title" align="center">Elanic</div></td>
         </tr>
         <tr class="pad">
-          <td style="width: 34%" colspan="2"><div><canvas align="center" id="barcode"></canvas><p align="center"> <%= awb %> </p></div></td>
+          <td style="width: 34%" colspan="2"><div><canvas class="canvas" align="center" id="barcode"></canvas><p align="center"> <%= awb %> </p></div></td>
           <td style="width: 33%" colspan="2">
             <div class="bold">COURIER PARTNER : <%= partner %></div>
             <div class="bold">CLIENT INVOICE : <%= invoice_id %></div>
@@ -104,7 +104,7 @@
   <script>
     JsBarcode("#barcode",<%= awb %>,{
       displayValue : false,
-      width : 1.5,
+      width : 2,
       height : 40
     });         
   </script>

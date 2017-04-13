@@ -6,6 +6,7 @@ var parser = require('xml2js');
 var soap = require('soap');
 var path = require('path');
 var Putter = require('base64-string-s3');
+var pdf = require('../utils/pdf');
 var async = require('async');
 
 var defaults = {
@@ -226,12 +227,6 @@ module.exports = Template.extend('FedEx', {
 		      Weight: {
 		        Units: 'KG',
 		        Value: '.400'
-		      },
-		      Dimensions: {
-		        Length: 15,
-		        Width: 15,
-		        Height: 15,
-		        Units: 'CM'
 		      }
 		    }]
 		  } 
@@ -243,8 +238,6 @@ module.exports = Template.extend('FedEx', {
 	      if (err) {
 	        return cb(err, params);
 	      }
-	    //  console.log(err);
-	    //  console.log(client);
 	      var resource =  { version: {ServiceId: 'ship', Major: 19, Intermediate: 0, Minor: 0}};
 	      var ship_object = generateAuthentication(data,resource);
 	      client.processShipment(ship_object, function(err, result) {

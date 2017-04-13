@@ -27,6 +27,22 @@ var kolkata_cities = [
 'north pargana',
 'howrah',
 ]
+
+var kolkata = {
+	to_name : "Binay Kumar Mondal",
+	to_mobile_number : "9831910854",
+	to_address : "NuvoEx, Utsav Bhavan , Amta Road Near Dasnagar Police Station Howrah",
+	to_pin_code : "711105"
+}
+
+var mumbai = {
+	to_name : "Dattaraj",
+	to_mobile_number : "8652175829",
+	to_address : "B 15, Arihant Industrial Estate, Off Saki Vihar Road, Saki Naka Mumbai",
+	to_pin_code : "400072"
+}
+
+
 // Declare partner specific variables here.
 // Check out other partners for more information.
 
@@ -67,19 +83,24 @@ module.exports = Template.extend('NuvoEx', {
 	    inp["item_details"] = {};
 	    inp["item_details"][item_object] = item_details;
 	    inp["qc type"] = "doorstep";
-	    if(_.includes(cities,from_city))
-	    inp["vendor code"] = "ELC FEDEX"
-		else if(_.includes(kolkata_cities,from_city))
-		inp["vendor code"] = "ELC Fedex KOL"
+	    var vendor_key = inp;
+	    if(_.includes(cities,from_city)) {
+	    	inp["vendor code"] = "ELC FEDEX";
+	    	vendor_key = mumbai;
+		}
+		else if(_.includes(kolkata_cities,from_city)) {
+			vendor_key = kolkata;
+			inp["vendor code"] = "ELC Fedex KOL"
+		}
 	    else if (city.indexOf("new delhi") >= 0)
 		inp["vendor code"] = "ELC WH - DELHI"
 	    else
 		inp["vendor code"] = "ELC WH - BANGALORE"
-		inp["Vendor name"] = inp["to_name"];
-		inp["vendor owner name"] = inp["to_name"];
-		inp["vendor pincode"] = inp["to_pin_code"];
-		inp["vendor address"] = inp["to_address"];
-		inp["vendor phone"] = inp["to_mobile_number"];
+		inp["vendor name"] = vendor_key["to_name"];
+		inp["vendor owner name"] = vendor_key["to_name"];
+		inp["vendor pincode"] = vendor_key["to_pin_code"];
+		inp["vendor address"] = vendor_key["to_address"];
+		inp["vendor phone"] = vendor_key["to_mobile_number"];
 	    return {
 		data: JSON.stringify([inp]),
 	    };

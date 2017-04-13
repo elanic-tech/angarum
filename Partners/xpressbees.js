@@ -177,29 +177,28 @@ module.exports = Template.extend('XpressBees', {
 			    return cb(response,params);
 			  }
 			  	var out_response = {};
-			  	console.log(JSON.stringifiy(body));
-			  	if(body && body.ShipmentStatusDetails[0].ReturnMessage === 'Successful') {
-					out_response.success = true;
-					var details = [];
-					var key = {};
-					var obj = {};
-					for (var i=0; i<body.ShipmentStatusDetails.length; i++) {
-						obj = body.ShipmentStatusDetails[i];
-						var date_string = obj.StatusDate.toString().split("-");
-						var date = new Date(date_string[2], Number(date_string[1]) - 1,Number(date_string[0]) + 1,-18,-30,0);
-						date.setHours(obj.StatusTime.substring(0,2),obj.StatusTime.substring(2),0);
-						key.time = date;
-						key.status = obj.StatusCode;
-						key.description = (obj.TransporterRemark) ? obj.TransporterRemark : '';
-						key.location = obj.Location;
-						details.push(key);
-					}
-					out_response.details = details;
-				}
-				else {
-					out_response.success = false;
-					out_response.error = (body) ? body.ShipmentStatusDetails[0].ReturnMessage : '';
-				}
+	            if(body && body[0].ReturnMessage === 'Successful') {
+	                out_response.success = true;
+	                var details = [];
+	                var key = {};
+	                var obj = {};
+	                for (var i=0; i<body[0].ShipmentSummary.length; i++) {
+	                    obj = body[0].ShipmentSummary[i];
+	                    var date_string = obj.StatusDate.toString().split("-");
+	                    var date = new Date(date_string[2], Number(date_string[1]) - 1,Number(date_string[0]) + 1,-18,-30,0);
+	                    date.setHours(obj.StatusTime.substring(0,2),obj.StatusTime.substring(2),0);
+	                    key.time = date;
+	                    key.status = obj.StatusCode;
+	                    key.description = (obj.Comment) ? obj.Comment : '';
+	                    key.location = obj.Location;
+	                    details.push(key);
+	                }
+	                out_response.details = details;
+	            }
+	            else {
+	            	out_response.success = false;
+	            	out_response.error = (body) ? body[0].ReturnMessage : '';
+	            }
 			  params.output(out_response)
 			  cb(response,params);
 			};
