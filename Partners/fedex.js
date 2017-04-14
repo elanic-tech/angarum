@@ -228,6 +228,12 @@ module.exports = Template.extend('FedEx', {
 		      Weight: {
 		        Units: 'KG',
 		        Value: '.400'
+		      },
+		      Dimensions: {
+		        Length: 15,
+		        Width: 14,
+		        Height: 11,
+		        Units: 'CM'
 		      }
 		    }]
 		  } 
@@ -371,6 +377,12 @@ module.exports = Template.extend('FedEx', {
 		      Weight: {
 		        Units: 'KG',
 		        Value: '.400'
+		      },
+		      Dimensions: {
+		        Length: 15,
+		        Width: 14,
+		        Height: 11,
+		        Units: 'CM'
 		      }
 		    }]
 		  } 
