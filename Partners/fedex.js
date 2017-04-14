@@ -6,6 +6,7 @@ var parser = require('xml2js');
 var soap = require('soap');
 var path = require('path');
 var Putter = require('base64-string-s3');
+var pdf = require('../utils/pdf');
 var async = require('async');
 
 var defaults = {
@@ -117,9 +118,163 @@ module.exports = Template.extend('FedEx', {
 		var inp = params.get();
 		var date = new Date();
 		var from_street_line_1 = inp.from_address.substring(0,35);
-		inp.from_address = inp.from_address.substring(35);
+		var from_street_line_2 = inp.from_address.substring(35);
 		var to_street_line_1 = inp.to_address.substring(0,35);
-		inp.to_address = inp.to_address.substring(35);
+		var to_street_line_2 = inp.to_address.substring(35);
+		if(inp.is_cod) {
+		var data = {
+		  RequestedShipment: {
+		    ShipTimestamp: new Date(date.getTime() + (24*60*60*1000)).toISOString(),
+		    DropoffType: 'REGULAR_PICKUP',
+		    ServiceType: (inp.is_cod) ? 'STANDARD_OVERNIGHT' : 'PRIORITY_OVERNIGHT',
+		    PackagingType: 'YOUR_PACKAGING',
+		    Shipper: {
+		      Contact: {
+		        PersonName: inp.from_name,
+		        PhoneNumber: inp.from_mobile_number
+		      },
+		      Address: {
+		        StreetLines: [
+		        	from_street_line_1,
+		        	from_street_line_2
+		        ],
+		        City: inp.from_city,
+		        StateOrProvinceCode: inp.from_state,
+		        PostalCode: inp.from_pin_code,
+		        CountryCode: 'IN'
+		      }
+		    },
+		    Recipient: {
+		      Contact: {
+		        PersonName: inp.to_name,
+		        PhoneNumber: inp.to_mobile_number
+		      },
+		      Address: {
+		        StreetLines: [
+		        	to_street_line_1,
+		        	to_street_line_2
+		        ],
+		        City: inp.to_city,
+		        StateOrProvinceCode: inp.to_state,
+		        PostalCode: inp.to_pin_code,
+		        CountryCode: 'IN',
+		        Residential: true
+		      }
+		    },
+		    ShippingChargesPayment: {
+		      PaymentType: 'SENDER',
+		      Payor: {
+		        ResponsibleParty: {
+		          AccountNumber: defaults.account_number
+		        }
+		      }
+		    },
+		    SpecialServicesRequested : {
+		    	SpecialServiceTypes : 'COD',
+		    	CodDetail : {
+		    		CodCollectionAmount : {
+		    			Currency : 'INR',
+		    			Amount : inp.cod_amount
+		    		},
+		    		CollectionType : 'CASH'
+		    	}
+		    },
+		    CustomsClearanceDetail : {
+		    	DutiesPayment : {
+		    		PaymentType: 'SENDER',
+				      Payor: {
+				        ResponsibleParty: {
+				          AccountNumber: defaults.account_number
+				        }
+				    }
+		    	},
+		    	CustomsValue : {
+		    		Currency : 'INR',
+		    		Amount :'20'
+		    	},
+		    	CommercialInvoice : {
+		    		Purpose : (inp.is_cod) ? 'SOLD' : 'NOT_SOLD'
+		    	},
+		    	Commodities : {
+		    		Name : inp.item_name,
+		    		NumberOfPieces : '1',
+		    		Description : inp.item_name,
+		    		CountryOfManufacture : 'IN',
+		    		Weight : {
+		    			Units : 'KG',
+		    			Value : '.400'
+		    		},
+		    		Quantity : '1',
+		    		QuantityUnits : 'EA',
+		    		UnitPrice : {
+		    			Currency : 'INR',
+		    			Amount : '20'
+		    		},
+		    		CustomsValue : {
+		    			Currency : 'INR',
+		    			Amount : '20'
+		    		}
+		    	}
+		    },
+		    LabelSpecification: {
+		      LabelFormatType: 'COMMON2D',
+		      ImageType: 'PDF',
+		      LabelStockType: 'PAPER_4X6'
+		    },
+		    PackageCount: inp.quantity+'',
+		    RequestedPackageLineItems: [{
+		      SequenceNumber: 1,
+		      GroupPackageCount: 1,
+		      Weight: {
+		        Units: 'KG',
+		        Value: '.400'
+		      }
+		    }]
+		  } 
+		}
+		if(!inp.is_cod) {
+		  	delete data.RequestedShipment.SpecialServicesRequested;
+		}
+		soap.createClient(path.join(__dirname,  'wsdl', 'ShipService_v19.wsdl'), {endpoint: hosts[defaults.environment] + '/web-services'}, function(err, client) {
+	      if (err) {
+	        return cb(err, params);
+	      }
+	      var resource =  { version: {ServiceId: 'ship', Major: 19, Intermediate: 0, Minor: 0}};
+	      var ship_object = generateAuthentication(data,resource);
+	      client.processShipment(ship_object, function(err, result) {
+	        if(err || result.HighestSeverity === 'ERROR') {
+	          	return handleResponseError(params,result, cb);
+	        }
+	        inp.meter_number = defaults.meter_number;
+	        inp.carrier = 'FEDEX';
+	        inp.routing_number = result.CompletedShipmentDetail.OperationalDetail.UrsaPrefixCode + " "+
+	         					 result.CompletedShipmentDetail.OperationalDetail.UrsaSuffixCode;
+	        inp.AirportId = result.CompletedShipmentDetail.OperationalDetail.AirportId;
+	        inp.AstraPlannedServiceLevel = result.CompletedShipmentDetail.OperationalDetail.AstraPlannedServiceLevel;
+	        inp.CountryCode = result.CompletedShipmentDetail.OperationalDetail.CountryCode;
+	      	inp.barcodeValue = result.CompletedShipmentDetail.CompletedPackageDetails[0].OperationalDetail.Barcodes.StringBarcodes[0].Value;
+	       	inp.awb = result.CompletedShipmentDetail.CompletedPackageDetails[0].TrackingIds[0].TrackingNumber;
+	       	inp.formId = result.CompletedShipmentDetail.CompletedPackageDetails[0].TrackingIds[0].FormId;
+	       	if(inp.is_cod) {
+	       		inp.codBarcodeValue = result.CompletedShipmentDetail.AssociatedShipments[0].PackageOperationalDetail.Barcodes.StringBarcodes[0].Value;
+	       		inp.cod_awb = result.CompletedShipmentDetail.AssociatedShipments[0].TrackingId.TrackingNumber;
+	       		inp.codFormId = result.CompletedShipmentDetail.AssociatedShipments[0].TrackingId.FormId;
+	       		inp.cod_service_type = result.CompletedShipmentDetail.AssociatedShipments[0].ServiceType;
+	       	}
+	      	pdf.generateFedexPdf(inp,function(err,tracking_url){
+				params.set({
+	        		success : true,
+	        		err : null,
+	        		tracking_url : tracking_url,
+	        		awb : inp.awb,
+	        		cod_awb : inp.cod_awb
+	        	});
+	        	return cb(result,params);
+			});
+	      });
+		});
+		}
+		else {
 		var data = {
 		  RequestedShipment: {
 		    ShipTimestamp: new Date(date.getTime() + (24*60*60*1000)).toISOString(),
@@ -257,6 +412,7 @@ module.exports = Template.extend('FedEx', {
 	    	});
 	      });
 		});
+		}
 	},
 
     track: function(params, cb) {

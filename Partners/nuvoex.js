@@ -39,7 +39,7 @@ var mumbai = {
 	to_name : "Dattaraj",
 	to_mobile_number : "8652175829",
 	to_address : "B 15, Arihant Industrial Estate, Off Saki Vihar Road, Saki Naka Mumbai",
-	to_pin_code : "400072"
+	to_pin_code : "222222"
 }
 
 
