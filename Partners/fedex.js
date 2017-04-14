@@ -289,7 +289,7 @@ module.exports = Template.extend('FedEx', {
 		      Address: {
 		        StreetLines: [
 		        	from_street_line_1,
-		        	inp.from_address
+		        	from_street_line_2
 		        ],
 		        City: inp.from_city,
 		        StateOrProvinceCode: inp.from_state,
@@ -305,7 +305,7 @@ module.exports = Template.extend('FedEx', {
 		      Address: {
 		        StreetLines: [
 		        	to_street_line_1,
-		        	inp.to_address
+		        	to_street_line_2
 		        ],
 		        City: inp.to_city,
 		        StateOrProvinceCode: inp.to_state,
@@ -371,12 +371,6 @@ module.exports = Template.extend('FedEx', {
 		      Weight: {
 		        Units: 'KG',
 		        Value: '.400'
-		      },
-		      Dimensions: {
-		        Length: 15,
-		        Width: 15,
-		        Height: 15,
-		        Units: 'CM'
 		      }
 		    }]
 		  } 
