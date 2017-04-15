@@ -180,9 +180,9 @@ module.exports = Template.extend('XpressBees', {
 	            if(body && body[0].ReturnMessage === 'Successful') {
 	                out_response.success = true;
 	                var details = [];
-	                var key = {};
 	                var obj = {};
 	                for (var i=0; i<body[0].ShipmentSummary.length; i++) {
+	                	var key = {};
 	                    obj = body[0].ShipmentSummary[i];
 	                    var date_string = obj.StatusDate.toString().split("-");
 	                    var date = new Date(date_string[2], Number(date_string[1]) - 1,Number(date_string[0]) + 1,-18,-30,0);
