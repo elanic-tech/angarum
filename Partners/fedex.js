@@ -40,7 +40,7 @@ function config(args) {
 function handleResponseError(params,result,cb) {
 	params.set({
 		success : false,
-		err : (result) ? result.Notifications[0].message : ''
+		err : (result) ? result.Notifications[0].Message : ''
 	})
 	return cb(result,params);
 }
@@ -513,6 +513,102 @@ module.exports = Template.extend('FedEx', {
         		details : result.Notifications[0].Message,
         	});
 	      	return cb(result,params);
+	      });
+		});
+    },
+    pickup: function(params, cb) {
+    	var date = new Date(params.date);
+    	date.setHours(0,0,0);
+    	date.setHours(10,0,0);
+		var data = {
+			OriginDetail: {
+	    		UseAccountAddress: false,
+	    		PickupLocation : {
+	    			Contact : {
+	    				PersonName : params.name,
+	    				CompanyName : '',
+	    				PhoneNumber : params.from_mobile_number
+	    			},
+	    			Address : {
+	    				StreetLines : params.from_address,
+	    				City : params.from_city,
+	    				StateOrProvinceCode : params.from_state,
+	    				PostalCode : params.from_pin_code,
+	    				CountryCode : 'IN',
+	    				Residential : params.residence
+	    			}
+	    		},
+	    		PackageLocation : 'FRONT',
+	    		ReadyTimestamp : date.toISOString(),
+	    		CompanyCloseTime : '19:00:00'
+	    	},
+	    	PackageCount : params.quantity,
+	    	CarrierCode : 'FDXE',
+			CountryRelationship : 'DOMESTIC'
+		}
+		soap.createClient(path.join(__dirname,  'wsdl', 'PickupService_v13.wsdl'), {endpoint: hosts[defaults.environment] + '/web-services'}, function(err, client) {
+	      if (err) {
+	        return cb(err, params);
+	      }
+	      var resource =  { version: {ServiceId: 'disp', Major: 13, Intermediate: 0, Minor: 0}};
+	      var pickup_object = generateAuthentication(data,resource);
+	      client.createPickup(pickup_object, function(err, result) {
+	      	var record;
+	        if(err || result.HighestSeverity !== 'SUCCESS') {
+	          	record = {
+        			success : false,
+        			err : (result) ? result.Notifications[0].Message : ''
+        		};
+	        }
+	        else {
+	        	var details = {
+	        		pickupConfirmationNumber : result.PickupConfirmationNumber,
+	        		scheduledDate : date,
+	        		location : result.Location
+	        	}
+	        	record = {
+	        		success : true,
+	        		err : null,
+	        		details : details
+	        	}
+        	}
+	      	return cb(result,record);
+	      });
+		});
+    },
+    pickup_cancel: function(params, cb) {
+    	var month = Number(params.scheduledDate.getMonth())+1 + "";
+    	if(month.length === 1) {
+    		month = "0" + month;
+    	}
+    	var date = params.scheduledDate.getFullYear() + "-" + month + "-" + params.scheduledDate.getDate();
+		var data = {
+			CarrierCode : 'FDXE',
+			PickupConfirmationNumber: params.pickupConfirmationNumber,
+			ScheduledDate : date,
+			Location : params.location
+		}
+		soap.createClient(path.join(__dirname,  'wsdl', 'PickupService_v13.wsdl'), {endpoint: hosts[defaults.environment] + '/web-services'}, function(err, client) {
+	      if (err) {
+	        return cb(err, params);
+	      }
+	      var resource =  { version: {ServiceId: 'disp', Major: 13, Intermediate: 0, Minor: 0}};
+	      var pickup_object = generateAuthentication(data,resource);
+	      client.cancelPickup(pickup_object, function(err, result) {
+	      	var record;
+	        if(err || result.HighestSeverity !== 'SUCCESS') {
+	          	record = {
+	    			success : false,
+	    			err : (result) ? result.Notifications[0].Message : ''
+	    		}
+	        }
+	        else {
+		        var record = {
+	        		success : true,
+	        		err : null
+	        	}
+        	}
+	      	return cb(result,record);
 	      });
 		});
     }
