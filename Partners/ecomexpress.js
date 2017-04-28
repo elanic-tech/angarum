@@ -100,7 +100,11 @@ module.exports = Template.extend('EcomExpress', {
     single_tracking_status: function(params, cb) {
 		track_awb(params.get().awb_number,params,function(err,result) {
 			if(err || _.isEmpty(result['ecomexpress-objects'].object)) {
-				return cb(result,err);
+					params.set({
+                    success: false,
+                    err : err
+                });
+				return cb(result,params);
 			}
 			var details = [];
 		  	var indexes = getIndex(result);
