@@ -40,7 +40,7 @@ function config(args) {
 function handleResponseError(params,result,cb) {
 	params.set({
 		success : false,
-		err : (result) ? result.Notifications[0].Message : ''
+		err : (result && result.Notifications) ? result.Notifications[0].Message : ''
 	})
 	return cb(result,params);
 }
