@@ -581,7 +581,11 @@ module.exports = Template.extend('FedEx', {
     	if(month.length === 1) {
     		month = "0" + month;
     	}
-    	var date = params.scheduledDate.getFullYear() + "-" + month + "-" + params.scheduledDate.getDate();
+    	var day = Number(params.scheduledDate.getDate()) + "";
+    	if(day.length === 1) {
+            day = "0" + day;
+        }
+        var date = params.scheduledDate.getFullYear() + "-" + month + "-" + day;
 		var data = {
 			CarrierCode : 'FDXE',
 			PickupConfirmationNumber: params.pickupConfirmationNumber,
