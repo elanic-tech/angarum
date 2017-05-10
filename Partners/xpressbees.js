@@ -157,11 +157,9 @@ module.exports = Template.extend('XpressBees', {
 
 	single_tracking_status: function(params, cb) {
 		var url,type;
-		// // var url = "http://xbclientapi.xpressbees.com/ElanicService.svc/GetShipmentStatus";
-		// var url = "http://114.143.206.69:803/ElanicService.svc/GetShipmentStatus";
 		if(params.get().order_type === 'delivery' || params.get().order_type === 'sbs') {
 			var options = {
-			  url: host + '/GetShipmentStatus',
+			  url: host + '/GetShipmentSummaryDetails',
 			  method: 'POST',
 			  json: true,
 			  body: {"AWBNo":params.get().awb_number,"XBkey": token},
@@ -177,19 +175,19 @@ module.exports = Template.extend('XpressBees', {
 			    return cb(response,params);
 			  }
 			  	var out_response = {};
-	            if(body && body.ShipmentStatusDetails[0] && body.ShipmentStatusDetails[0].ReturnMessage === 'Successful') {
+	            if(body && _.isArray(body) && body[0].ReturnMessage === 'Successful' && body[0].ShipmentSummary.length>0) {
 	                out_response.success = true;
 	                var details = [];
 	                var obj = {};
-	                for (var i=0; i<body.ShipmentStatusDetails.length; i++) {
+	                for (var i=0; i<body[0].ShipmentSummary.length; i++) {
 	                	var key = {};
-	                    obj = body.ShipmentStatusDetails[i];
+	                    obj = body[0].ShipmentSummary[i];
 	                    var date_string = obj.StatusDate.toString().split("-");
 	                    var date = new Date(date_string[2], Number(date_string[1]) - 1,Number(date_string[0]) + 1,-18,-30,0);
 	                    date.setHours(obj.StatusTime.substring(0,2),obj.StatusTime.substring(2),0);
 	                    key.time = date;
 	                    key.status = obj.StatusCode;
-	                    key.description = (obj.TransporterRemark) ? obj.TransporterRemark : '';
+	                    key.description = (obj.Comment) ? obj.Comment : '';
 	                    key.location = obj.Location;
 	                    details.push(key);
 	                }
@@ -197,7 +195,7 @@ module.exports = Template.extend('XpressBees', {
 	            }
 	            else {
 	            	out_response.success = false;
-	            	out_response.error = (body  && body.ShipmentStatusDetails[0]) ? body.ShipmentStatusDetails[0].ReturnMessage : '';
+	            	out_response.error = (body  && _.isArray(body) && body.length>0) ? body[0].ReturnMessage : '';
 	            }
 			  params.output(out_response)
 			  cb(response,params);
