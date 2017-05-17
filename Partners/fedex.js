@@ -439,9 +439,12 @@ module.exports = Template.extend('FedEx', {
 	        var details = [];
 	        var obj = {};
 	        var return_awb;
-	     //    if(result.CompletedTrackDetails[0].TrackDetails[0].OtherIdentifiers) {
-	     //    	return_awb = result.CompletedTrackDetails[0].TrackDetails[0].OtherIdentifiers[0].PackageIdentifier.Value;
-	    	// }
+	     	if(result.CompletedTrackDetails[0].TrackDetails[0].OtherIdentifiers && 
+	        	result.CompletedTrackDetails[0].TrackDetails[0].Events && 
+	        	result.CompletedTrackDetails[0].TrackDetails[0].Events.length > 0 &&
+	        	result.CompletedTrackDetails[0].TrackDetails[0].Events[0].EventType === 'RS') {
+	        	return_awb = result.CompletedTrackDetails[0].TrackDetails[0].OtherIdentifiers[0].PackageIdentifier.Value;
+	    	}
 	        async.parallel([
 	        	function track_return_awb(callback) {
 	        		if(return_awb) {
