@@ -287,6 +287,10 @@ module.exports = Template.extend('FedEx', {
 		    DropoffType: 'REGULAR_PICKUP',
 		    ServiceType: 'PRIORITY_OVERNIGHT',
 		    PackagingType: 'YOUR_PACKAGING',
+		    TotalWeight : [{
+		    	Units : 'KG',
+		    	Value : '.400'
+		    }],
 		    Shipper: {
 		      Contact: {
 		        PersonName: inp.from_name,
