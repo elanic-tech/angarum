@@ -29,6 +29,7 @@ var kolkata_cities = [
 ]
 
 var kolkata = {
+	vendor_name : "Binay Kumar Mondal",
 	to_name : "Binay Kumar Mondal",
 	to_mobile_number : "9831910854",
 	to_address : "NuvoEx, Utsav Bhavan , Amta Road Near Dasnagar Police Station Howrah",
@@ -36,12 +37,44 @@ var kolkata = {
 }
 
 var mumbai = {
+	vendor_name : "Dattaraj",
 	to_name : "Dattaraj",
 	to_mobile_number : "8652175829",
 	to_address : "B 15, Arihant Industrial Estate, Off Saki Vihar Road, Saki Naka Mumbai",
 	to_pin_code : "222222"
 }
 
+var hyderabad = {
+	vendor_name : "ELC-Handover to FEDEX",
+	to_name : "Mallikarjun Goud",
+	to_mobile_number : "7093503633",
+	to_address : "H.NO : 1-8-607/8/2, ACHAIAH NAGAR, NALLAKUNTA, HYDERABAD-500044",
+	to_pin_code : "500044"
+}
+
+var pune = {
+	vendor_name : "ELC-Handover to FEDEX",
+	to_name : "SATISH MANE",
+	to_mobile_number : "9665719669",
+	to_address : "Office no-1,1st Floor, Ratan villa Apt, In front of Hanuman Mandir, Ghorpadi- 411001",
+	to_pin_code : "411001"
+}
+
+var surat = {
+	vendor_name : "ELC-Handover to FEDEX",
+	to_name : "Mubarak rangrez",
+	to_mobile_number : "9724022515",
+	to_address : "Plot No:181 B, New industrial estate, Road no 6, Udhna, Surat 394210",
+	to_pin_code : "395002"
+}
+
+var ahmedabad = {
+	vendor_name : "ELC-Handover to FEDEX",
+	to_name : "Navneetbhai Makwana",
+	to_mobile_number : "9376824472",
+	to_address : "B-12, Ground Floor, Lilamani Trade Center, Nr. B.G.Tower Delhi Darvaja, Ahmedabad",
+	to_pin_code : "382481"
+}
 
 // Declare partner specific variables here.
 // Check out other partners for more information.
@@ -92,11 +125,27 @@ module.exports = Template.extend('NuvoEx', {
 			vendor_key = kolkata;
 			inp["vendor code"] = "ELC Fedex KOL"
 		}
-	    else if (city.indexOf("new delhi") >= 0)
+		else if(from_city === 'hyderabad') {
+			vendor_key = hyderabad;
+			inp["vendor code"] = "ELC-FEDEX HYD"
+		}
+		else if(from_city === 'ahmedabad') {
+			vendor_key = ahmedabad;
+			inp["vendor code"] = "ELC-FEDEX AHM"
+		}
+		else if(from_city === 'surat') {
+			vendor_key = ahmedabad;
+			inp["vendor code"] = "ELC-FEDEX AHM"
+		}
+		else if(from_city === 'pune') {
+			vendor_key = pune;
+			inp["vendor code"] = "ELC-FEDEX Pune"
+		}
+		else if (city.indexOf("new delhi") >= 0)
 		inp["vendor code"] = "ELC WH - DELHI"
 	    else
 		inp["vendor code"] = "ELC WH - BANGALORE"
-		inp["vendor name"] = vendor_key["to_name"];
+		inp["vendor name"] = vendor_key["vendor_name"];
 		inp["vendor owner name"] = vendor_key["to_name"];
 		inp["vendor pincode"] = vendor_key["to_pin_code"];
 		inp["vendor address"] = vendor_key["to_address"];
