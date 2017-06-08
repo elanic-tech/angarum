@@ -225,7 +225,7 @@ module.exports = Template.extend('FedEx', {
 		      ImageType: 'PDF',
 		      LabelStockType: 'PAPER_4X6'
 		    },
-		    PackageCount: inp.quantity+'',
+		    PackageCount: '1',
 		    RequestedPackageLineItems: [{
 		      SequenceNumber: 1,
 		      GroupPackageCount: 1,
@@ -378,7 +378,7 @@ module.exports = Template.extend('FedEx', {
 		      ImageType: 'PDF',
 		      LabelStockType: 'PAPER_4X6'
 		    },
-		    PackageCount: inp.quantity+'',
+		    PackageCount: '1',
 		    RequestedPackageLineItems: [{
 		      SequenceNumber: 1,
 		      GroupPackageCount: 1,
@@ -393,7 +393,7 @@ module.exports = Template.extend('FedEx', {
 		        Units: 'CM'
 		      }
 		    }]
-		  } 
+		  }
 		}
 		if(inp.isCod) {
 		  	data.PackageSpecialServiceType = 'COD';
