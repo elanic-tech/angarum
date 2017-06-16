@@ -126,7 +126,7 @@ module.exports = Template.extend('FedEx', {
 		  RequestedShipment: {
 		    ShipTimestamp: new Date(date.getTime() + (24*60*60*1000)).toISOString(),
 		    DropoffType: 'REGULAR_PICKUP',
-		    ServiceType: (inp.is_cod) ? 'STANDARD_OVERNIGHT' : 'PRIORITY_OVERNIGHT',
+		    ServiceType: 'STANDARD_OVERNIGHT',
 		    PackagingType: 'YOUR_PACKAGING',
 		    TotalWeight : [{
 		    	Units : 'KG',
@@ -289,7 +289,7 @@ module.exports = Template.extend('FedEx', {
 		  RequestedShipment: {
 		    ShipTimestamp: new Date(date.getTime() + (24*60*60*1000)).toISOString(),
 		    DropoffType: 'REGULAR_PICKUP',
-		    ServiceType: 'PRIORITY_OVERNIGHT',
+		    ServiceType: 'STANDARD_OVERNIGHT',
 		    PackagingType: 'YOUR_PACKAGING',
 		    TotalWeight : [{
 		    	Units : 'KG',
