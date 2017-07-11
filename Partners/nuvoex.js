@@ -44,14 +44,6 @@ var mumbai = {
 	to_pin_code : "222222"
 }
 
-var hyderabad = {
-	vendor_name : "ELC-Handover to FEDEX",
-	to_name : "Mallikarjun Goud",
-	to_mobile_number : "7093503633",
-	to_address : "H.NO : 1-8-607/8/2, ACHAIAH NAGAR, NALLAKUNTA, HYDERABAD-500044",
-	to_pin_code : "500044"
-}
-
 var pune = {
 	vendor_name : "ELC-Handover to FEDEX",
 	to_name : "SATISH MANE",
@@ -124,10 +116,6 @@ module.exports = Template.extend('NuvoEx', {
 		else if(_.includes(kolkata_cities,from_city)) {
 			vendor_key = kolkata;
 			inp["vendor code"] = "ELC Fedex KOL"
-		}
-		else if(from_city === 'hyderabad') {
-			vendor_key = hyderabad;
-			inp["vendor code"] = "ELC-FEDEX HYD"
 		}
 		else if(from_city === 'ahmedabad') {
 			vendor_key = ahmedabad;
