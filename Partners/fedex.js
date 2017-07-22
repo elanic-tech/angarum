@@ -130,7 +130,7 @@ module.exports = Template.extend('FedEx', {
 		    PackagingType: 'YOUR_PACKAGING',
 		    TotalWeight : [{
 		    	Units : 'KG',
-		    	Value : '.400'
+		    	Value : (inp.delivery_type && inp.delivery_type === 'surface') ? '2' : '.400'
 		    }],
 		    Shipper: {
 		      Contact: {
@@ -206,7 +206,7 @@ module.exports = Template.extend('FedEx', {
 		    		CountryOfManufacture : 'IN',
 		    		Weight : {
 		    			Units : 'KG',
-		    			Value : '.400'
+		    			Value : (inp.delivery_type && inp.delivery_type === 'surface') ? '2' : '.400'
 		    		},
 		    		Quantity : '1',
 		    		QuantityUnits : 'EA',
@@ -231,12 +231,12 @@ module.exports = Template.extend('FedEx', {
 		      GroupPackageCount: 1,
 		      Weight: {
 		        Units: 'KG',
-		        Value: '.400'
+		        Value: (inp.delivery_type && inp.delivery_type === 'surface') ? '2' : '.400'
 		      },
 		      Dimensions: {
-		        Length: 15,
-		        Width: 14,
-		        Height: 11,
+		        Length: (inp.delivery_type && inp.delivery_type === 'surface') ? 19 : 15,
+		        Width: (inp.delivery_type && inp.delivery_type === 'surface') ? 18 : 14,
+		        Height: (inp.delivery_type && inp.delivery_type === 'surface') ? 15 : 11,
 		        Units: 'CM'
 		      }
 		    }]
@@ -293,7 +293,7 @@ module.exports = Template.extend('FedEx', {
 		    PackagingType: 'YOUR_PACKAGING',
 		    TotalWeight : [{
 		    	Units : 'KG',
-		    	Value : '.400'
+		    	Value : (inp.delivery_type && inp.delivery_type === 'surface') ? '2' : '.400'
 		    }],
 		    Shipper: {
 		      Contact: {
@@ -359,7 +359,7 @@ module.exports = Template.extend('FedEx', {
 		    		CountryOfManufacture : 'IN',
 		    		Weight : {
 		    			Units : 'KG',
-		    			Value : '.400'
+		    			Value : (inp.delivery_type && inp.delivery_type === 'surface') ? '2' : '.400'
 		    		},
 		    		Quantity : '1',
 		    		QuantityUnits : 'EA',
@@ -384,12 +384,12 @@ module.exports = Template.extend('FedEx', {
 		      GroupPackageCount: 1,
 		      Weight: {
 		        Units: 'KG',
-		        Value: '.400'
+		        Value: (inp.delivery_type && inp.delivery_type === 'surface') ? '2' : '.400'
 		      },
 		      Dimensions: {
-		        Length: 15,
-		        Width: 14,
-		        Height: 11,
+		        Length: (inp.delivery_type && inp.delivery_type === 'surface') ? 19 : 15,
+		        Width: (inp.delivery_type && inp.delivery_type === 'surface') ? 18 : 14,
+		        Height: (inp.delivery_type && inp.delivery_type === 'surface') ? 15 : 11,
 		        Units: 'CM'
 		      }
 		    }]
