@@ -92,15 +92,15 @@ function parseFedexOrder(object,done) {
 	var date_part = today.split(" ");
 	data.partner = object.partner_name;
 	data.awb = object.awb.replace(/(.{4})/g,"$1 ");
-	data.cod_awb = object.cod_awb.replace(/(.{4})/g,"$1 ");
+	data.cod_awb = (object.is_cod) ? object.cod_awb.replace(/(.{4})/g,"$1 ") : '';
 	data.barcodeValue = object.barcodeValue;
-	data.codBarcodeValue = object.codBarcodeValue;
+	data.codBarcodeValue = (object.is_cod) ? object.codBarcodeValue : '';
 	data.payment_mode = (object.is_cod) ? "COD" : "PREPAID";
 	data.cod_payment_mode = (object.is_cod) ? "COD RETURN" : "";
 	data.declaration = object.declaration;
 	data.is_cod = object.is_cod;
 	data.formId = object.formId;
-	data.codFormId = object.codFormId;
+	data.codFormId = (object.is_cod) ? object.codFormId : '';
 	data.routing = object.routing_number;
 	data.date = date_part[1] + " " + date_part[2] + ", " + date_part[3];
 	data.service_type = (object.delivery_type && object.delivery_type === 'surface') ? 'FEDEX_EXPRESS_SAVER' : 'STANDARD OVERNIGHT';
