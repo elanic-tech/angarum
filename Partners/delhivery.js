@@ -183,8 +183,10 @@ module.exports = Template.extend('Delhivery', {
 	    if (out.ShipmentData && out.ShipmentData.constructor == Array && out.ShipmentData.length > 0) {
 		var details = out.ShipmentData[0].Shipment.Scans.map(function(scan) {
 		    scan = scan.ScanDetail;
+		    var time = new Date(scan.ScanDateTime);
+		    time.setTime(time.getTime() - 19800000);
 		    return {
-			"time": scan.ScanDateTime,
+			"time": time,
 			"status": (params.get().order_type === 'delivery') ? scan.ScanType + "-" + scan.Scan : scan.Scan,
 			"location": scan.ScannedLocation,
 			"description": scan.Instructions,
