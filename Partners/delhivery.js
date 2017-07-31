@@ -48,10 +48,10 @@ module.exports = Template.extend('Delhivery', {
 	    "order_time": "order_date",
 	    "invoice_number": "order",
 	    "declared_Value": "total_amount",
-	    "item_name": "product_desc",
+	    "item_name": "products_desc",
 	}, function(inp) {
 	     if(input.order_type === 'delivery' || input.order_type === 'sbs') {
-	    	var ship = _.extend(_.pick(inp, ["waybill", "to_name", "order", "product_desc", "order_date", "total_amount", "cod_amount", "to_add", "to_city", "to_state", "to_country", "to_phone", "to_pin", "weight", "quantity"]), return_details);
+	    	var ship = _.extend(_.pick(inp, ["waybill", "to_name", "order", "products_desc", "order_date", "total_amount", "cod_amount", "to_add", "to_city", "to_state", "to_country", "to_phone", "to_pin", "weight", "quantity"]), return_details);
 	    	var pickup = _.pick(inp, ["from_add", "from_city", "from_state", "from_country", "from_name", "from_phone", "from_pin"]);    
 		    console.log(ship);
 		    for (item in ship) {
@@ -68,7 +68,7 @@ module.exports = Template.extend('Delhivery', {
 		    }
 	    }
 	    else {
-	    	var ship = _.extend(_.pick(inp, ["waybill", "from_name", "order", "product_desc", "order_date", "total_amount", "cod_amount", "from_add", "from_city", "from_state", "from_country", "from_phone", "from_pin", "weight", "quantity"]), return_details);
+	    	var ship = _.extend(_.pick(inp, ["waybill", "from_name", "order", "products_desc", "order_date", "total_amount", "cod_amount", "from_add", "from_city", "from_state", "from_country", "from_phone", "from_pin", "weight", "quantity"]), return_details);
 		    var pickup = _.pick(inp, ["to_add", "to_city", "to_state", "to_country", "to_name", "to_phone", "to_pin"]);
 		    for (item in ship) {
 			if (item.indexOf("from_") == 0) {
