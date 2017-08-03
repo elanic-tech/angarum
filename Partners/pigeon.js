@@ -41,55 +41,32 @@ module.exports = Template.extend('pigeon', {
 	    inp["cod_amount"] = inp["cod_collection"];
 	    inp["declared_value"] |= 0;
 	    inp_details = _.extend({
-		shipment_details: [inp],
+		"shipment_details": [inp],
 	    }, defaults);
 	    return inp_details;
-	});
-
-	params.out_map({
-	    "error" : "err",
-	}, function(out) {
-	    var data = out.serviceable_data;
-	    if (data) {
-		if (!data[0].success)
-		    data[0].err = data[0].msg;
-		out = data[0];
-	    }
-	    else
-		out.success = false;
-	    return out;
 	});
 	
 	var inp_params = _.clone(params, true);
 	var partner_name = "";
-        repeat_func = function(ct) {
-	    ct = ct || 0;
-	    if (ct >= 5) {
-		params.set({
-		    err: "Not fetched after " + ct + " repeats",
-		    success: false,
-		});
-		return cb(null, params);
-	    }
-	    params = _.clone(inp_params, true);
-	    params.out_map({
-		"error" : "err",
-	    }, function(out) {
-		var data = out.orders_data;
-		if (data) {
-		    if (!data[0].success)
-			data[0].err = "Not placed";
-		    out = data[0];
-		    partner_name = out.awb_detail && out.awb_detail.partner;
-		}
-		else
-		    out.success = false;
-		return out;
-	    });
-		that.post_req("/ecom-api/place-order/", params, function(res, body) {
-		    var shipping_label = "";
-		    //body.add("success", true);
-		    if(body.get().success) {
+    params = _.clone(inp_params, true);
+    params.out_map({
+	"error" : "err",
+    }, function(out) {
+	var data = out.orders_data;
+	if (data) {
+	    if (!data[0].success)
+		data[0].err = "Not placed";
+	    out = data[0];
+	    partner_name = out.awb_detail && out.awb_detail.partner;
+	}
+	else
+	    out.success = false;
+	return out;
+    });
+	that.post_req("/ecom-api/v3/place-old-order/", params, function(res, body) {
+	    var shipping_label = "";
+	    //body.add("success", true);
+	    if(body.get().success) {
 			params = _.clone(inp_params, true);
 			params.out_map({
 			    "error" : "err",
@@ -104,50 +81,13 @@ module.exports = Template.extend('pigeon', {
 			    }
 			    else
 				out.success = false;
-			    return out;
+			    return cb(res,out);
 			});
-			that.post_req("/ecom-api/fetch-waybills/", params, function(res, body) {
-
-			    //body.add("success", true);
-			    if(body.get().success) {
-				params = _.clone(inp_params, true);
-				params.add("shipment_details", [body.get()]);
-				params.out_map({
-				    "error" : "err",
-				}, function(out) {
-				    var data = out.results;
-				    if (data) {
-					if (!data[0].success)
-					    data[0].err = "Not Acknowledged";
-					out = data[0];
-					out.tracking_url = shipping_label;
-					out.msg = partner_name;
-				    }
-				    else
-					out.success = false;
-				    return out;
-				});
-				that.post_req("/ecom-api/acknowledge-order/", params, function(res, body) {
-				    
-				    //body.add("success", true);
-				    if(body.get().success)
-					return cb(res, body);
-				    else
-					return cb(res, body);
-				});	
-			    }
-			    else {
-				return setTimeout(function() {
-				    return repeat_func(ct+1);
-				}, 500);
-			    }
-			});
-		    }
-		    else
-			return cb(res, body);
-		});
-	};
-	return repeat_func();
+		}
+		else {
+			return cb(res,body);
+		}
+	})
     },
 
     check_serviceable: function(params, cb) {
