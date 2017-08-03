@@ -49,20 +49,6 @@ module.exports = Template.extend('pigeon', {
 	var inp_params = _.clone(params, true);
 	var partner_name = "";
     params = _.clone(inp_params, true);
-    params.out_map({
-	"error" : "err",
-    }, function(out) {
-	var data = out.orders_data;
-	if (data) {
-	    if (!data[0].success)
-		data[0].err = "Not placed";
-	    out = data[0];
-	    partner_name = out.awb_detail && out.awb_detail.partner;
-	}
-	else
-	    out.success = false;
-	return out;
-    });
 	that.post_req("/ecom-api/v3/place-old-order/", params, function(res, body) {
 	    var shipping_label = "";
 	    //body.add("success", true);
