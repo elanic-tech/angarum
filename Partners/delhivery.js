@@ -245,6 +245,6 @@ module.exports = Template.extend('Delhivery', {
 	// });
 	
 	// return this.post_req(url, params, cb, {headers: {"Authorization": "Token " + defaults.token}});
-    },
+    }
 
 });

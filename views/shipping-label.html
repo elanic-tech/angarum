@@ -14,6 +14,7 @@
       .page {
         position: relative;
         width: 14cm;
+        box-sizing: border-box;
         margin: auto;
         display: block;
         page-break-after: auto;
@@ -22,6 +23,7 @@
         color: rgb(51,51,51);
         font-size: 13px;
         line-height: 18px;
+        height: 100%;
       }
 
       @media print, screen {
@@ -39,6 +41,9 @@
         .declare-text { font-size: 9px;  }
         .declare-div {padding : 5px;}
         .table {  }
+        .manifest {position: absolute; bottom:30;}
+        .innerTable {border-top: 1px dashed black; padding-top: 5px; padding-bottom: 10px; width: 100%;}
+        .signature-td { text-align: right; vertical-align: bottom; }
       }
       }
       </style>
@@ -99,6 +104,118 @@
           </td>
         </tr>
       </table>
+      <% if(order_type==="forward_p2p") { %>
+        <div class="manifest">
+          <table cellpadding="0" cellspacing="0" class="innerTable">
+            <tr class="pad">
+              <td colspan="4">
+                <div class="declare-div">
+                  <span class="declare-text-bold">Please sign and handover this copy to the Pickup Executive (If required)</span></div>
+                  <table border="solid black" cellpadding="0" cellspacing="0">
+                  <tr class="pad">
+                    <th><div class="declare-div">
+                      <span class="declare-text">S.No</span>
+                    </div></th>
+                    <th><div class="declare-div">
+                      <span class="declare-text">Date</span>
+                    </div></th>
+                    <th><div class="declare-div">
+                      <span class="declare-text">Order ID</span>
+                    </div></th>
+                    <th><div class="declare-div">
+                      <span class="declare-text">Product Description</span>
+                    </div></th>
+                    <th><div class="declare-div">
+                      <span class="declare-text">AWB</span>
+                    </div></th>
+                    <th><div class="declare-div">
+                      <span class="declare-text">Partner</span>
+                    </div></th>
+                  </tr>
+                  <tr class="pad">
+                    <td><div class="declare-div">
+                      <span class="declare-text">1</span>
+                    </div></td>
+                    <td><div class="declare-div">
+                      <span class="declare-text"><%= assign_date %></span>
+                    </div></td>
+                    <td><div class="declare-div">
+                      <span class="declare-text"><%= invoice_id %></span>
+                    </div></td>
+                    <td><div class="declare-div">
+                      <span class="declare-text"><%= product_desc %></span>
+                    </div></td>
+                    <td><div class="declare-div">
+                      <span class="declare-text"><%= awb %></span>
+                    </div></td>
+                    <td><div class="declare-div">
+                      <span class="declare-text"><%= partner %></span>
+                    </div></td>
+                  </tr>
+                </table>
+                <table></table>
+              </td>
+              <td colspan="1" class="signature-td">
+                <span class="declare-text">Customer's Signature</span>
+              </td>
+            </tr>
+          </table>
+          <table cellpadding="0" cellspacing="0" class="innerTable">
+            <tr class="pad">
+              <td colspan="4">
+                <div class="declare-div">
+                  <span class="declare-text-bold">Please take Pickup executive's signature on this and retain this as a proof of pickup ( If required).</span>
+                </div>
+                <table border="solid black" cellpadding="0" cellspacing="0">
+                  <tr class="pad">
+                    <th><div class="declare-div">
+                      <span class="declare-text">S.No</span>
+                    </div></th>
+                    <th><div class="declare-div">
+                      <span class="declare-text">Date</span>
+                    </div></th>
+                    <th><div class="declare-div">
+                      <span class="declare-text">Order ID</span>
+                    </div></th>
+                    <th><div class="declare-div">
+                      <span class="declare-text">Product Description</span>
+                    </div></th>
+                    <th><div class="declare-div">
+                      <span class="declare-text">AWB</span>
+                    </div></th>
+                    <th><div class="declare-div">
+                      <span class="declare-text">Partner</span>
+                    </div></th>
+                  </tr>
+                  <tr class="pad">
+                    <td><div class="declare-div">
+                      <span class="declare-text">1</span>
+                    </div></td>
+                    <td><div class="declare-div">
+                      <span class="declare-text"><%= invoice_date %></span>
+                    </div></td>
+                    <td><div class="declare-div">
+                      <span class="declare-text"><%= invoice_id %></span>
+                    </div></td>
+                    <td><div class="declare-div">
+                      <span class="declare-text"><%= product_desc %></span>
+                    </div></td>
+                    <td><div class="declare-div">
+                      <span class="declare-text"><%= awb %></span>
+                    </div></td>
+                    <td><div class="declare-div">
+                      <span class="declare-text"><%= partner %></span>
+                    </div></td>
+                  </tr>
+                </table>
+              </td>
+              <td colspan="1" class="signature-td">
+                <span class="declare-text">Pickup Executive's Signature</span>
+              </td>
+            </tr>
+          </table>
+        </div>
+      <% } %>
       </div>
   </body>
   <script>
