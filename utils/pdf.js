@@ -62,6 +62,7 @@ function parseOrder(object,done) {
 	// @TODO: support multiple orders for pickup
 	data.routing_code = object.order_ids[0];
 	data.product_desc = object.item_name;
+	data.product_desc_label = object.item_name.trim().length >= 22 ? object.item_name.slice(22)+"..." : object.item_name;
 	data.cod_amount = object.cod_amount;
 	data.payment_mode = (object.is_cod) ? "cod" : "prepaid";
 	data.declaration = object.declaration;
