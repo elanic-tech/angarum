@@ -105,7 +105,7 @@ function parseFedexOrder(object,done) {
 	data.date = date_part[1] + " " + date_part[2] + ", " + date_part[3];
 	data.service_type = (object.delivery_type && object.delivery_type === 'surface') ? 'FEDEX_EXPRESS_SAVER' : 'STANDARD OVERNIGHT';
 	data.cod_service_type = (object.is_cod) ? object.cod_service_type.split("_").join(" ") : '';
-	data.weight = (object.delivery_type && object.delivery_type === 'surface') ? "2" : "0.4KG";
+	data.weight = (object.delivery_type && object.delivery_type === 'surface') ? "8" : "0.4KG";
 	data.carrier = object.carrier;
 	data.meter = object.meter_number;
 	data.invoice_id = object.orders[0];
