@@ -3,6 +3,7 @@
       <meta charset="utf8">
       <title>Shipping Label</title>
       <script type="text/javascript" src="https://cdn.jsdelivr.net/jsbarcode/3.5.8/JsBarcode.all.min.js"></script>
+
     <style>
       html, body {
         margin: 0;
@@ -14,6 +15,7 @@
       .page {
         position: relative;
         width: 14cm;
+        box-sizing: border-box;
         margin: auto;
         display: block;
         page-break-after: auto;
@@ -22,6 +24,7 @@
         color: rgb(51,51,51);
         font-size: 13px;
         line-height: 18px;
+        height: 100%;
       }
 
       @media print, screen {
@@ -36,9 +39,17 @@
         .canvas { width: 200px; }
         .bold { font-weight: bold; font-size: 8px; padding: 6px; font-family: 'Helvetica Neue', Arial, Sans serif;}
         .declare-text-bold { font-weight: bold; font-size: 9px; font-family: 'Helvetica Neue', Arial, Sans serif; }
+        .declare-text-bold-underline { font-weight: bold; font-size: 9px; font-family: 'Helvetica Neue', Arial, Sans serif; text-decoration: underline; }
         .declare-text { font-size: 9px;  }
+        .declare-heading { font-size: 7px; line-height: 7px; padding-bottom: 20px; }
+        .declare-text-signature { font-size: 8px; text-align: right; padding-bottom: 0px; padding-top: 0px}
         .declare-div {padding : 5px;}
         .table {  }
+        .manifest {position: absolute; bottom:0; width: 100%}
+        .declare-manifest { font-size: 7px; }
+        .break-line { float: left; width: 100%; padding-bottom: 10px;}
+        .scissor {width: 4.5%; float: left; height: 100%; }
+        .break-line hr {width: 95%; height: 100%; float: left;}
       }
       }
       </style>
@@ -47,8 +58,8 @@
     <div class="page">
       <table class="table" border="1 solid black" cellpadding="0" cellspacing="0">
         <tr class="pad">
-          <td colspan="4"><div class="title" align="center"><%= partner %></div></td>
-          <td colspan="2"><div class="title" align="center">Elanic</div></td>
+          <td colspan="3"><div class="title" align="center"><%= partner %></div></td>
+          <td colspan="3" align="center"><img src="http://elanic.in/images/logo.png" width="100px" height="32px"></td>
         </tr>
         <tr class="pad">
           <td style="width: 34%" colspan="2"><div><canvas class="canvas" align="center" id="barcode"></canvas><p align="center"> <%= awb %> </p></div></td>
@@ -99,6 +110,111 @@
           </td>
         </tr>
       </table>
+      <% if(order_type==="forward_p2p") { %>
+        <img src="https://s3.ap-south-1.amazonaws.com/staticgfx/footer_b_w.png" width="100%">
+        <div class="manifest">
+          <div class="break-line">
+            <span class="scissor">&#x2702;</span><hr style="border: dashed 1px;"/>
+          </div>
+          <div class="declare-heading">
+            <span class="declare-text-bold-underline">Customer Copy</span>
+            <span class="declare-text">[ Please take Pickup executive's signature on this and retain this as a proof of pickup ( If required). ]</span>
+          </div>
+          <table border="solid black" cellpadding="0" cellspacing="0">
+            <tr class="pad">
+              <th><div class="declare-div">
+                <span class="declare-text">S.No</span>
+              </div></th>
+              <th><div class="declare-div">
+                <span class="declare-text">Date</span>
+              </div></th>
+              <th><div class="declare-div">
+                <span class="declare-text">Order ID</span>
+              </div></th>
+              <th><div class="declare-div">
+                <span class="declare-text">Product Description</span>
+              </div></th>
+              <th><div class="declare-div">
+                <span class="declare-text">AWB</span>
+              </div></th>
+              <th><div class="declare-div">
+                <span class="declare-text">Partner</span>
+              </div></th>
+            </tr>
+            <tr class="pad">
+              <td><div class="declare-div">
+                <span class="declare-text">1</span>
+              </div></td>
+              <td><div class="declare-div">
+                <span class="declare-text"><%= invoice_date %></span>
+              </div></td>
+              <td><div class="declare-div">
+                <span class="declare-text"><%= invoice_id %></span>
+              </div></td>
+              <td><div class="declare-div">
+                <span class="declare-text"><%= product_desc_label %></span>
+              </div></td>
+              <td><div class="declare-div">
+                <span class="declare-text"><%= awb %></span>
+              </div></td>
+              <td><div class="declare-div">
+                <span class="declare-text"><%= partner %></span>
+              </div></td>
+            </tr>
+          </table>
+          <div class="declare-text-signature" align="right">Pickup Executive's Signature</div>
+          <div class="break-line">
+            <span class="scissor">&#x2702;</span><hr style="border: dashed 1px;"/>
+          </div>
+          <div class="declare-heading">
+            <span class="declare-text-bold-underline">Pickup Executive Copy</span>
+            <span class="declare-text">[ Please sign and handover this copy to the Pickup Executive (If required) ]</span>
+          </div>
+          <table border="solid black" cellpadding="0" cellspacing="0">
+            <tr class="pad">
+              <th><div class="declare-div">
+                <span class="declare-text">S.No</span>
+              </div></th>
+              <th><div class="declare-div">
+                <span class="declare-text">Date</span>
+              </div></th>
+              <th><div class="declare-div">
+                <span class="declare-text">Order ID</span>
+              </div></th>
+              <th><div class="declare-div">
+                <span class="declare-text">Product Description</span>
+              </div></th>
+              <th><div class="declare-div">
+                <span class="declare-text">AWB</span>
+              </div></th>
+              <th><div class="declare-div">
+                <span class="declare-text">Partner</span>
+              </div></th>
+            </tr>
+            <tr class="pad">
+              <td><div class="declare-div">
+                <span class="declare-text">1</span>
+              </div></td>
+              <td><div class="declare-div">
+                <span class="declare-text"><%= invoice_date %></span>
+              </div></td>
+              <td><div class="declare-div">
+                <span class="declare-text"><%= invoice_id %></span>
+              </div></td>
+              <td><div class="declare-div">
+                <span class="declare-text"><%= product_desc_label %></span>
+              </div></td>
+              <td><div class="declare-div">
+                <span class="declare-text"><%= awb %></span>
+              </div></td>
+              <td><div class="declare-div">
+                <span class="declare-text"><%= partner %></span>
+              </div></td>
+            </tr>
+          </table>
+          <div class="declare-text-signature">Customer's Signature</div>
+        </div>
+      <% } %>
       </div>
   </body>
   <script>

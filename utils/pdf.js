@@ -39,11 +39,15 @@ const pdf_options = {
 	});
 }
 
-function GetFormattedDate() {
-	var todayTime = new Date();
-	var month = todayTime.getMonth() + 1;
-	var day = todayTime.getDate() + 1;
-	var year = todayTime.getFullYear();
+function GetFormattedDate(date) {
+	var time;
+	if(!date)
+		time = new Date();
+	else
+		time = new Date(date);
+	var month = time.getMonth() + 1;
+	var day = time.getDate() + 1;
+	var year = time.getFullYear();
 	day = (day.toString().length === 1) ? "0" + day+"" : day;
 	month = (month.toString().length === 1) ? "0" + month+"" : month;
 	return month + "/" + day + "/" + year;
@@ -55,11 +59,15 @@ function parseOrder(object,done) {
 	data.partner = object.partner_name;
 	data.awb = object.reference_number;
 	data.invoice_id = object.orders[0];
+	// @TODO: support multiple orders for pickup
 	data.routing_code = object.order_ids[0];
 	data.product_desc = object.item_name;
+	data.product_desc_label = object.item_name.trim().length >= 22 ? object.item_name.slice(22)+"..." : object.item_name;
 	data.cod_amount = object.cod_amount;
 	data.payment_mode = (object.is_cod) ? "cod" : "prepaid";
 	data.declaration = object.declaration;
+	data.invoice_date = GetFormattedDate(object.invoice_date);
+	data.order_type = object.order_type;
 	data.destination_code = (object.destination_code) ? object.destination_code : undefined;
 	data.fromAddress = {
 		name : object.from_name,
@@ -109,6 +117,8 @@ function parseFedexOrder(object,done) {
 	data.carrier = object.carrier;
 	data.meter = object.meter_number;
 	data.invoice_id = object.orders[0];
+	data.invoice_date = GetFormattedDate(object.invoice_date);
+	data.order_type = object.order_type;
 	data.routing_code = object.order_ids[0];
 	data.product_desc = object.item_name;
 	data.cod_amount = object.cod_amount;
