@@ -117,6 +117,8 @@ module.exports = Template.extend('FedEx', {
     order: function(params, cb) {
 		var inp = params.get();
 		var date = new Date();
+		inp.from_address = inp.from_address.replace(/\s\s+/g, ' ');
+		inp.to_address = inp.to_address.replace(/\s\s+/g, ' ');
 		var from_street_line_1 = inp.from_address.substring(0,35);
 		var from_street_line_2 = inp.from_address.substring(35);
 		var to_street_line_1 = inp.to_address.substring(0,35);
@@ -250,6 +252,7 @@ module.exports = Template.extend('FedEx', {
 	      }
 	      var resource =  { version: {ServiceId: 'ship', Major: 19, Intermediate: 0, Minor: 0}};
 	      var ship_object = generateAuthentication(data,resource);
+	      console.log('sending fedex request ',JSON.stringify(ship_object));
 	      client.processShipment(ship_object, function(err, result) {
 	        if(err || result.HighestSeverity === 'ERROR') {
 	          	return handleResponseError(params,result, cb);
