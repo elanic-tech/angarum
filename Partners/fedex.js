@@ -117,9 +117,10 @@ module.exports = Template.extend('FedEx', {
     order: function(params, cb) {
 		var inp = params.get();
 		var date = new Date();
-		if(inp.is_p2p && inp.is_p2p === true) {
-			inp.from_mobile_number = '';
-		}
+        var from_mobile_number = inp.from_mobile_number;
+        if(inp.order_type === 'forward_p2p') {
+            inp.from_mobile_number = '';
+        }
 		inp.from_address = inp.from_address.replace(/\s\s+/g, ' ');
 		inp.to_address = inp.to_address.replace(/\s\s+/g, ' ');
 		var from_street_line_1 = inp.from_address.substring(0,35);
@@ -139,7 +140,7 @@ module.exports = Template.extend('FedEx', {
 		    Shipper: {
 		      Contact: {
 		        PersonName: inp.from_name,
-		        PhoneNumber: inp.from_mobile_number
+		        PhoneNumber: from_mobile_number
 		      },
 		      Address: {
 		        StreetLines: [
@@ -399,7 +400,7 @@ module.exports = Template.extend('FedEx', {
 	    			Contact : {
 	    				PersonName : params.name,
 	    				CompanyName : '',
-	    				PhoneNumber : (params.is_p2p && params.is_p2p === true) ? '' : params.from_mobile_number
+	    				PhoneNumber : params.from_mobile_number
 	    			},
 	    			Address : {
 	    				StreetLines : params.from_address,
