@@ -419,6 +419,7 @@ module.exports = Template.extend('FedEx', {
 	    	},
 	    	PackageCount : params.quantity,
 	    	CarrierCode : 'FDXE',
+			Remarks: params.orders && params.orders[0],
 			CountryRelationship : 'DOMESTIC'
 		}
 		soap.createClient(path.join(__dirname,  'wsdl', 'PickupService_v13.wsdl'), {endpoint: hosts[defaults.environment] + '/web-services'}, function(err, client) {
