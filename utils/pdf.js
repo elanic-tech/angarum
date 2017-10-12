@@ -18,7 +18,7 @@ var renderFedexBarcodeHtml = fs.readFileSync(__dirname + '/../views/fedex-shippi
 var renderFedexLabelTemplate = ejs.compile(renderFedexBarcodeHtml, ejs_options);
 
 const pdf_options = {
-  "format": "A4", 
+  "format": "A4",
   "orientation": "portrait"
 };
 //
@@ -133,7 +133,7 @@ function parseFedexOrder(object,done) {
 		city : object.from_city,
 		state : object.from_state,
 		pin : object.from_pin_code,
-		number : object.from_mobile_number,
+		number : _.get(object, "order_type", "") === "forward_p2p" ? "CONFIDENTIAL" : object.from_mobile_number,
 		email : 'None'
 	}
 	data.toAddress = {
@@ -142,7 +142,7 @@ function parseFedexOrder(object,done) {
 		city : object.to_city,
 		state : object.to_state,
 		pin : object.to_pin_code,
-		number : object.to_mobile_number,
+		number : _.get(object, "order_type", "") === "forward_p2p" ? "CONFIDENTIAL" : object.to_mobile_number,
 		email : 'None'
 	}
 	const result = renderFedexLabelTemplate(data);
