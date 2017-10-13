@@ -13,6 +13,7 @@ var partners = {
     'xpressbees': require('./Partners/xpressbees.js'),
     'fedex': require('./Partners/fedex.js'),
     'ecomexpress': require('./Partners/ecomexpress.js'),
+    'rapid': require('./Partners/rapid.js')
 };
 
 //helper methods
