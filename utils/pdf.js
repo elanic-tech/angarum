@@ -1,3 +1,4 @@
+const _ = require('lodash');
 var fs = require('fs');
 var pdf = require('html-pdf');
 var ejs = require('ejs');
