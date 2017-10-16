@@ -49,8 +49,29 @@ module.exports = Template.extend('Rapid', {
     postReq.send(`${key}=${req[key]}`);
   }
   
-  postReq.send((response) => {
-    console.log(response)
+  postReq.end((response) => {
+    const body = _.get(response, "body");
+    if (_.isEmpty(body)) {
+      params.set({
+        success: false,
+        err: "Rapid Unknown Error"
+      });
+    }
+    // RAPID IS FUCKED UP - THEY DON'T SEND PROPER ERROR/SUCCESS RESPONSE CODES.
+    // HENCE USING LENGTH of body as the success as a hack
+    if (body.length === 12 && _.toNumber(body)) {
+      params.set({
+        success: true,
+        tracking_url: this.get_tracking_url(body);,
+        awb: body 
+      });
+    } else {
+      params.set({
+        success: false,
+        err: body
+      });
+    }
+    return cb(response, params);
   });
   
   
