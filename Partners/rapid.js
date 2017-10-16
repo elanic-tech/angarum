@@ -16,40 +16,57 @@ module.exports = Template.extend('Rapid', {
     },
 
     order: function(params, cb) {
-	var url = "/api/createpackage";
+	var url = `${host}/api/createpackage`;
 	// Check out Order schema file for more information.
-	params.map([], {
-	}, function(inp) {
-    const req = {
-      client,
-      token,
-      oid: inp.invoice_number,
-      consignee: inp.to_name,
-      add1: inp.to_address,
-      add2: "",
-      pin: inp.to_pin_code,
-      city: inp.to_city,
-      state: inp.to_state,
-      country: inp.to_country,
-      phone: inp.to_mobile_number,
-      weight: 0.4,
-      mode: "reverse",
-      ret_add: inp.from_address,
-      ship_pin: inp.from_pin_code,
-      ship_phone: inp.from_mobile_number,
-      ship_company: 'Elanic'
-    }
-	    return req;
-	});
-
-	params.out_map({
-	}, function(out) {
-	   console.log(out);
-	   return out;
-	});
-
-	return this.post_req(url, params, cb);
-    },
+	
+  const inp = params.get();
+  
+  const req = {
+    client,
+    token,
+    oid: inp.invoice_number,
+    consignee: inp.to_name,
+    add1: inp.to_address,
+    add2: "",
+    pin: inp.to_pin_code,
+    city: inp.to_city,
+    state: inp.to_state,
+    country: inp.to_country,
+    phone: inp.to_mobile_number,
+    weight: 0.4,
+    mode: "reverse",
+    ret_add: inp.from_address,
+    ship_pin: inp.from_pin_code,
+    ship_phone: inp.from_mobile_number,
+    ship_company: 'Elanic'
+  }
+  
+  const postReq = unirest.post(url);
+  postReq.header('Content-Type', 'application/x-www-form-urlencoded'),
+  
+  for (let key in req) postReq.send(`${key}=${req[key]}`);
+  
+  postReq.send((response) => {
+    console.log(response)
+  });
+  
+  
+	// params.map([], {
+	// }, function(inp) {
+  //   
+  //   
+  //   
+	//     // return req;
+	// });
+  // 
+	// params.out_map({
+	// }, function(out) {
+	//    console.log(out);
+	//    return out;
+	// });
+  // 
+	// // return this.post_req(url, params, cb);
+  },
 
     track: function(params, cb) {
 	params.set({
