@@ -1,6 +1,7 @@
 var Template = require('./template.js');
 var querystring = require('querystring');
 var _ = require("lodash");
+const unirest = require('unirest');
 
 var host = process.env['RAPID_HOST'];
 const client = process.env['RAPID_CLIENT'];
