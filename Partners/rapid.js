@@ -14,9 +14,9 @@ module.exports = Template.extend('Rapid', {
     init: function() {
 	this._super(host);
     },
-    
+
     order: function(params, cb) {
-	var url = "api/createpackage";
+	var url = "/api/createpackage";
 	// Check out Order schema file for more information.
 	params.map([], {
 	}, function(inp) {
@@ -47,7 +47,7 @@ module.exports = Template.extend('Rapid', {
 	   console.log(out);
 	   return out;
 	});
-	
+
 	return this.post_req(url, params, cb);
     },
 
@@ -77,7 +77,7 @@ module.exports = Template.extend('Rapid', {
 	    out.success = !Boolean(out.err);
 	    return out;
 	});
-	
+
 	return this.post_req(url, params, cb);
     },
 
