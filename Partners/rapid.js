@@ -62,7 +62,7 @@ module.exports = Template.extend('Rapid', {
     if (body.length === 12 && _.toNumber(body)) {
       params.set({
         success: true,
-        tracking_url: this.get_tracking_url(body);,
+        tracking_url: this.get_tracking_url(body),
         awb: body 
       });
     } else {
