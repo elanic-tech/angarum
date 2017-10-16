@@ -42,9 +42,11 @@ module.exports = Template.extend('Rapid', {
   }
   
   const postReq = unirest.post(url);
-  postReq.header('Content-Type', 'application/x-www-form-urlencoded'),
+  postReq.header('Content-Type', 'application/x-www-form-urlencoded');
   
-  for (let key in req) postReq.send(`${key}=${req[key]}`);
+  for (let key in req) {
+    postReq.send(`${key}=${req[key]}`);
+  }
   
   postReq.send((response) => {
     console.log(response)
