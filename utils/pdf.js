@@ -76,7 +76,7 @@ function parseOrder(object,done) {
 		city : object.from_city,
 		state : object.from_state,
 		pin : object.from_pin_code,
-		number :_.get(object, "order_type", "") === "forward_p2p" ? "CONFIDENTIAL" : object.from_mobile_number,
+		number : "CONFIDENTIAL",
 		email : 'None'
 	}
 	data.toAddress = {
@@ -85,7 +85,7 @@ function parseOrder(object,done) {
 		city : object.to_city,
 		state : object.to_state,
 		pin : object.to_pin_code,
-		number : _.get(object, "order_type", "") === "forward_p2p" ? "CONFIDENTIAL" : object.to_mobile_number,
+		number : "CONFIDENTIAL",
 		email : 'None'
 	}
 	const result = renderLabelTemplate(data);
@@ -134,7 +134,7 @@ function parseFedexOrder(object,done) {
 		city : object.from_city,
 		state : object.from_state,
 		pin : object.from_pin_code,
-		number : _.get(object, "order_type", "") === "forward_p2p" ? "CONFIDENTIAL" : object.from_mobile_number,
+		number : "CONFIDENTIAL",
 		email : 'None'
 	}
 	data.toAddress = {
@@ -143,7 +143,7 @@ function parseFedexOrder(object,done) {
 		city : object.to_city,
 		state : object.to_state,
 		pin : object.to_pin_code,
-		number : _.get(object, "order_type", "") === "forward_p2p" ? "CONFIDENTIAL" : object.to_mobile_number,
+		number : "CONFIDENTIAL",
 		email : 'None'
 	}
 	const result = renderFedexLabelTemplate(data);
