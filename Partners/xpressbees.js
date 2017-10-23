@@ -19,8 +19,8 @@ module.exports = Template.extend('XpressBees', {
 	order: function(params, cb) {
 		var self = this;
 		var inp = params.get();
-		var url = (inp.order_type === 'delivery' || inp.order_type === 'sbs') ? "AddManifestDetails" : "PushReverseManifestDetails" ;
-		if(inp.order_type === 'delivery' || inp.order_type === 'sbs') {
+		var url = (inp.order_type === 'delivery' || inp.order_type === 'sbs' || inp.order_type==='forward_p2p') ? "AddManifestDetails" : "PushReverseManifestDetails" ;
+		if(inp.order_type === 'delivery' || inp.order_type === 'sbs' || inp.order_type==='forward_p2p') {
 			var date = new Date();
 			var req = {
 				XBkey: token,
@@ -122,7 +122,7 @@ module.exports = Template.extend('XpressBees', {
 			    cb(response,params);
 			}
 			else {
-				if(params.get().order_type === 'delivery' || params.get().order_type === 'sbs') {
+				if(params.get().order_type === 'delivery' || params.get().order_type === 'sbs' || params.get().order_type === 'forward_p2p') {
 					pdf.generatePdf(params.get(),function(err,tracking_url){
 						params.output(body);
 						var obj = params.get();
