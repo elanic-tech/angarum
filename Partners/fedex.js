@@ -94,15 +94,15 @@ function track_awb(awb,cb) {
 
 function upload_label_to_s3(shipping_object,done) {
 	var putter = new Putter(options);
-	 
-	// put arguments: base64 string, object key, mime type, permissions 
+
+	// put arguments: base64 string, object key, mime type, permissions
 	var templateUrl = process.env['AWS_S3_LABEL_URL_PATH'] + process.env['AWS_S3_LOGISTIC_BUCKET_NAME'] + '/' + shipping_object.partner +'/'+ shipping_object.awb + '-shipping-label.pdf';
 	putter.put(shipping_object.Image, shipping_object.partner +'/'+ shipping_object.awb + '-shipping-label.pdf', 'application/pdf', 'public-read');
-	 
+
 	putter.on('response', function (data) {
 	    done(null,templateUrl);
 	});
-	 
+
 	putter.on('error', function (err) {
 	    console.error(err);
 	    done(err);
@@ -247,7 +247,7 @@ module.exports = Template.extend('FedEx', {
 		        Units: 'CM'
 		      }
 		    }]
-		  } 
+		  }
 		}
 		if(!inp.is_cod) {
 		  	delete data.RequestedShipment.SpecialServicesRequested;
@@ -305,14 +305,16 @@ module.exports = Template.extend('FedEx', {
     },
     single_tracking_status: function(params, cb) {
 		track_awb(params.get().awb_number,function(err,result) {
+			console.log("FEDEX_TRACKING", JSON.stringify(result));
+			
 			if(err || result.HighestSeverity === 'ERROR') {
 	        	return handleResponseError(params,result, cb);
 	        }
 	        var details = [];
 	        var obj = {};
 	        var return_awb;
-	     	if(result.CompletedTrackDetails[0].TrackDetails[0].OtherIdentifiers && 
-	        	result.CompletedTrackDetails[0].TrackDetails[0].Events && 
+	     	if(result.CompletedTrackDetails[0].TrackDetails[0].OtherIdentifiers &&
+	        	result.CompletedTrackDetails[0].TrackDetails[0].Events &&
 	        	result.CompletedTrackDetails[0].TrackDetails[0].Events.length > 0 &&
 	        	result.CompletedTrackDetails[0].TrackDetails[0].Events[0].EventType === 'RS') {
 	        	return_awb = result.CompletedTrackDetails[0].TrackDetails[0].OtherIdentifiers[0].PackageIdentifier.Value;
@@ -358,7 +360,8 @@ module.exports = Template.extend('FedEx', {
 	        		success : true,
 	        		err : null,
 	        		details : details,
-	        		awb : params.get().awb_number
+	        		awb : params.get().awb_number,
+							estimated_dates: _.get(result, ["CompletedTrackDetails", "0", "TrackDetails", "0", "DatesOrTimes"], {})
 	        	});
 	        	return cb(result,params);
 	        });
@@ -370,7 +373,7 @@ module.exports = Template.extend('FedEx', {
 	    		TrackingIdType: 'EXPRESS',
 	        	TrackingNumber: params.get().awb
 	    	},
-	    	DeletionControl: 'DELETE_ONE_PACKAGE' 
+	    	DeletionControl: 'DELETE_ONE_PACKAGE'
 		}
 		soap.createClient(path.join(__dirname,  'wsdl', 'ShipService_v19.wsdl'), {endpoint: hosts[defaults.environment] + '/web-services'}, function(err, client) {
 	      if (err) {
