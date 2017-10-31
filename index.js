@@ -2,6 +2,8 @@ module.exports.Order = require('./Schemas/order_schema.js');
 module.exports.Track = require('./Schemas/track_schema.js');
 module.exports.Cancel = require('./Schemas/cancel_schema.js');
 module.exports.TrackingStatus = require('./Schemas/tracking_status_schema.js');
+module.exports.pdf = require('./utils/pdf');
+
 
 var partners = {
     'pickrr': require('./Partners/pickrr.js'),
