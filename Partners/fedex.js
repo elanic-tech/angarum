@@ -279,15 +279,17 @@ module.exports = Template.extend('FedEx', {
 	       		inp.codFormId = result.CompletedShipmentDetail.AssociatedShipments[0].TrackingId.FormId;
 	       		inp.cod_service_type = result.CompletedShipmentDetail.AssociatedShipments[0].ServiceType;
 	       	}
+
 	      	pdf.generateFedexPdf(inp,function(err,tracking_url){
-				params.set({
-	        		success : true,
-	        		err : null,
-	        		tracking_url : tracking_url,
-	        		awb : inp.awb,
-	        		cod_awb : inp.cod_awb
-	        	});
-	        	return cb(result,params);
+					params.set({
+        		success : true,
+        		err : null,
+        		tracking_url : tracking_url,
+        		awb : inp.awb,
+        		cod_awb : inp.cod_awb,
+						partner_response: inp
+	        });
+	        return cb(result,params);
 			});
 	      });
 	  });
@@ -306,7 +308,7 @@ module.exports = Template.extend('FedEx', {
     single_tracking_status: function(params, cb) {
 		track_awb(params.get().awb_number,function(err,result) {
 			console.log("FEDEX_TRACKING", JSON.stringify(result));
-			
+
 			if(err || result.HighestSeverity === 'ERROR') {
 	        	return handleResponseError(params,result, cb);
 	        }
