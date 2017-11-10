@@ -1,6 +1,6 @@
 {
   "name": "angarum",
-  "version": "1.3.4",
+  "version": "1.3.5",
   "description": "A library which helps you focus on your delivery.",
   "main": "index.js",
   "scripts": {
