@@ -81,7 +81,7 @@ module.exports = Template.extend('Shadowfax', {
 		    "Authorization": "Token token=" + token,
 		    "Content-type": "application/json"
 		};
-    console.log("SHADOWFAX", url, JSON.stringify(inp), JSON.stringify(params), JSON.stringify(headers), JSON.stringify(out));
+    //console.log("SHADOWFAX", url, JSON.stringify(inp), JSON.stringify(params), JSON.stringify(headers), JSON.stringify(out));
 		return this.post_req(url, params, cb, { headers: headers });
     },
 
