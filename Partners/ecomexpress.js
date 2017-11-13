@@ -83,7 +83,6 @@ module.exports = Template.extend('EcomExpress', {
 				  });
           return cb(response, params);
         }
-			}
 		});
     },
 
