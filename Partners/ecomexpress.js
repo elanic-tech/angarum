@@ -60,28 +60,29 @@ module.exports = Template.extend('EcomExpress', {
 			.send('password='+password+'')
 			.send('json_input='+JSON.stringify(json_input)+'')
 			.end(function (response) {
-			  if(_.isEmpty(response.body) || _.isUndefined(response.body.shipments)) {
+        if(_.isEmpty(response.body) || _.isUndefined(response.body.shipments)) {
 			  	params.set({
-					success: false,
-					err : 'EcomExpress Unknown error'
-				});
-			  }
-			  else if(response.body.shipments[0].success === false) {
-			  	params.set({
-					success: false,
-					err : response.body.shipments[0].reason
-				});
-			  }
-			  else {
-			  	pdf.generatePdf(inp,function(err,tracking_url){
-			  		params.output(response.body);
-					params.set({
-						success: true,
-						tracking_url : tracking_url,
-						awb : inp.reference_number
-					});
-					cb(response,params);
-				});
+            success: false,
+            err : 'EcomExpress Unknown error'
+          });
+          return cb(response, params);
+			  } else if (response.body.shipments[0].success || response.body.shipments[0].reason === "AIRWAYBILL_NUMBER_ALREADY_EXISTS") {
+          pdf.generatePdf(inp,function(err,tracking_url){
+            params.output(response.body);
+            params.set({
+              success: true,
+              tracking_url : tracking_url,
+              awb : inp.reference_number
+            });
+            return cb(response,params);
+          });
+			  } else {
+          params.set({
+            success: false,
+            err : response.body.shipments[0].reason
+				  });
+          return cb(response, params);
+        }
 			}
 		});
     },
