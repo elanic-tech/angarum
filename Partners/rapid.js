@@ -22,24 +22,29 @@ module.exports = Template.extend('Rapid', {
 	
   const inp = params.get();
   
-  const req = {
-    client,
-    token,
-    oid: inp.invoice_number,
-    consignee: inp.to_name,
-    add1: inp.to_address,
-    add2: "",
-    pin: inp.to_pin_code,
-    city: inp.to_city,
-    state: inp.to_state,
-    country: inp.to_country,
-    phone: inp.to_mobile_number,
-    weight: 0.4,
-    mode: "reverse",
-    ret_add: inp.from_address,
-    ship_pin: inp.from_pin_code,
-    ship_phone: inp.from_mobile_number,
-    ship_company: 'Elanic'
+  let req = {};
+  
+  if (inp.order_type === "pickup" || inp.order_type==="return_pickup") {
+    req = {
+      client,
+      token,
+      oid: inp.invoice_number,
+      consignee: inp.from_name,
+      add1: inp.from_address,
+      add2: "",
+      pin: inp.from_pin_code,
+      city: inp.from_city,
+      state: inp.from_state,
+      country: inp.from_country,
+      phone: inp.from_mobile_number,
+      weight: 0.4,
+      mode: "reverse",
+      ret_add: inp.to_address,
+      ship_pin: inp.to_pin_code,
+      ship_phone: inp.to_mobile_number,
+      ship_company: 'Elanic',
+      amt: inp.declared_value
+    }
   }
   
   const postReq = unirest.post(url);
