@@ -15,11 +15,12 @@ module.exports = Template.extend('XpressBees', {
 	init: function() {
 	this._super(host);
 	},
-	
+
 	order: function(params, cb) {
 		var self = this;
 		var inp = params.get();
-		var url = (inp.order_type === 'delivery' || inp.order_type === 'sbs' || inp.order_type==='forward_p2p') ? "AddManifestDetails" : "PushReverseManifestDetails" ;
+		var url = (inp.order_type === 'delivery' || inp.order_type === 'sbs' || inp.order_type==='forward_p2p') ? "AddManifestDetails" : "PushReverseManifestDetails";
+		if (inp.order_type==='forward_p2p') token = process.end['XPRESSBEES_P2P_TOKEN'];
 		if(inp.order_type === 'delivery' || inp.order_type === 'sbs' || inp.order_type==='forward_p2p') {
 			var date = new Date();
 			var req = {
@@ -72,7 +73,7 @@ module.exports = Template.extend('XpressBees', {
 					AWB_No: inp.reference_number,
 					Order_ID: inp.invoice_number,
 					Return_Reason: "",
-						
+
 					Destination_Address: inp.to_address,
 					Destination_City: inp.to_city,
 					Destination_Country: inp.to_country,
@@ -80,7 +81,7 @@ module.exports = Template.extend('XpressBees', {
 					Destination_Phone: inp.to_mobile_number,
 					Destination_Pincode: inp.to_pin_code,
 					Destination_State: inp.to_state,
-										
+
 					Pickup_Landmark: "",
 					Pickup_Address: inp.from_address,
 					Pickup_City: inp.from_city,
@@ -90,7 +91,7 @@ module.exports = Template.extend('XpressBees', {
 					Pickup_Pincode: inp.from_pin_code,
 					Pickup_State: inp.from_state,
 					Pickup_Email: "",
-						
+
 					Length: 15,
 					Width: 14,
 					Height: 11,
@@ -110,9 +111,9 @@ module.exports = Template.extend('XpressBees', {
 			url: host + "/" + url,
 		    body: req,
 		    json: true,
-		    method: 'POST'	
+		    method: 'POST'
 		}
-		
+
 		function callback(error, response, body) {
 			if (error || _.isEmpty(body.AddManifestDetails) || body.AddManifestDetails[0].ReturnMessage !== 'successful') {
 			    params.set({
@@ -206,19 +207,19 @@ module.exports = Template.extend('XpressBees', {
 			params.map([], {
 				"awb_number" : "AWBNo",
 			},function(inp) {
-				type = inp.order_type;	
-				url = host + "/GetReverseManifestStatus";	
+				type = inp.order_type;
+				url = host + "/GetReverseManifestStatus";
 				delete inp.order_type;
 				inp.XBkey = token;
-				return inp;			
+				return inp;
 			});
-			
-			params.out_map({	    
+
+			params.out_map({
 			}, function(out) {
 				var response = {};
 				if (out.ShipmentStatusDetails) {
 					response.success = true;
-					response.awb = out.ShipmentStatusDetails[0].AWBNO;				
+					response.awb = out.ShipmentStatusDetails[0].AWBNO;
 					var details = [];
 					var key = {};
 					var obj = {};
@@ -282,10 +283,10 @@ module.exports = Template.extend('XpressBees', {
 		// 	params.out_map({}, function(out) {
 		// 		out.success = (out[url][0].ReturnMessage === 'successful');
 		// 		out.awb = out[url][0].AWBNumber;
-		// 		if(!out.success) out.err = out.url[0].ReturnMessage;			
+		// 		if(!out.success) out.err = out.url[0].ReturnMessage;
 		// 		return out;
 		// 	});
-			
+
 		// 	return this.post_req("/" + url, params, cb);
 		// }
 	},
