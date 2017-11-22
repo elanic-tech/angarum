@@ -20,7 +20,7 @@ module.exports = Template.extend('XpressBees', {
 		var self = this;
 		var inp = params.get();
 		var url = (inp.order_type === 'delivery' || inp.order_type === 'sbs' || inp.order_type==='forward_p2p') ? "AddManifestDetails" : "PushReverseManifestDetails";
-		if (inp.order_type==='forward_p2p') token = process.end['XPRESSBEES_P2P_TOKEN'];
+		if (inp.order_type==='forward_p2p') token = process.env['XPRESSBEES_P2P_TOKEN'];
 		if(inp.order_type === 'delivery' || inp.order_type === 'sbs' || inp.order_type==='forward_p2p') {
 			var date = new Date();
 			var req = {
