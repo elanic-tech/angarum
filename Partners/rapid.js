@@ -19,11 +19,11 @@ module.exports = Template.extend('Rapid', {
     order: function(params, cb) {
 	var url = `${host}/api/createpackage`;
 	// Check out Order schema file for more information.
-	
+
   const inp = params.get();
-  
+
   let req = {};
-  
+
   if (inp.order_type === "pickup" || inp.order_type==="return_pickup") {
     req = {
       client,
@@ -46,14 +46,14 @@ module.exports = Template.extend('Rapid', {
       amt: inp.declared_value
     }
   }
-  
+
   const postReq = unirest.post(url);
   postReq.header('Content-Type', 'application/x-www-form-urlencoded');
-  
+
   for (let key in req) {
     postReq.send(`${key}=${req[key]}`);
   }
-  
+
   postReq.end((response) => {
     const body = _.get(response, "body");
     if (_.isEmpty(body)) {
@@ -68,7 +68,7 @@ module.exports = Template.extend('Rapid', {
       params.set({
         success: true,
         tracking_url: this.get_tracking_url(body),
-        awb: body 
+        awb: body
       });
     } else {
       params.set({
@@ -78,22 +78,22 @@ module.exports = Template.extend('Rapid', {
     }
     return cb(response, params);
   });
-  
-  
+
+
 	// params.map([], {
 	// }, function(inp) {
-  //   
-  //   
-  //   
+  //
+  //
+  //
 	//     // return req;
 	// });
-  // 
+  //
 	// params.out_map({
 	// }, function(out) {
 	//    console.log(out);
 	//    return out;
 	// });
-  // 
+  //
 	// // return this.post_req(url, params, cb);
   },
 
@@ -106,6 +106,33 @@ module.exports = Template.extend('Rapid', {
 
     get_tracking_url: function(awb) {
       return `${host}/api/track.php?client=${client}&token=${token}&waybill=${awb}`;
+    },
+
+    single_tracking_status: function (params, cb) {
+      const awb = params.get().awb_number;
+      const url = `${host}/api/track.php?client=${client}&token=${token}&waybill=${params.get().awb_number}`;
+      const headers = {};
+      params.out_map({
+        "err": "error"
+      }, (out) => {
+        if (String == out.constructor) out = JSON.parse(out);
+        if (out.scans) {
+          var details = out.scans.map((scan) => {
+            return {
+              "time": scan.timestamp,
+              "status": `${scan.flow}_${scan.status}`,
+              "description": scan.remarks,
+            }
+          });
+          var res = {
+            success: true,
+            awb,
+            details
+          }
+        }
+        return res;
+      })
+      return this.get_req(url, params, cb, {url, headers});
     },
 
     cancel: function(params, cb) {
