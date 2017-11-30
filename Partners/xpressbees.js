@@ -158,7 +158,8 @@ module.exports = Template.extend('XpressBees', {
 
 	single_tracking_status: function(params, cb) {
 		var url,type;
-		if(params.get().order_type === 'delivery' || params.get().order_type === 'sbs') {
+		if (params.get().order_type === 'forward_p2p') token = process.env['XPRESSBEES_P2P_TOKEN'];
+		if(params.get().order_type === 'delivery' || params.get().order_type === 'sbs' || params.get().order_type === 'forward_p2p') {
 			var options = {
 			  url: host + '/GetShipmentSummaryDetails',
 			  method: 'POST',
