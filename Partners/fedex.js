@@ -258,7 +258,7 @@ module.exports = Template.extend('FedEx', {
 	      }
 	      var resource =  { version: {ServiceId: 'ship', Major: 19, Intermediate: 0, Minor: 0}};
 	      var ship_object = generateAuthentication(data,resource);
-	      console.log('sending fedex request ',JSON.stringify(ship_object));
+	      // console.log('sending fedex request ',JSON.stringify(ship_object));
 	      client.processShipment(ship_object, function(err, result) {
 	        if(err || result.HighestSeverity === 'ERROR') {
 	          	return handleResponseError(params,result, cb);
@@ -307,7 +307,7 @@ module.exports = Template.extend('FedEx', {
     },
     single_tracking_status: function(params, cb) {
 		track_awb(params.get().awb_number,function(err,result) {
-			console.log("FEDEX_TRACKING", JSON.stringify(result));
+			// console.log("FEDEX_TRACKING", JSON.stringify(result));
 
 			if(err || result.HighestSeverity === 'ERROR') {
 	        	return handleResponseError(params,result, cb);
