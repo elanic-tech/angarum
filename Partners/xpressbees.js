@@ -26,7 +26,7 @@ module.exports = Template.extend('XpressBees', {
 			var req = {
 				XBkey: token,
 				ManifestDetails: {
-					"ManifestID": moment(date).format('YYYY') + moment(date).format('MM') + moment(date).format('DD'),
+					"ManifestID": `${inp.invoice_number}_${inp.reference_number}`, //moment(date).format('YYYY') + moment(date).format('MM') + moment(date).format('DD'),
 					"OrderType": (inp.is_cod) ? "COD" : "PrePaid",
 					"OrderNo": inp.invoice_number,
 					"PaymentStatus": (inp.is_cod) ? "COD" : "PrePaid",

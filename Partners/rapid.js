@@ -43,7 +43,8 @@ module.exports = Template.extend('Rapid', {
       ship_pin: inp.to_pin_code,
       ship_phone: inp.to_mobile_number,
       ship_company: 'Elanic',
-      amt: inp.declared_value
+      amt: inp.declared_value,
+      product: inp.item_name
     }
   }
 
