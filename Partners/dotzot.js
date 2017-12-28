@@ -56,7 +56,7 @@ module.exports = Template.extend('Dotzot', {
             <VendorName>${_.get(inp, "from_name", "")}</VendorName>
             <VendorPincode>${_.get(inp, "from_pin_code", "")}</VendorPincode>
             <VendorTeleNo>${_.get(inp, "from_mobile_number", "")}</VendorTeleNo>
-            <Weight>300</Weight>
+            <Weight>400</Weight>
           </DocketList>
         </DocketList>
       </NewDataSet>`
@@ -65,7 +65,8 @@ module.exports = Template.extend('Dotzot', {
        postReq.header('Content-Type', 'application/xml');
        postReq.send(body);
        postReq.end((response) => {
-         console.log(response)
+         const body = _.get(response, "body");
+         console.log(body)
          return cb(response, params);
        })
 	  });
