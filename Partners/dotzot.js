@@ -7,7 +7,7 @@ const host = "http://dotzot-test.azurewebsites.net"
 module.exports = Template.extend('Dotzot', {
   init: function() {
     this._super(host);
-  }
+  },
 
   order: function(params, cb) {
     const url = `${host}/RestService/PushOrderDataServic
@@ -16,6 +16,6 @@ module.exports = Template.extend('Dotzot', {
     if (inp.order_type === "forward_p2p") {
 
     }
-    
+
   }
 });
