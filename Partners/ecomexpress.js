@@ -14,7 +14,7 @@ module.exports = Template.extend('EcomExpress', {
     init: function() {
 	this._super(host);
     },
-    
+
     order: function(params, cb) {
 		var url = host + "apiv2/manifest_awb/";
 		var inp = params.get();
@@ -30,13 +30,13 @@ module.exports = Template.extend('EcomExpress', {
 			"PINCODE" : inp.to_pin_code+"",
 			"STATE" : inp.to_state+"",
 			"MOBILE" : inp.to_mobile_number+"",
-			"TELEPHONE" : "",
+			"TELEPHONE" : "", // add alternate_phone
 			"ITEM_DESCRIPTION" : inp.item_name+"",
 			"PIECES" : inp.quantity+"",
 			"COLLECTABLE_VALUE" : (inp.is_cod) ? inp.cod_amount : "0",
 			"DECLARED_VALUE" : inp.declared_value+"",
 			"ACTUAL_WEIGHT" : "0.4",
-			"VOLUMETRIC_WEIGHT" : "0",
+			"VOLUMETRIC_WEIGHT" : "0.4",
 			"LENGTH" : "15",
 			"BREADTH" : "14",
 			"HEIGHT" : "11",
@@ -45,7 +45,7 @@ module.exports = Template.extend('EcomExpress', {
 			"PICKUP_ADDRESS_LINE2" : "",
 			"PICKUP_PINCODE" : inp.from_pin_code+"",
 			"PICKUP_MOBILE" : inp.from_mobile_number+"",
-			"PICKUP_PHONE" : inp.from_mobile_number+"",
+			"PICKUP_PHONE" : inp.from_mobile_number+"", // alternate_phone
 			"RETURN_NAME" : inp.from_name+"",
 			"RETURN_ADDRESS_LINE1" : inp.from_address+"",
 			"RETURN_ADDRESS_LINE2" : "",

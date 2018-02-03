@@ -20,13 +20,18 @@ module.exports = Template.extend('XpressBees', {
 		var self = this;
 		var inp = params.get();
 		var url = (inp.order_type === 'delivery' || inp.order_type === 'sbs' || inp.order_type==='forward_p2p') ? "AddManifestDetails" : "PushReverseManifestDetails";
-		if (inp.order_type==='forward_p2p') token = process.env['XPRESSBEES_P2P_TOKEN'];
+		if (inp.order_type==='forward_p2p') {
+			token = process.env['XPRESSBEES_P2P_TOKEN'];
+		} else {
+			token = process.env['XPRESSBEES_TOKEN'];
+		}
+
 		if(inp.order_type === 'delivery' || inp.order_type === 'sbs' || inp.order_type==='forward_p2p') {
 			var date = new Date();
 			var req = {
 				XBkey: token,
 				ManifestDetails: {
-					"ManifestID": `${inp.invoice_number}_${inp.reference_number}`, //moment(date).format('YYYY') + moment(date).format('MM') + moment(date).format('DD'),
+					"ManifestID": `${_.get(inp, "from_pin_code")}_${_.get(inp, "from_mobile_number")}_${moment(date).format("YYYYMMDD")}` //`${inp.invoice_number}_${inp.reference_number}`, //moment(date).format('YYYY') + moment(date).format('MM') + moment(date).format('DD'),
 					"OrderType": (inp.is_cod) ? "COD" : "Prepaid",
 					"OrderNo": inp.invoice_number,
 					"PaymentStatus": (inp.is_cod) ? "COD" : "Prepaid",
@@ -62,7 +67,7 @@ module.exports = Template.extend('XpressBees', {
 					"AirWayBillNO": inp.reference_number,
 					"ServiceType": "SD",
 					"Quantity": inp.quantity,
-					"PickupVendorCode": "Elanic123"
+					"PickupVendorCode": `${_.get(inp, "from_pin_code")}_${_.get(inp, "from_mobile_number")}`
 				}
 			}
 		}
