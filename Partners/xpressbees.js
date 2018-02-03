@@ -31,7 +31,7 @@ module.exports = Template.extend('XpressBees', {
 			var req = {
 				XBkey: token,
 				ManifestDetails: {
-					"ManifestID": `${_.get(inp, "from_pin_code")}_${_.get(inp, "from_mobile_number")}_${moment(date).format("YYYYMMDD")}` //`${inp.invoice_number}_${inp.reference_number}`, //moment(date).format('YYYY') + moment(date).format('MM') + moment(date).format('DD'),
+					"ManifestID": `${_.get(inp, "from_pin_code")}_${_.get(inp, "from_mobile_number")}_${moment(date).format("YYYYMMDD")}`, //`${inp.invoice_number}_${inp.reference_number}`, //moment(date).format('YYYY') + moment(date).format('MM') + moment(date).format('DD'),
 					"OrderType": (inp.is_cod) ? "COD" : "Prepaid",
 					"OrderNo": inp.invoice_number,
 					"PaymentStatus": (inp.is_cod) ? "COD" : "Prepaid",
