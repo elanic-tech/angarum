@@ -63,7 +63,7 @@ function parseOrder(object,done) {
 	// @TODO: support multiple orders for pickup
 	data.routing_code = object.order_ids[0];
 	data.product_desc = object.item_name;
-	data.product_desc_label = object.item_name.trim().length >= 22 ? object.item_name.slice(22)+"..." : object.item_name;
+	data.product_desc_label = object.item_name.trim().length >= 22 ? object.item_name.slice(0, 22)+"..." : object.item_name;
 	data.cod_amount = object.cod_amount;
 	data.payment_mode = (object.is_cod) ? "cod" : "prepaid";
 	data.declaration = object.declaration;
@@ -77,6 +77,7 @@ function parseOrder(object,done) {
 		state : object.from_state,
 		pin : object.from_pin_code,
 		number : /*_.get(object, "order_type", "") === "forward_p2p" ? "CONFIDENTIAL" :*/ object.from_mobile_number,
+		alternate_phone: object.from_alternate_mobile_number,
 		email : 'None'
 	}
 	data.toAddress = {
@@ -86,6 +87,7 @@ function parseOrder(object,done) {
 		state : object.to_state,
 		pin : object.to_pin_code,
 		number : /*_.get(object, "order_type", "") === "forward_p2p" ? "CONFIDENTIAL" :*/ object.to_mobile_number,
+		alternate_phone: object.to_alternate_mobile_number,
 		email : 'None'
 	}
 	const result = renderLabelTemplate(data);
@@ -100,6 +102,7 @@ function parseFedexOrder(object,done) {
 	var today = new Date().toDateString();
 	var date_part = today.split(" ");
 	data.partner = object.partner_name;
+	data.product_desc_label = object.item_name.trim().length >= 30 ? object.item_name.slice(0, 30)+"..." : object.item_name;
 	data.awb = object.awb.replace(/(.{4})/g,"$1 ");
 	data.cod_awb = (object.is_cod) ? object.cod_awb.replace(/(.{4})/g,"$1 ") : '';
 	data.barcodeValue = object.barcodeValue;
