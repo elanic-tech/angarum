@@ -103,7 +103,7 @@
             <div class="partner">Carrier: FedEx</div>
             <div class="shipdate">Ship Date: <%= shipDate %></div>
             <div class="weight">Weight: <%= weight %></div>
-            <div class="text ship-to-padding"><span class="boldText">Order No.</span><%= invoice_id %> dated <%= date %></div>
+            <div class="text ship-to-padding"><span class="boldText">Order No.</span><span class="declare-text"><%= product_desc_label %></span></div>
             <div class="text boldText">Ship To:</div>
             <div class="text">Name : <%= toAddress.name %></div>
             <div class="text">Address : <%= toAddress.address %> City : <%= toAddress.city %></div>
@@ -238,7 +238,7 @@
               <div class="partner">Carrier: FedEx</div>
               <div class="shipdate">Ship Date: <%= shipDate %></div>
               <div class="weight">Weight: <%= weight %></div>
-              <div class="text ship-to-padding"><span class="boldText">Order No.</span><%= invoice_id %> dated <%= date %></div>
+              <div class="text ship-to-padding"><span class="boldText">Order No.</span><span class="declare-text"><%= product_desc_label %></span></div>
               <div class="text boldText">Ship To:</div>
               <div class="text">Name : <%= toAddress.name %></div>
               <div class="text">Address : <%= toAddress.address %> City : <%= toAddress.city %></div>
