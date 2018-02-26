@@ -16,7 +16,8 @@ var partners = {
     'fedex': require('./Partners/fedex.js'),
     'ecomexpress': require('./Partners/ecomexpress.js'),
     'rapid': require('./Partners/rapid.js'),
-    'dotzot': require('./Partners/dotzot')
+    'dotzot': require('./Partners/dotzot'),
+    'hipship':require('./Partners/hipship'),
 };
 
 //helper methods
