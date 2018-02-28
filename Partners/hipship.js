@@ -16,7 +16,6 @@ module.exports = Template.extend('Partner_name', {
     },
     
     order: function(params, cb) {
-    	console.log("Going to Order");
 	var url = "/api/test/v1.1/shipment/book/";
 	//var url = "/api/v1.1/shipment/book/";
 	
