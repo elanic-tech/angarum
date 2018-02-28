@@ -2,7 +2,7 @@ var Template = require('./template.js');
 var querystring = require('querystring');
 var _ = require("lodash");
 
-var host = process.env['HIPSHIP_HOST'];;
+var host = process.env['HIPSHIP_HOST'];
 var token = "Token " + process.env['HIPSHIP_TOKEN'];
 
 // Declare partner specific variables here.
@@ -16,10 +16,10 @@ module.exports = Template.extend('Partner_name', {
     },
     
     order: function(params, cb) {
+    	console.log("Going to Order");
 	var url = "/api/test/v1.1/shipment/book/";
 	//var url = "/api/v1.1/shipment/book/";
 	
-
 	// Check out Order schema file for more information.
 	params.map([], {
 	    "from_address" : "ShipperAddress",
@@ -44,14 +44,13 @@ module.exports = Template.extend('Partner_name', {
 	});
 
 	params.out_map({
-	 //   "waybill": "awb",
-	  //  "reference_number": "msg",
 	}, function(out) {
-	    out.success = (out["results"] == "success");
+		out.awb = out.AWBNumber;
+	    out.success = (out["Status"].StatusInformation);
 	    if (out.success)
 		out.err = null;
 	    else
-		out.err = out["results"]
+		out.err = out["err"];
 	    return out;
 	});
 	// request headers
