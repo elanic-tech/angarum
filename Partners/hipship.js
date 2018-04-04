@@ -28,7 +28,7 @@ module.exports = Template.extend('Hipship', {
        "Width": 6,
        "Height": 3,
        "Weight": 1,
-       "Invoice": 2000,
+       "Invoice": _.get(inp, 'invoice_number'),
        "ItemDescription": _.get(inp, 'item_name'),
        "ShipperPersonName": _.get(inp, 'from_name'),
        "ShipperAddress": _.get(inp, 'from_address'),
