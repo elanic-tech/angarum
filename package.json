@@ -32,6 +32,7 @@
     "parse5": "^2.1.5",
     "path": "^0.12.7",
     "request": "^2.72.0",
+    "restify-errors": "^6.0.0",
     "s3-write-stream": "0.0.1",
     "soap": "^0.18.0",
     "unirest": "^0.5.1",

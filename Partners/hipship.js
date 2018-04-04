@@ -1,6 +1,7 @@
 var Template = require('./template.js');
 var querystring = require('querystring');
 var _ = require("lodash");
+var unirest = require('unirest');
 
 var host = process.env['HIPSHIP_HOST'];
 var token = "Token " + process.env['HIPSHIP_TOKEN'];
@@ -8,57 +9,56 @@ var token = "Token " + process.env['HIPSHIP_TOKEN'];
 // Declare partner specific variables here.
 // Check out other partners for more information.
 
-module.exports = Template.extend('Partner_name', {
+module.exports = Template.extend('Hipship', {
 
     init: function() {
-	this._super(host);
-
+	     this._super(host);
     },
-    
+
     order: function(params, cb) {
-	var url = "/api/test/v1.1/shipment/book/";
-	//var url = "/api/v1.1/shipment/book/";
-	
-	// Check out Order schema file for more information.
-	params.map([], {
-	    "from_address" : "ShipperAddress",
-	    "invoice_number":"Invoice",
-	    "item_name":"ItemDescription",
-	    "from_name":"ShipperPersonName",
-	    "from_pin_code":"ShipperPincode",
-	    "from_mobile_number":"ShipperMobile",
-	    "to_name":"ReceiverPersonName",
-	    "to_address":"ReceiverAddress",
-	    "to_pin_code":"ReceiverPincode",
-	    "to_mobile_number":"ReceiverMobile"
+      const inp = params.get();
+      var req = unirest("POST", `${host}shipment/book/`);
+      req.headers({
+       "Authorization": `Token ${token}`,
+       "Content-Type": "application/json"
+      });
+      req.type("json");
+      const rec = {
+       "Length": 10,
+       "Width": 6,
+       "Height": 3,
+       "Weight": 1,
+       "Invoice": 2000,
+       "ItemDescription": _.get(inp, 'item_name'),
+       "ShipperPersonName": _.get(inp, 'from_name'),
+       "ShipperAddress": _.get(inp, 'from_address'),
+       "ShipperPincode": _.get(inp, 'from_pin_code'),
+       "ShipperMobile": _.get(inp, 'from_mobile_number'),
+       "ShipperEmail": 'ops@elanic.in',
+       "ReceiverPersonName": _.get(inp, 'to_name'),
+       "ReceiverAddress": _.get(inp, 'to_address'),
+       "ReceiverPincode": _.get(inp, 'to_pin_code'),
+       "ReceiverMobile": _.get(inp, 'to_mobile_number')
+     };
+     req.send(rec);
 
-	}, function(inp) {  
-	    return _.extend({
-		"ShipperEmail": 'test@hipship.com',
-	    "Length":15,
-	    "Width":14,
-	    "Height":11,
-	    "Weight":0.4
-	    }, inp);
-	});
-
-	params.out_map({
-	}, function(out) {
-		out.awb = out.AWBNumber;
-	    out.success = (out["Status"].StatusInformation);
-	    if (out.success)
-		out.err = null;
-	    else
-		out.err = out["err"];
-	    return out;
-	});
-	// request headers
-		var headers = {
-		    "Authorization": token,
-		    "Content-type": "application/json"
-		};
-
-	return this.post_req(url, params, cb,{headers:headers});
+     req.end(function (res) {
+       const resp = _.get(res, 'body');
+       // console.log('RESP', JSON.stringify(resp));
+       if (_.get(resp, 'IsError')) {
+         params.set({
+           success: false,
+           err: resp
+         });
+       } else {
+         params.set({
+           success: true,
+           awb: _.get(resp, 'AWBNumber'),
+           partner_response: resp
+         });
+       }
+       return cb(resp, params);
+     });
     },
 
   //   track: function(params, cb) {
@@ -75,7 +75,7 @@ module.exports = Template.extend('Partner_name', {
     single_tracking_status:function(params,cb){
     	var url = host +"/api/test/v1.1/shipment/track/";
     	//var url = host +"/api/v1.1/shipment/track/";
-    
+
     	var awb = params.get().awb_number;
     	params.map({
     		"AWBNumber" : awb
@@ -83,7 +83,7 @@ module.exports = Template.extend('Partner_name', {
     		return _.extend({
 
     		},inp);
-    		
+
     	});
 
     	// request headers
