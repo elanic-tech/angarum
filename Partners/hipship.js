@@ -19,7 +19,7 @@ module.exports = Template.extend('Hipship', {
       const inp = params.get();
       var req = unirest("POST", `${host}shipment/book/`);
       req.headers({
-       "Authorization": `Token ${token}`,
+       "Authorization": `${token}`,
        "Content-Type": "application/json"
       });
       req.type("json");
