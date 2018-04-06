@@ -29,7 +29,7 @@ module.exports = Template.extend('Delhivery', {
     init: function() {
 	this._super(host);
     },
-    
+
     order: function(params, cb) {
 	var url = "/cmu/push/json/?" + querystring.stringify(_.pick(defaults, ["token"]));
 	var tracking_url;
@@ -47,19 +47,19 @@ module.exports = Template.extend('Delhivery', {
 	    "to_mobile_number": "to_phone",
 	    "order_time": "order_date",
 	    "invoice_number": "order",
-	    "declared_Value": "total_amount",
+	    "declared_value": "total_amount",
 	    "item_name": "products_desc",
 	}, function(inp) {
 	     if(input.order_type === 'delivery' || input.order_type === 'sbs') {
 	    	var ship = _.extend(_.pick(inp, ["waybill", "to_name", "order", "products_desc", "order_date", "total_amount", "cod_amount", "to_add", "to_city", "to_state", "to_country", "to_phone", "to_pin", "weight", "quantity"]), return_details);
-	    	var pickup = _.pick(inp, ["from_add", "from_city", "from_state", "from_country", "from_name", "from_phone", "from_pin"]);    
+	    	var pickup = _.pick(inp, ["from_add", "from_city", "from_state", "from_country", "from_name", "from_phone", "from_pin"]);
 		    console.log(ship);
 		    for (item in ship) {
 			if (item.indexOf("to_") == 0) {
 			    ship[item.slice(3)] = ship[item];
 			    delete ship[item];
 			}
-		    }	    
+		    }
 		    for (item in pickup) {
 			if (item.indexOf("from_") == 0) {
 			    pickup[item.slice(5)] = pickup[item];
@@ -75,7 +75,7 @@ module.exports = Template.extend('Delhivery', {
 			    ship[item.slice(5)] = ship[item];
 			    delete ship[item];
 			}
-		    }	    
+		    }
 		    for (item in pickup) {
 			if (item.indexOf("to_") == 0) {
 			    pickup[item.slice(3)] = pickup[item];
@@ -123,7 +123,7 @@ module.exports = Template.extend('Delhivery', {
 	    }, defaults);
 	});
 
-	
+
 	params.out_map({
 	    "error": "err",
 	}, function(out) {
@@ -158,7 +158,7 @@ module.exports = Template.extend('Delhivery', {
 		return self.post_req(url, params, callback, {json: null, body: null, form: params.get()});
 	}
 	else {
-		return self.post_req(url, params, cb, {json: null, body: null, form: params.get()});	
+		return self.post_req(url, params, cb, {json: null, body: null, form: params.get()});
 	}
     },
 
@@ -227,7 +227,7 @@ module.exports = Template.extend('Delhivery', {
 		  cb(response,params);
 		}
 	}
- 
+
 	return request(options, callback);
 	// var url = "/api/p/edit/";
 	// params.map([], {
@@ -243,7 +243,7 @@ module.exports = Template.extend('Delhivery', {
 	//     out.success = (out.success == "True");
 	//     return out;
 	// });
-	
+
 	// return this.post_req(url, params, cb, {headers: {"Authorization": "Token " + defaults.token}});
     }
 
