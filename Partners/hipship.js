@@ -61,6 +61,33 @@ module.exports = Template.extend('Hipship', {
      });
     },
 
+    pickup: function (params, cb) {
+      const inp = params.get();
+      const awb = _.get(inp, 'awb');
+      const awbs = _.isArray(awb) ? awb : [awb];
+
+      var req = unirest("POST", `${host}shipment/pickup`);
+      req.headers({
+        "Authorization": `${token}`,
+        "Content-Type": "application/json"
+      });
+      req.type("json");
+      req.send({
+        "AWBNumbers": awbs,
+        "PickupDate": _.get(inp, 'date')
+      });
+      req.end(function (res) {
+        if (res.error) return cb(res.error, params);
+        const resp = _.get(res, 'body');
+        const record = {
+          success: true,
+          err: null,
+          details: res.body
+        }
+        return cb(null, record);
+      });
+    },
+
   //   track: function(params, cb) {
 		// params.set({
 		//     "tracking_url": this.get_tracking_url(params.get().awb_number),
