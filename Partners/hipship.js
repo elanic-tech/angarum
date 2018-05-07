@@ -62,10 +62,10 @@ module.exports = Template.extend('Hipship', {
     },
 
     pickup: function (params, cb) {
-      const inp = params.get();
+      const inp = params;
       const awb = _.get(inp, 'awb');
       const awbs = _.isArray(awb) ? awb : [awb];
-
+      const date = (new Date(inp.date)).toJSON().slice(0, 10).replace(/[-T]/g, '-')
       var req = unirest("POST", `${host}shipment/pickup`);
       req.headers({
         "Authorization": `${token}`,
@@ -74,7 +74,7 @@ module.exports = Template.extend('Hipship', {
       req.type("json");
       req.send({
         "AWBNumbers": awbs,
-        "PickupDate": _.get(inp, 'date')
+        "PickupDate": date
       });
       req.end(function (res) {
         if (res.error) return cb(res.error, params);
