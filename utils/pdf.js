@@ -30,12 +30,18 @@ function generatePDF(pdf_name, data, html,cb) {
 			console.log(err);
 			return cb(err);
 		} else {
-			var s3_file_name = data.partner +'/'+ data.awb.replace(/ /g,'') + '-shipping-label.pdf';
-			var templateUrl = process.env['AWS_S3_LABEL_URL_PATH'] + process.env['AWS_S3_LOGISTIC_BUCKET_NAME'] + '/' + s3_file_name;
-			var s3stream = stream.pipe(s3_upload(s3_file_name));
-			s3stream.on('finish',function() {
-				cb(err,templateUrl);
-			});
+			try {
+				var s3_file_name = data.partner +'/'+ data.awb.replace(/ /g,'') + '-shipping-label.pdf';
+				var templateUrl = process.env['AWS_S3_LABEL_URL_PATH'] + process.env['AWS_S3_LOGISTIC_BUCKET_NAME'] + '/' + s3_file_name;
+				var s3stream = stream.pipe(s3_upload(s3_file_name));
+				s3stream.on('finish',function() {
+					cb(err,templateUrl);
+				});
+			} catch (e) {
+				console.log("DATA_ERROR_ANGARUM", e);
+				cb();
+			}
+
 		}
 	});
 }
