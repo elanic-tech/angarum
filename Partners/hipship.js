@@ -38,7 +38,8 @@ module.exports = Template.extend('Hipship', {
        "ReceiverPersonName": _.get(inp, 'to_name'),
        "ReceiverAddress": _.get(inp, 'to_address'),
        "ReceiverPincode": _.get(inp, 'to_pin_code'),
-       "ReceiverMobile": _.get(inp, 'to_mobile_number')
+       "ReceiverMobile": _.get(inp, 'to_mobile_number'),
+       "IsCOD": _.get(inp, 'is_cod')
      };
      req.send(rec);
 
