@@ -19,14 +19,14 @@ module.exports = Template.extend('XpressBees', {
 	order: function(params, cb) {
 		var self = this;
 		var inp = params.get();
-		var url = (inp.order_type === 'delivery' || inp.order_type === 'sbs' || inp.order_type==='forward_p2p') ? "AddManifestDetails" : "PushReverseManifestDetails";
-		if (inp.order_type==='forward_p2p') {
+		var url = (inp.order_type === 'reverse_p2p' || inp.order_type === 'delivery' || inp.order_type === 'sbs' || inp.order_type==='forward_p2p') ? "AddManifestDetails" : "PushReverseManifestDetails";
+		if (inp.order_type==='forward_p2p' || inp.order_type === 'reverse_p2p') {
 			token = process.env['XPRESSBEES_P2P_TOKEN'];
 		} else {
 			token = process.env['XPRESSBEES_TOKEN'];
 		}
 
-		if(inp.order_type === 'delivery' || inp.order_type === 'sbs' || inp.order_type==='forward_p2p') {
+		if(inp.order_type === 'delivery' || inp.order_type === 'sbs' || inp.order_type==='forward_p2p' || inp.order_type==='reverse_p2p') {
 			var date = new Date();
 			var req = {
 				XBkey: token,
