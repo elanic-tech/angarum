@@ -67,7 +67,8 @@ module.exports = Template.extend('XpressBees', {
 					"AirWayBillNO": inp.reference_number,
 					"ServiceType": "SD",
 					"Quantity": inp.quantity,
-					"PickupVendorCode": `${_.get(inp, "from_pin_code")}_${_.get(inp, "from_mobile_number")}`
+					"PickupVendorCode": `${_.get(inp, "from_pin_code")}_${_.get(inp, "from_mobile_number")}`,
+					"TokenNumber": `${_.get(inp, "from_pin_code")}_${_.get(inp, "from_mobile_number")}`
 				}
 			}
 		}
