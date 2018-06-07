@@ -122,8 +122,8 @@ module.exports = Template.extend('XpressBees', {
 		function callback(error, response, body) {
 			if (error || _.isEmpty(body.AddManifestDetails) || body.AddManifestDetails[0].ReturnMessage !== 'successful') {
 			    params.set({
-				success: false,
-				err : body.AddManifestDetails[0].ReturnMessage
+						success: false,
+						err : JSON.stringify(body)
 			    });
 			    cb(response,params);
 			}
