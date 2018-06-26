@@ -187,7 +187,7 @@ module.exports = Template.extend('Delhivery', {
 		    time.setTime(time.getTime() - 19800000);
 		    return {
 			"time": time,
-			"status": (params.get().order_type === 'delivery') ? scan.ScanType + "-" + scan.Scan : scan.Scan,
+			"status": (params.get().order_type === 'delivery' || params.get().order_type === 'forward_p2p') ? scan.ScanType + "-" + scan.Scan : scan.Scan,
 			"location": scan.ScannedLocation,
 			"description": scan.Instructions,
 		    };
