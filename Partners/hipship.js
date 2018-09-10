@@ -80,11 +80,12 @@ module.exports = Template.extend('Hipship', {
       });
       req.end(function (res) {
         if (res.error) return cb(res.error, params);
+        const record = {};
         const resp = _.get(res, 'body');
-        const record = {
-          success: true,
-          err: null,
-          details: res.body
+        if(!resp.isError){
+          _.extend(record, {success:true, err:false, details: resp});
+        } else {
+          _.extend(record,{success:false, err:_.get(resp, 'Status.StatusInformation',"")});
         }
         return cb(null, record);
       });
