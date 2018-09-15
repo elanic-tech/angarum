@@ -23,6 +23,7 @@ module.exports = Schema.extend('Order_schema', {
           "name": "",
           "pincode": "",
           "phone": "",
+          "partner":""
       };
     },
     
