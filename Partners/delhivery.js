@@ -49,11 +49,11 @@ module.exports = Template.extend('Delhivery', {
 	    "invoice_number": "order",
 	    "declared_value": "total_amount",
 	    "item_name": "products_desc",
+	    "warehouse":"name"
 	}, function(inp) {
 	     if(input.order_type === 'delivery' || input.order_type === 'sbs') {
-	    	var ship = _.extend(_.pick(inp, ["waybill", "to_name", "order", "products_desc", "order_date", "total_amount", "cod_amount", "to_add", "to_city", "to_state", "to_country", "to_phone", "to_pin", "weight", "quantity"]), return_details);
-	    	var pickup = _.pick(inp, ["from_add", "from_city", "from_state", "from_country", "from_name", "from_phone", "from_pin"]);
-		    console.log(ship);
+		    var ship = _.extend(_.pick(inp, ["waybill", "to_name", "order", "products_desc", "order_date", "total_amount", "cod_amount", "to_add", "to_city", "to_state", "to_country", "to_phone", "to_pin", "weight", "quantity"]), return_details);
+		    var pickup = _.pick(inp, ["from_add", "from_city", "from_state", "from_country", "from_name", "from_phone", "from_pin", "name"]);
 		    for (item in ship) {
 			if (item.indexOf("to_") == 0) {
 			    ship[item.slice(3)] = ship[item];
@@ -68,7 +68,7 @@ module.exports = Template.extend('Delhivery', {
 		    }
 	    }
 	    else {
-	    	var ship = _.extend(_.pick(inp, ["waybill", "from_name", "order", "products_desc", "order_date", "total_amount", "cod_amount", "from_add", "from_city", "from_state", "from_country", "from_phone", "from_pin", "weight", "quantity"]), return_details);
+		    var ship = _.extend(_.pick(inp, ["waybill", "from_name", "order", "products_desc", "order_date", "total_amount", "cod_amount", "from_add", "from_city", "from_state", "from_country", "from_phone", "from_pin", "name","weight", "quantity"]), return_details);
 		    var pickup = _.pick(inp, ["to_add", "to_city", "to_state", "to_country", "to_name", "to_phone", "to_pin"]);
 		    for (item in ship) {
 			if (item.indexOf("from_") == 0) {
@@ -111,10 +111,11 @@ module.exports = Template.extend('Delhivery', {
 	    if(inp.order_type === 'delivery' || inp.order_type === 'sbs'){
 	    	ship.total_amount = inp.declared_value;
 	    }
-	    if (pickup.city && pickup.city.toLowerCase() == 'new delhi')
-		pickup.name = "Elanic Services Pvt. Ltd-DEL";
-	    else
-		pickup.name = "ELANIC BLR";
+	    // if (pickup.city && pickup.city.toLowerCase() == 'new delhi')
+		// pickup.name = "Elanic Services Pvt. Ltd-DEL";
+	    // else
+		// pickup.name = "ELANIC BLR";
+		pickup.name = inp.name;
 		return _.extend({
 		"data": JSON.stringify({
 		    "pickup_location": pickup,
@@ -245,6 +246,52 @@ module.exports = Template.extend('Delhivery', {
 	// });
 
 	// return this.post_req(url, params, cb, {headers: {"Authorization": "Token " + defaults.token}});
-    }
-
+	},
+	warehouse: (params, cb) => {
+		var options = {
+			url: 'https://track.delhivery.com/api/backend/clientwarehouse/create/',
+			method: 'POST',
+			json: true,
+			body: {
+				"name":`${params.get().from_pin_code}_${params.get().from_mobile_number}`,
+				"address":params.get().from_address,
+				"pin" : params.get().from_pin_code,
+				"phone" : params.get().from_mobile_number,
+				"city": params.get().from_city,
+				"state": params.get().from_state,
+				"country":params.get().from_country
+			},
+			headers: {
+			  'Content-Type': 'application/json',
+			  'Authorization': "Token " + defaults.token
+			},
+		};
+		function callback(error, response, body) {
+			if (error) {
+				params.set({
+					success: false
+				});
+				cb(response, params);
+			}
+			else if(body.success){
+				params.output(body)
+				params.set({
+					success: true
+				});
+				cb(response, params);
+			} else {
+				params.set({
+					success: false
+				});
+				cb(response,params);
+			}
+		}
+		params.set({
+			success:true,name: tempBody.data.name,
+			pincode: tempBody.data.pincode,
+			phone: tempBody.data.phone,
+			partner:'delhivery'
+		 });
+		return request(options, callback);
+	}
 });

@@ -29,6 +29,7 @@ module.exports = Schema.extend('Order_schema', {
 	    from_country: "",
 	    from_mobile_number: "",
 	    from_pin_code: "",
+	    name: "",
 
 	    to_name: "",
 	    to_address: "",
