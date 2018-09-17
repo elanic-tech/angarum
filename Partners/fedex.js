@@ -137,7 +137,7 @@ module.exports = Template.extend('FedEx', {
 		    PackagingType: 'YOUR_PACKAGING',
 		    TotalWeight : [{
 		    	Units : 'KG',
-		    	Value : (inp.delivery_type && inp.delivery_type === 'surface') ? '8' : '.400'
+		    	Value : (inp.delivery_type && inp.delivery_type === 'surface') ? '5' : '.400'
 		    }],
 		    Shipper: {
 		      Contact: {
@@ -213,7 +213,7 @@ module.exports = Template.extend('FedEx', {
 		    		CountryOfManufacture : 'IN',
 		    		Weight : {
 		    			Units : 'KG',
-		    			Value : (inp.delivery_type && inp.delivery_type === 'surface') ? '8' : '.400'
+		    			Value : (inp.delivery_type && inp.delivery_type === 'surface') ? '5' : '.400'
 		    		},
 		    		Quantity : '1',
 		    		QuantityUnits : 'EA',
@@ -238,7 +238,7 @@ module.exports = Template.extend('FedEx', {
 		      GroupPackageCount: 1,
 		      Weight: {
 		        Units: 'KG',
-		        Value: (inp.delivery_type && inp.delivery_type === 'surface') ? '8' : '.400'
+		        Value: (inp.delivery_type && inp.delivery_type === 'surface') ? '5' : '.400'
 		      },
 		      Dimensions: {
 		        Length: (inp.delivery_type && inp.delivery_type === 'surface') ? 35 : 15,
