@@ -17,6 +17,12 @@ module.exports = Template.extend('Hipship', {
 
     order: function(params, cb) {
       const inp = params.get();
+      if(_.isEmpty(inp.from_address_line_1)) { 
+        inp.from_address_line_1 = inp.from_address;
+      }
+      if(_.isEmpty(inp.to_address_line_1)) {
+        inp.to_address_line_1 = inp.to_address;
+      }
       var req = unirest("POST", `${host}shipment/book/`);
       req.headers({
        "Authorization": `${token}`,
@@ -31,12 +37,12 @@ module.exports = Template.extend('Hipship', {
        "Invoice": _.get(inp, 'declared_value'),
        "ItemDescription": _.get(inp, 'item_name'),
        "ShipperPersonName": _.get(inp, 'from_name'),
-       "ShipperAddress": _.get(inp, 'from_address'),
+       "ShipperAddress": _.get(inp, 'from_address_line_1') + _.get(inp, 'from_address_line_2'),
        "ShipperPincode": _.get(inp, 'from_pin_code'),
        "ShipperMobile": _.get(inp, 'from_mobile_number'),
        "ShipperEmail": 'ops@elanic.in',
        "ReceiverPersonName": _.get(inp, 'to_name'),
-       "ReceiverAddress": _.get(inp, 'to_address'),
+       "ReceiverAddress": _.get(inp, 'to_address_line_1') + _.get(inp, 'to_address_line_2'),
        "ReceiverPincode": _.get(inp, 'to_pin_code'),
        "ReceiverMobile": _.get(inp, 'to_mobile_number'),
        "IsCOD": _.get(inp, 'is_cod'),

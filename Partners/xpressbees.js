@@ -25,7 +25,12 @@ module.exports = Template.extend('XpressBees', {
 		} else {
 			token = process.env['XPRESSBEES_TOKEN'];
 		}
-
+		if(_.isEmpty(inp.from_address_line_1)) { 
+			inp.from_address_line_1 = inp.from_address;
+		}
+		if(_.isEmpty(inp.to_address_line_1)) {
+			inp.to_address_line_1 = inp.to_address;
+		}
 		if(inp.order_type === 'delivery' || inp.order_type === 'sbs' || inp.order_type==='forward_p2p' || inp.order_type==='reverse_p2p') {
 			var date = new Date();
 			var req = {
@@ -37,19 +42,19 @@ module.exports = Template.extend('XpressBees', {
 					"PaymentStatus": (inp.is_cod) ? "COD" : "Prepaid",
 					"PickupVendor": inp.from_name,
 					"PickVendorPhoneNo": inp.from_mobile_number,
-					"PickVendorAddress": inp.from_address,
+					"PickVendorAddress": inp.from_address_line_1 + inp.from_address_line_2,
 					"PickVendorCity": inp.from_city,
 					"PickVendorState": inp.from_state,
 					"PickVendorPinCode": inp.from_pin_code,
 					"CustomerName": inp.to_name,
-					"CustomerAddress": inp.to_address,
+					"CustomerAddress": inp.to_address_line_1 + inp.to_address_line_2,
 					"CustomerCity": inp.to_city,
 					"CustomerState": inp.to_state,
 					"ZipCode": inp.to_pin_code,
 					"CustomerMobileNo": inp.to_mobile_number,
 					"RTOName": inp.from_name,
 					"RTOMobileNo": inp.from_mobile_number,
-					"RTOAddress": inp.from_address,
+					"RTOAddress": inp.from_address_line_1 + inp.from_address_line_2,
 					"RTOToCity": inp.from_city,
 					"RTOToState": inp.from_state,
 					"RTOPinCode": inp.from_pin_code,
@@ -80,7 +85,7 @@ module.exports = Template.extend('XpressBees', {
 					Order_ID: inp.invoice_number,
 					Return_Reason: "",
 
-					Destination_Address: inp.to_address,
+					Destination_Address: inp.to_address_line_1 + inp.to_address_line_2,
 					Destination_City: inp.to_city,
 					Destination_Country: inp.to_country,
 					Destination_Name: inp.to_name,
@@ -89,7 +94,7 @@ module.exports = Template.extend('XpressBees', {
 					Destination_State: inp.to_state,
 
 					Pickup_Landmark: "",
-					Pickup_Address: inp.from_address,
+					Pickup_Address: inp.from_address_line_1 + inp.from_address_line_2 ,
 					Pickup_City: inp.from_city,
 					Pickup_Country: inp.from_country,
 					Pickup_Name: inp.from_name,

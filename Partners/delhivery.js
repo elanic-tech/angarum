@@ -38,7 +38,11 @@ module.exports = Template.extend('Delhivery', {
 	// Check out Order schema file for more information.
 	params.map([], {
 	    "from_address" : "from_add",
+	    "from_address_line_1" : "from_add_line_1",
+	    "from_address_line_2" : "from_add_line_2",
 	    "to_address" : "to_add",
+	    "to_address_line_1" : "to_add_line_1",
+	    "to_address_line_2" : "to_add_line_2",
 	    "from_mobile_number": "from_phone",
 	    "to_mobile_number": "to_phone",
 	    "from_pin_code": "from_pin",
@@ -51,7 +55,8 @@ module.exports = Template.extend('Delhivery', {
 		"item_name": "products_desc",
 		"warehouse":"name"
 	}, function(inp) {
-		
+		inp.to_add = _.isEmpty(inp.to_add) ? inp.to_add_line_1 + inp.to_add_line_2 : inp.to_add;
+		inp.from_add = _.isEmpty(inp.from_add) ? inp.from_add_line_1 + inp.from_add_line_2 : inp.from_add;
 	     if(input.order_type === 'delivery' || input.order_type === 'sbs' || input.order_type === 'forward_p2p') {
 	    	var ship = _.extend(_.pick(inp, ["waybill", "to_name", "order", "products_desc", "order_date", "total_amount", "cod_amount", "to_add", "to_city", "to_state", "to_country", "to_phone", "to_pin", "weight", "quantity"]), return_details);
 	    	var pickup = _.pick(inp, ["from_add", "from_city", "from_state", "from_country", "from_name", "from_phone", "from_pin", "name"]);

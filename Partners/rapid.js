@@ -21,7 +21,12 @@ module.exports = Template.extend('Rapid', {
 	// Check out Order schema file for more information.
 
   const inp = params.get();
-
+  if(_.isEmpty(inp.from_address_line_1)) { 
+    inp.from_address_line_1 = inp.from_address;
+  }
+  if(_.isEmpty(inp.to_address_line_1)) {
+    inp.to_address_line_1 = inp.to_address;
+  }
   let req = {};
 
   if (inp.order_type === "pickup" || inp.order_type==="return_pickup") {
@@ -30,8 +35,8 @@ module.exports = Template.extend('Rapid', {
       token,
       oid: inp.invoice_number,
       consignee: inp.from_name,
-      add1: inp.from_address,
-      add2: "",
+      add1: inp.from_address_line_1,
+      add2: inp.from_address_line_2,
       pin: inp.from_pin_code,
       city: inp.from_city,
       state: inp.from_state,
@@ -39,7 +44,7 @@ module.exports = Template.extend('Rapid', {
       phone: inp.from_mobile_number,
       weight: 0.4,
       mode: "reverse",
-      ret_add: inp.to_address,
+      ret_add: inp.to_address_line_1 + inp.to_address_line_2,
       ship_pin: inp.to_pin_code,
       ship_phone: inp.to_mobile_number,
       ship_company: 'Elanic',

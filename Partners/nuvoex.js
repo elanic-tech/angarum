@@ -85,8 +85,9 @@ module.exports = Template.extend('NuvoEx', {
 	    "reference_number" : "AWB",
 	    "invoice_number" : "CLIENT ORDER NO",
 	    "from_name": "CUST NAME",
-	    "from_address": "CUST ADDRESS LINE 1",
-	    "from_city": ["CUST ADDRESS LINE 2", "CUST CITY"],
+	    "from_address_line_1": "CUST ADDRESS LINE 1",
+	    "from_address_line_2":"CUST ADDRESS LINE 2",
+	    "from_city":"CUST CITY",
 	    "from_pin_code": "Pincode",
 	    "from_mobile_number": ["PHONE 1", "PHONE 2"],
 	    "weight": "Weight",
@@ -136,7 +137,7 @@ module.exports = Template.extend('NuvoEx', {
 		inp["vendor name"] = vendor_key["vendor_name"];
 		inp["vendor owner name"] = vendor_key["to_name"];
 		inp["vendor pincode"] = vendor_key["to_pin_code"];
-		inp["vendor address"] = vendor_key["to_address"];
+		inp["vendor address"] = vendor_key["to_address_line_1"] + vendor_key["to_address_line_2"];
 		inp["vendor phone"] = vendor_key["to_mobile_number"];
 	    return {
 		data: JSON.stringify([inp]),
