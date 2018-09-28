@@ -18,13 +18,19 @@ module.exports = Template.extend('EcomExpress', {
     order: function(params, cb) {
 		var url = host + "apiv2/manifest_awb/";
 		var inp = params.get();
+		if(_.isEmpty(inp.from_address_line_1)) { 
+			inp.from_address_line_1 = inp.from_address;
+		}
+		if(_.isEmpty(inp.to_address_line_1)) {
+			inp.to_address_line_1 = inp.to_address;
+		}
 		var json_input = [{
 			"AWB_NUMBER" : inp.reference_number+"",
 			"ORDER_NUMBER" : inp.orders[0]+"",
 			"PRODUCT" : (inp.is_cod) ? 'COD' : 'PPD',
 			"CONSIGNEE" : inp.to_name+"",
-			"CONSIGNEE_ADDRESS1" : inp.to_address+"",
-			"CONSIGNEE_ADDRESS2" : "",
+			"CONSIGNEE_ADDRESS1" : inp.to_address_line_1+"",
+			"CONSIGNEE_ADDRESS2" : inp.to_address_line_2+"",
 			"CONSIGNEE_ADDRESS3" : "",
 			"DESTINATION_CITY" : inp.to_city+"",
 			"PINCODE" : inp.to_pin_code+"",
@@ -41,8 +47,8 @@ module.exports = Template.extend('EcomExpress', {
 			"BREADTH" : "14",
 			"HEIGHT" : "11",
 			"PICKUP_NAME" : inp.from_name+"",
-			"PICKUP_ADDRESS_LINE1" : inp.from_address+"",
-			"PICKUP_ADDRESS_LINE2" : "",
+			"PICKUP_ADDRESS_LINE1" : inp.from_address_line_1+"",
+			"PICKUP_ADDRESS_LINE2" : inp.from_address_line_2+"",
 			"PICKUP_PINCODE" : inp.from_pin_code+"",
 			"PICKUP_MOBILE" : inp.from_mobile_number+"",
 			"PICKUP_PHONE" : inp.from_mobile_number+"", // alternate_phone

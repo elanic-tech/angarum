@@ -122,13 +122,23 @@ module.exports = Template.extend('FedEx', {
         // if(inp.order_type === 'forward_p2p') {
         //     inp.from_mobile_number = '';
         //     inp.to_mobile_number = '';
-        // }
-		inp.from_address = inp.from_address.replace(/\s\s+/g, ' ');
-		inp.to_address = inp.to_address.replace(/\s\s+/g, ' ');
-		var from_street_line_1 = inp.from_address.substring(0,35);
-		var from_street_line_2 = inp.from_address.substring(35);
-		var to_street_line_1 = inp.to_address.substring(0,35);
-		var to_street_line_2 = inp.to_address.substring(35);
+				// }
+		if(_.isEmpty(inp.from_address_line_1)) {
+			inp.from_address_line_1 = inp.from_address;
+		}
+		if(_.isEmpty(inp.to_address_line_1)) { 
+			inp.to_address_line_1 = inp.to_address;
+		}
+		inp.from_address_line_1 = inp.from_address_line_1.replace(/\s\s+/g, ' ');
+		inp.from_address_line_2 = inp.from_address_line_2.replace(/\s\s+/g, ' ');
+
+		inp.to_address_line_1 = inp.to_address_line_1.replace(/\s\s+/g, ' ');
+		inp.to_address_line_2 = inp.to_address_line_2.replace(/\s\s+/g, ' ');
+
+		var from_street_line_1 = inp.from_address_line_1.substring(0,35);
+		var from_street_line_2 = inp.from_address_line_1.substring(35) + inp.from_address_line_2;
+		var to_street_line_1 = inp.to_address_line_1.substring(0,35);
+		var to_street_line_2 = inp.to_address_line_1.substring(35) + inp.to_address_line_2;
 		var data = {
 		  RequestedShipment: {
 		    ShipTimestamp: new Date(date.getTime() + (24*60*60*1000)).toISOString(),
@@ -397,9 +407,12 @@ module.exports = Template.extend('FedEx', {
 		});
     },
     pickup: function(params, cb) {
-    	var date = new Date(params.date);
+			var date = new Date(params.date);
     	date.setHours(0,0,0);
-    	date.setHours(10,0,0);
+		  date.setHours(10,0,0);
+		  if(_.isEmpty(params.from_address_line_1)) {
+				params.from_address_line_1 = params.from_address;
+			}
 		var data = {
 			OriginDetail: {
 	    		UseAccountAddress: false,
@@ -410,7 +423,10 @@ module.exports = Template.extend('FedEx', {
 	    				PhoneNumber : params.from_mobile_number
 	    			},
 	    			Address : {
-	    				StreetLines : params.from_address,
+							StreetLines : [ 
+								params.from_address_line_1,
+								params.from_address_line_2
+							],
 	    				City : params.from_city,
 	    				StateOrProvinceCode : params.from_state,
 	    				PostalCode : params.from_pin_code,

@@ -50,7 +50,7 @@ module.exports = Template.extend('Shadowfax', {
           ],
           address_attributes: {
                   name: inp.from_name,
-                  address_line: inp.from_address,
+		  address_line: _.isEmpty(inp.from_address) ? inp.from_address_line_1 + inp.from_address_line_2 : inp.from_address,
                   pincode: inp.from_pin_code,
                   city: inp.from_city,
                   state: inp.from_state,

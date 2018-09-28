@@ -24,6 +24,8 @@ module.exports = Schema.extend('Order_schema', {
 	    
 	    from_name : "",
 	    from_address: "",
+	    from_address_line_1: "",
+	    from_address_line_2: "",
 	    from_city: "",
 	    from_state: "",
 	    from_country: "",
@@ -33,6 +35,8 @@ module.exports = Schema.extend('Order_schema', {
 
 	    to_name: "",
 	    to_address: "",
+	    to_address_line_1: "",
+	    to_address_line_2: "",
 	    to_city: "",
 	    to_state: "",
 	    to_country: "",
