@@ -78,7 +78,7 @@ function parseOrder(object,done) {
 	data.destination_code = (object.destination_code) ? object.destination_code : undefined;
 	data.fromAddress = {
 		name : object.from_name,
-		address : object.from_address,
+		address : _.isEmpty(object.from_address) ? object.from_address_line_1 + object.from_address_line_2 : object.from_address,
 		city : object.from_city,
 		state : object.from_state,
 		pin : object.from_pin_code,
@@ -88,7 +88,7 @@ function parseOrder(object,done) {
 	}
 	data.toAddress = {
 		name : object.to_name,
-		address : object.to_address,
+		address : _.isEmpty(object.to_address) ? object.to_address_line_1 + object.to_address_line_2 : object.to_address,
 		city : object.to_city,
 		state : object.to_state,
 		pin : object.to_pin_code,
@@ -139,7 +139,7 @@ function parseFedexOrder(object,done) {
 	data.CountryCode = object.CountryCode;
 	data.fromAddress = {
 		name : object.from_name,
-		address : object.from_address,
+		address : _.isEmpty(object.from_address) ? object.from_address_line_1 + object.from_address_line_2 : object.from_address,
 		city : object.from_city,
 		state : object.from_state,
 		pin : object.from_pin_code,
@@ -148,7 +148,7 @@ function parseFedexOrder(object,done) {
 	}
 	data.toAddress = {
 		name : object.to_name,
-		address : object.to_address,
+		address : _.isEmpty(object.to_address) ? object.to_address_line_1 + object.to_address_line_2 : object.to_address,
 		city : object.to_city,
 		state : object.to_state,
 		pin : object.to_pin_code,
