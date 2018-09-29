@@ -412,6 +412,7 @@ module.exports = Template.extend('FedEx', {
 		  date.setHours(10,0,0);
 		  if(_.isEmpty(params.from_address_line_1)) {
 				params.from_address_line_1 = params.from_address;
+				params.from_address_line_2 = '';
 			}
 		var data = {
 			OriginDetail: {
