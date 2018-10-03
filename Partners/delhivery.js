@@ -262,7 +262,7 @@ module.exports = Template.extend('Delhivery', {
 			json: true,
 			body: {
 				"name":`${params.get().from_pin_code}_${params.get().from_mobile_number}`,
-				"address":params.get().from_address,
+				"address":_.isEmpty(params.get().from_address) ? params.get().from_address_line_1 + params.get().from_address_line_2 : params.get().from_address,
 				"pin" : params.get().from_pin_code,
 				"phone" : params.get().from_mobile_number,
 				"city": params.get().from_city,

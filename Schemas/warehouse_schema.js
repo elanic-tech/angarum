@@ -9,7 +9,9 @@ module.exports = Schema.extend('Order_schema', {
     get_config: function() {
 	    return {
 	      from_name : "",
-	      from_address: "",
+        from_address: "",
+        from_address_line_1:"",
+        from_address_line_2:"",
 	      from_city: "",
 	      from_state: "",
 	      from_country: "",
