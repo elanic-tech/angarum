@@ -7,6 +7,8 @@ var unirest = require('unirest');
 var pdf = require('../utils/pdf');
 var username = process.env['ECOMEXPRESS_USERNAME'];
 var password = process.env['ECOMEXPRESS_PASSWORD'];
+var hipship_username = process.env['ECOMEXPRESS_HIPSHIP_USERNAME'];
+var hipship_password = process.env['ECOMEXPRESS_HIPSHIP_PASSWORD'];
 var async = require('async');
 
 module.exports = Template.extend('EcomExpress', {
@@ -104,7 +106,7 @@ module.exports = Template.extend('EcomExpress', {
     },
 
     single_tracking_status: function(params, cb) {
-		track_awb(params.get().awb_number,params,function(err,result) {
+		track_awb(params.get().awb_number,params.get().aggregator,params,function(err,result) {
 			if(err || _.isEmpty(result['ecomexpress-objects'].object)) {
 					params.set({
                     success: false,
@@ -119,7 +121,7 @@ module.exports = Template.extend('EcomExpress', {
 		  	async.parallel([
 	        	function track_return_awb(callback) {
 	        		if(ref_awb) {
-	        			track_awb(ref_awb,params,function(err,result) {
+	        			track_awb(ref_awb,params.get().aggregator,params,function(err,result) {
 	        				callback(err,result);
 	        			});
 	        		}
@@ -175,13 +177,19 @@ module.exports = Template.extend('EcomExpress', {
 
 });
 
-function track_awb(awb,params,done) {
+function track_awb(awb,aggregator,params,done) {
 	var url = 'http://plapi.ecomexpress.in/track_me/api/mawbd/';
+	let track_username = username;
+	let track_password = password;
+	if(aggregator === 'hipship') {
+		track_username = hipship_username;
+		track_password = hipship_password;
+	}
 	unirest.post(url)
 		.header('Content-Type','application/x-www-form-urlencoded')
 		.send('awb='+awb+'')
-		.send('username='+username+'')
-		.send('password='+password+'')
+		.send('username='+track_username+'')
+		.send('password='+track_password+'')
 		.end(function (response) {
 		  parser(response.body,function(err,result){
 		  	if(err) {
