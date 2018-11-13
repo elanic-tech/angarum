@@ -70,7 +70,7 @@ module.exports = Template.extend('Rapid', {
     }
     // RAPID IS FUCKED UP - THEY DON'T SEND PROPER ERROR/SUCCESS RESPONSE CODES.
     // HENCE USING LENGTH of body as the success as a hack
-    if (body.length === 12 && _.toNumber(body)) {
+    if (_.toNumber(body)) {
       params.set({
         success: true,
         tracking_url: this.get_tracking_url(body),
