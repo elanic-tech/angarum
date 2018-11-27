@@ -120,7 +120,7 @@ module.exports = Template.extend('EcomExpress', {
 		  	var ref_awb = indexes.ref_awb;
 		  	async.parallel([
 	        	function track_return_awb(callback) {
-	        		if(ref_awb) {
+	        		if(ref_awb && _.isNumber(ref_awb)) {
 	        			track_awb(ref_awb,params.get().aggregator,params,function(err,result) {
 	        				callback(err,result);
 	        			});
@@ -133,7 +133,7 @@ module.exports = Template.extend('EcomExpress', {
 	        	if(err) {
 					return cb(results[0],err);
 				}
-				if(ref_awb && results.length > 0 && results[0]['ecomexpress-objects'].object) {
+				if(ref_awb && _.isNumber(ref_awb) && results.length > 0 && results[0]['ecomexpress-objects'].object) {
 					indexes = getIndex(results[0]);
 					var ref_scan_index = indexes.index;
 					details.push.apply(details,getDetails(results[0],ref_scan_index,'RTO'));
