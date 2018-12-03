@@ -44,7 +44,7 @@ module.exports = Schema.extend('Order_schema', {
 	    to_pin_code: "",	   	    
 
 	    //optional
-	    declaration: "I hereby declare that the above mentioned information is true and correct and value declared(value) is for transportation purpose and has no commercial value.Signature:",
+	    declaration: "I hereby declare that the above-mentioned information is true and correct. This is a peer-to-peer transaction which does not hold any business value and hence does not require an Invoice or GST number.",
 	    weight: "",
 	    length: "",
 	    breadth: "",
