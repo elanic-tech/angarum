@@ -115,9 +115,9 @@ module.exports = Template.extend('Delhivery', {
 	    	ship.payment_mode = "cod";
 	    	ship.cod_amount = inp.cod_amount;
 	    }
-	    if(inp.order_type === 'delivery' || inp.order_type === 'sbs' || inp.order_type === 'forward_p2p'){
-	    	ship.total_amount = inp.declared_value;
-		}
+	 //    if(inp.order_type === 'delivery' || inp.order_type === 'sbs' || inp.order_type === 'forward_p2p'){
+	 //    	ship.total_amount = inp.total_amount;
+		// }
 	    // if (pickup.city && pickup.city.toLowerCase() == 'new delhi')
 		// pickup.name = "Elanic Services Pvt. Ltd-DEL";
 	    // else
