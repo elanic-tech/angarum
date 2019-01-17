@@ -1,12 +1,11 @@
-var Template = require('./template.js');
-var querystring = require('querystring');
-var _ = require("lodash");
+const Template = require('./template.js');
+const querystring = require('querystring');
+const _ = require("lodash");
+const host = process.env['SHADOWFAX_HOST'];
+const token = process.env['SHADOWFAX_TOKEN'];
+const auth = "Token token=" + token;
 
-var host = process.env['SHADOWFAX_HOST'];
-var token = process.env['SHADOWFAX_TOKEN'];
-var auth = "Token token=" + token;
-
-var defaults={
+const defaults={
     format: "json",
     output: "json",
     token: process.env["SHADOWFAX_TOKEN"],
@@ -22,7 +21,7 @@ module.exports = Template.extend('Shadowfax', {
     },
 
     order: function(params, cb) {
-		var url = "/api/v3/clients/requests";
+		let url = "/api/v3/clients/requests";
 		// Check out Order schema file for more information.
 		params.map([], {
 		    // "invoice_number" : "client_order_number",
@@ -34,11 +33,16 @@ module.exports = Template.extend('Shadowfax', {
 		    // "from_country": "country",
 		    // "from_mobile_number": "phone_number",
 		}, function(inp) {
-	    	var req = {
+	    	let req = {
           client_order_number: inp.invoice_number,
           client_request_id:inp.reference_number,
-          warehouse_name: (inp.to_city.toLowerCase() == "new delhi") ? "Elanic New Delhi Warehouse" : "Elanic Bangalore Warehouse",
-          destination_pincode: inp.to_pin_code,
+          seller_attributes: {
+					name: inp.to_name,
+					address_line: _.isEmpty(inp.to_address) ? inp.to_address_line_1 + inp.to_address_line_2 : inp.to_address,
+					city: inp.to_city,
+					pincode: inp.to_pin_code,
+					phone: inp.to_mobile_number
+			},
           total_amount: inp.declared_value,
           price: inp.declared_value,
           skus_attributes: [
@@ -77,7 +81,7 @@ module.exports = Template.extend('Shadowfax', {
 		});
 
 		// request headers
-		var headers = {
+		const headers = {
 		    "Authorization": "Token token=" + token,
 		    "Content-type": "application/json"
 		};
@@ -97,9 +101,9 @@ module.exports = Template.extend('Shadowfax', {
     },
 
     single_tracking_status: function(params, cb) {
-		var url = host + "/api/v2/clients/requests/"+params.get().awb_number;
-		var awb = params.get().awb_number;
-		var headers = {
+		let url = host + "/api/v2/clients/requests/"+params.get().awb_number;
+		let awb = params.get().awb_number;
+		const headers = {
 			// "Host":"reverse.shadowfax.in",
 			// "Connection":"keep-alive",
 			// "Accept":"application/json, text/javascript, */*; q=0.01",
@@ -117,7 +121,7 @@ module.exports = Template.extend('Shadowfax', {
 				out = JSON.parse(out);
 
 			if(out.pickup_request_state_histories) {
-				var details = out.pickup_request_state_histories.map(function(scan) {
+				let details = out.pickup_request_state_histories.map(function(scan) {
 					return {
 						"time": scan.created_at,
 						"status": scan.state,
@@ -125,7 +129,7 @@ module.exports = Template.extend('Shadowfax', {
 						"description": scan.comment || "",
 				    };
 				});
-				var res = {
+				let res = {
 					success: true,
 					awb: awb,
 					details: details
@@ -137,7 +141,7 @@ module.exports = Template.extend('Shadowfax', {
     },
 
     cancel: function(params, cb) {
-		var url = host + "/api/v2/clients/requests/mark_cancel";
+		let url = host + "/api/v2/clients/requests/mark_cancel";
 		params.map(["to_be_omitted_1", "to_be_omitted_2"], {
 		    "from_mapping_1" : "to_mapping_1",
 		    "from_mapping_2" : "to_mapping_2",
