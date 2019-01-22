@@ -20,32 +20,6 @@ var defaults={
     output: "json",
     token: process.env["DELHIVERY_TOKEN"],
 };
-const to = {
-	'to_mobile_number': 'mobile_number',
-	'to_pin_code': 'pincode',
-	'to_address': 'address',
-	'to_address_line_1': 'address1',
-	'from_address_line_2': 'address2',
-	'to_city': 'city',
-	'to_state': 'state',
-	'to_country': 'country'
-}
-const from = {
-	'from_mobile_number': 'mobile_number',
-	'from_pin_code': 'pincode',
-	'from_address': 'address',
-	'from_address_line_1': 'address1',
-	'from_address_line_2': 'address2',
-	'from_city': 'city',
-	'from_state': 'state',
-	'from_country': 'country'
-}
-
-renameKeys = (keyMap, obj) => {
-	const result = {};
-	Object.keys(obj).forEach(k => keyMap[k] ? result[keyMap[k]] = obj[k] : result[key] = obj[k]);
-	return result;
-}
 
 // Declare partner specific variables here.
 // Check out other partners for more information.
@@ -283,20 +257,23 @@ module.exports = Template.extend('Delhivery', {
 	
 	warehouse: (params, cb) => {
 		const order_type = params.get().order_type;
-		const obj = (order_type === 'return_pickup') ? _.pick(params.get(), Object.keys(to)) : _.pick(params.get(), Object.keys(from));
-		reqObj = renameKeys(order_type === 'return_pickup' ? to : from, obj);
+		const object = params.get();
+		const assignKey = (order_type === 'return_pickup') ? 'to' : 'from';
+		/**
+		* assignKey is used to assign  the from or to in  in the body of the request i.e. from_pin_code or to_pin_code
+		 */
 		var options = {
 			url: 'https://track.delhivery.com/api/backend/clientwarehouse/create/',
 			method: 'POST',
 			json: true,
 			body: {
-				"name": `${reqObj.pincode}_${reqObj.mobile_number}`,
-				"address": _.isEmpty(reqObj.address) ? reqObj.address1 + reqObj.address2 : reqObj.address,
-				"pin": reqObj.pincode,
-				"phone": reqObj.mobile_number,
-				"city": reqObj.city,
-				"state": reqObj.state,
-				"country": reqObj.country
+			"name": `${object[`${assignKey}_pin_code`]}_${object[`${assignKey}_mobile_number`]}`,
+			"address": _.isEmpty(object[`${assignKey}_address`]) ? object[`${assignKey}__address_line_1`] + object[`${assignKey}_address_line_2`] : object[`${assignKey}_address`],
+			"pin": object[`${assignKey}_pin_code`],
+			"phone": `${object[`${assignKey}_mobile_number}`]}`,
+			"city": `${object[`${assignKey}_city`]}`,
+			"state": `${object[`${assignKey}_state`]}`,
+			"country": `${object[`${assignKey}_country`]}`
 			},
 			headers: {
 			  'Content-Type': 'application/json',
