@@ -270,7 +270,7 @@ module.exports = Template.extend('Delhivery', {
 			"name": `${object[`${assignKey}_pin_code`]}_${object[`${assignKey}_mobile_number`]}`,
 			"address": _.isEmpty(object[`${assignKey}_address`]) ? object[`${assignKey}__address_line_1`] + object[`${assignKey}_address_line_2`] : object[`${assignKey}_address`],
 			"pin": object[`${assignKey}_pin_code`],
-			"phone": `${object[`${assignKey}_mobile_number}`]}`,
+			"phone": `${object[`${assignKey}_mobile_number`]}`,
 			"city": `${object[`${assignKey}_city`]}`,
 			"state": `${object[`${assignKey}_state`]}`,
 			"country": `${object[`${assignKey}_country`]}`
@@ -281,6 +281,8 @@ module.exports = Template.extend('Delhivery', {
 			},
 		};
 		function callback(error, response, body) {
+			console.log(JSON.stringify(options.body) );
+			console.log(JSON.stringify(body));
 			if (error) {
 				params.set({
 					success: false
