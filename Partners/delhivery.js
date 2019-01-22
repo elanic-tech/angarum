@@ -41,12 +41,11 @@ const from = {
 	'from_country': 'country'
 }
 
-renameKeys = (keysMap, obj) => Object
-	.keys(obj)
-	.reduce((acc, key) => ({
-		...acc,
-		...{ [keysMap[key] || key]: obj[key] }
-	}), {});
+renameKeys = (keyMap, obj) => {
+	const result = {};
+	Object.keys(obj).forEach(k => keyMap[k] ? result[keyMap[k]] = obj[k] : result[key] = obj[k]);
+	return result;
+}
 
 // Declare partner specific variables here.
 // Check out other partners for more information.
