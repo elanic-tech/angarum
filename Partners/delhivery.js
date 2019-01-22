@@ -20,6 +20,33 @@ var defaults={
     output: "json",
     token: process.env["DELHIVERY_TOKEN"],
 };
+const to = {
+	'to_mobile_number': 'mobile_number',
+	'to_pin_code': 'pincode',
+	'to_address': 'address',
+	'to_address_line_1': 'address1',
+	'from_address_line_2': 'address2',
+	'to_city': 'city',
+	'to_state': 'state',
+	'to_country': 'country'
+}
+const from = {
+	'from_mobile_number': 'mobile_number',
+	'from_pin_code': 'pincode',
+	'from_address': 'address',
+	'from_address_line_1': 'address1',
+	'from_address_line_2': 'address2',
+	'from_city': 'city',
+	'from_state': 'state',
+	'from_country': 'country'
+}
+
+renameKeys = (keysMap, obj) => Object
+	.keys(obj)
+	.reduce((acc, key) => ({
+		...acc,
+		...{ [keysMap[key] || key]: obj[key] }
+	}), {});
 
 // Declare partner specific variables here.
 // Check out other partners for more information.
@@ -256,18 +283,21 @@ module.exports = Template.extend('Delhivery', {
 	},
 	
 	warehouse: (params, cb) => {
+		const order_type = params.get().order_type;
+		const obj = (order_type === 'return_pickup') ? _.pick(params.get(), Object.keys(to)) : _.pick(params.get(), Object.keys(from));
+		reqObj = renameKeys(order_type === 'return_pickup' ? to : from, obj);
 		var options = {
 			url: 'https://track.delhivery.com/api/backend/clientwarehouse/create/',
 			method: 'POST',
 			json: true,
 			body: {
-				"name":`${params.get().from_pin_code}_${params.get().from_mobile_number}`,
-				"address":_.isEmpty(params.get().from_address) ? params.get().from_address_line_1 + params.get().from_address_line_2 : params.get().from_address,
-				"pin" : params.get().from_pin_code,
-				"phone" : params.get().from_mobile_number,
-				"city": params.get().from_city,
-				"state": params.get().from_state,
-				"country":params.get().from_country
+				"name": `${reqObj.pincode}_${reqObj.mobile_number}`,
+				"address": _.isEmpty(reqObj.address) ? reqObj.address1 + reqObj.address2 : reqObj.address,
+				"pin": reqObj.pincode,
+				"phone": reqObj.mobile_number,
+				"city": reqObj.city,
+				"state": reqObj.state,
+				"country": reqObj.country
 			},
 			headers: {
 			  'Content-Type': 'application/json',
