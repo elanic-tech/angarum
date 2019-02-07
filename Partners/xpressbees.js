@@ -19,7 +19,7 @@ module.exports = Template.extend('XpressBees', {
 	order: function(params, cb) {
 		var self = this;
 		var inp = params.get();
-		var url = (inp.order_type === 'reverse_p2p' || inp.order_type === 'delivery' || inp.order_type === 'sbs' || inp.order_type==='forward_p2p') ? "AddManifestDetails" : "PushReverseManifestDetails";
+		var url = _.includes(['forward_p2p','reverse_p2p','delivery','sbs'],inp.order_type) ? "AddManifestDetails" : "PushReverseManifestDetails";
 		if (inp.order_type==='forward_p2p' || inp.order_type === 'reverse_p2p') {
 			token = process.env['XPRESSBEES_P2P_TOKEN'];
 		} else {
@@ -169,8 +169,8 @@ module.exports = Template.extend('XpressBees', {
 
 	single_tracking_status: function(params, cb) {
 		var url,type;
-		if (params.get().order_type === 'forward_p2p') token = process.env['XPRESSBEES_P2P_TOKEN'];
-		if(params.get().order_type === 'delivery' || params.get().order_type === 'sbs' || params.get().order_type === 'forward_p2p') {
+		if (_.includes(['forward_p2p','reverse_p2p'],params.get().order_type)) token = process.env['XPRESSBEES_P2P_TOKEN'];
+		if (_.includes(['forward_p2p','reverse_p2p','delivery','sbs'],params.get().order_type)) {
 			var options = {
 			  url: host + '/GetShipmentSummaryDetails',
 			  method: 'POST',

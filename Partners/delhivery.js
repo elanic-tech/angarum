@@ -57,10 +57,9 @@ module.exports = Template.extend('Delhivery', {
 	}, function(inp) {
 		inp.to_add = _.isEmpty(inp.to_add) ? inp.to_add_line_1 + inp.to_add_line_2 : inp.to_add;
 		inp.from_add = _.isEmpty(inp.from_add) ? inp.from_add_line_1 + inp.from_add_line_2 : inp.from_add;
-	     if(input.order_type === 'delivery' || input.order_type === 'sbs' || input.order_type === 'forward_p2p') {
+	    if(_.includes(['forward_p2p','reverse_p2p','delivery','sbs'],input.order_type)) {
 	    	var ship = _.extend(_.pick(inp, ["waybill", "to_name", "order", "products_desc", "order_date", "total_amount", "cod_amount", "to_add", "to_city", "to_state", "to_country", "to_phone", "to_pin", "weight", "quantity"]), return_details);
 	    	var pickup = _.pick(inp, ["from_add", "from_city", "from_state", "from_country", "from_name", "from_phone", "from_pin", "name"]);
-			console.log(ship);
 		    for (item in ship) {
 			if (item.indexOf("to_") == 0) {
 			    ship[item.slice(3)] = ship[item];
@@ -108,14 +107,14 @@ module.exports = Template.extend('Delhivery', {
 	       else
 	       ship.cod_amount = 0; 418723,418722
 	       }*/
-	    ship.package_type = (inp.order_type === 'delivery' || inp.order_type === 'sbs' || inp.order_type === 'forward_p2p') ? "pre-paid" : "pickup";
-	    ship.payment_mode = (inp.order_type === 'delivery' || inp.order_type === 'sbs' || inp.order_type === 'forward_p2p') ? "pre-paid" : "pickup";
-	    if((inp.order_type === 'delivery' || inp.order_type === 'sbs' || inp.order_type === 'forward_p2p') && inp.is_cod) {
+	    ship.package_type = _.includes(['forward_p2p','reverse_p2p','delivery','sbs'],inp.order_type) ? "pre-paid" : "pickup";
+	    ship.payment_mode = _.includes(['forward_p2p','reverse_p2p','delivery','sbs'],inp.order_type) ? "pre-paid" : "pickup";
+	    if(_.includes(['forward_p2p','reverse_p2p','delivery','sbs'],inp.order_type) && inp.is_cod) {
 	    	ship.package_type = "cod";
 	    	ship.payment_mode = "cod";
 	    	ship.cod_amount = inp.cod_amount;
 	    }
-	 //    if(inp.order_type === 'delivery' || inp.order_type === 'sbs' || inp.order_type === 'forward_p2p'){
+	 //    if(_.includes(['forward_p2p','reverse_p2p','delivery','sbs'],inp.order_type)){
 	 //    	ship.total_amount = inp.total_amount;
 		// }
 	    // if (pickup.city && pickup.city.toLowerCase() == 'new delhi')
@@ -163,7 +162,7 @@ module.exports = Template.extend('Delhivery', {
 			cb(response,body);
 		}
 	}
-	if(input.order_type === 'delivery' || input.order_type === 'sbs' || input.order_type === 'forward_p2p') {
+	if((_.includes(['forward_p2p','reverse_p2p','delivery','sbs'],input.order_type))) {
 		return self.post_req(url, params, callback, {json: null, body: null, form: params.get()});
 	}
 	else {
@@ -195,7 +194,7 @@ module.exports = Template.extend('Delhivery', {
 		    time.setTime(time.getTime() - 19800000);
 		    return {
 			"time": time,
-			"status": (params.get().order_type === 'delivery' || params.get().order_type === 'forward_p2p') ? scan.ScanType + "-" + scan.Scan : scan.Scan,
+			"status": _.includes(['forward_p2p','reverse_p2p','delivery','sbs'],params.get().order_type) ? scan.ScanType + "-" + scan.Scan : scan.Scan,
 			"location": scan.ScannedLocation,
 			"description": scan.Instructions,
 		    };
