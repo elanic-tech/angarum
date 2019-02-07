@@ -255,18 +255,24 @@ module.exports = Template.extend('Delhivery', {
 	},
 	
 	warehouse: (params, cb) => {
+		const order_type = params.get().order_type;
+		const object = params.get();
+		const assignKey = (order_type === 'return_pickup') ? 'to' : 'from';
+		/**
+		* assignKey is used to assign  the from or to in  in the body of the request i.e. from_pin_code or to_pin_code
+		 */
 		var options = {
 			url: 'https://track.delhivery.com/api/backend/clientwarehouse/create/',
 			method: 'POST',
 			json: true,
 			body: {
-				"name":`${params.get().from_pin_code}_${params.get().from_mobile_number}`,
-				"address":_.isEmpty(params.get().from_address) ? params.get().from_address_line_1 + params.get().from_address_line_2 : params.get().from_address,
-				"pin" : params.get().from_pin_code,
-				"phone" : params.get().from_mobile_number,
-				"city": params.get().from_city,
-				"state": params.get().from_state,
-				"country":params.get().from_country
+			"name": `${object[`${assignKey}_pin_code`]}_${object[`${assignKey}_mobile_number`]}`,
+			"address": _.isEmpty(object[`${assignKey}_address`]) ? object[`${assignKey}__address_line_1`] + object[`${assignKey}_address_line_2`] : object[`${assignKey}_address`],
+			"pin": object[`${assignKey}_pin_code`],
+			"phone": `${object[`${assignKey}_mobile_number`]}`,
+			"city": `${object[`${assignKey}_city`]}`,
+			"state": `${object[`${assignKey}_state`]}`,
+			"country": `${object[`${assignKey}_country`]}`
 			},
 			headers: {
 			  'Content-Type': 'application/json',
@@ -274,6 +280,8 @@ module.exports = Template.extend('Delhivery', {
 			},
 		};
 		function callback(error, response, body) {
+			console.log(JSON.stringify(options.body) );
+			console.log(JSON.stringify(body));
 			if (error) {
 				params.set({
 					success: false
