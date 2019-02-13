@@ -20,6 +20,7 @@ var partners = {
     'rapid': require('./Partners/rapid.js'),
     'dotzot': require('./Partners/dotzot'),
     'hipship':require('./Partners/hipship'),
+    'aramex': require('./Partners/aramex')
 };
 
 //helper methods
