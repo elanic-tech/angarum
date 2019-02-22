@@ -21,6 +21,7 @@ let defaults={
     output: "json",
     token: process.env["DELHIVERY_TOKEN"],
 };
+const surfaceMethods=['reverse_p2p','return_pickup'];
 
 // Declare partner specific variables here.
 // Check out other partners for more information.
@@ -33,7 +34,7 @@ module.exports = Template.extend('Delhivery', {
 
     order: function(params, cb) {
 		const order_type = params.get().order_type;
-		if(_.isEqual(order_type,'reverse_p2p') || _.isEqual(order_type,'return_pickup')) {
+		if(_.includes(surfaceMethods,order_type)) {
 			_.set(defaults,"token",surfaceToken);
 		}
 	var url = "/cmu/push/json/?" + querystring.stringify(_.pick(defaults, ["token"]));
@@ -264,7 +265,7 @@ module.exports = Template.extend('Delhivery', {
 		const order_type = params.get().order_type;
 		const object = params.get();
 		const assignKey = (order_type === 'return_pickup') ? 'to' : 'from';
-		if(_.isEqual(order_type,'reverse_p2p') || _.isEqual(order_type,'return_pickup')) {
+		if(_.includes(surfaceMethods,order_type)) {
 			_.set(defaults,"token",surfaceToken);
 		}
 		/**
