@@ -11,6 +11,94 @@ const defaults={
     token: process.env["SHADOWFAX_TOKEN"],
 };
 
+const forwardPickup=(inp)=>{
+	let req = {
+		"client_request_id":inp.reference_number,
+		"order_details": {
+			"client_order_id": inp.invoice_number,
+			"awb_number": inp.reference_number,
+			"actual_weight": 400,
+			"volumetric_weight": 400,
+			"product_value":inp.declared_value,
+			"payment_mode": inp.is_cod?"COD":"Prepaid",
+			"cod_amount":inp.declared_value,
+			"total_amount": inp.to_pin_code
+		},
+		"customer_details": {
+			"name": inp.to_name,
+			"contact":inp.to_mobile_number,
+			"address_line_1": _.isEmpty(inp.to_address) ? inp.to_address_line_1 + inp.to_address_line_2 : inp.to_address,
+			"city": inp.to_city,
+			"state":  inp.to_state,
+			"pincode": inp.to_pin_code,
+			"alternate_contact": inp.to_mobile_number
+		},
+		"pickup_details": {
+			"name": inp.from_name,
+			"contact": inp.from_mobile_number,
+			"address_line_1": _.isEmpty(inp.from_address) ? inp.from_address_line_1 + inp.from_address_line_2 : inp.from_address,
+			"city": inp.from_city,
+			"state": inp.from_state,
+			"pincode":inp.from_pin_code
+		},
+		"rts_details": {
+			"name": inp.from_name,
+			"contact": inp.from_mobile_number,
+			"address_line_1":  _.isEmpty(inp.from_address) ? inp.from_address_line_1 + inp.from_address_line_2 : inp.from_address,
+			"city":  inp.from_city,
+			"state": inp.from_state,
+			"pincode": inp.from_pin_code
+		},
+		"product_details": [
+			{
+				"invoice_no": inp.invoice_number,
+				"sku_name": inp.item_name,
+				"client_sku_id": inp.reference_number,
+				"price": inp.declared_value,
+				"seller_details": {
+					"seller_name":  inp.from_name,
+					"seller_address": _.isEmpty(inp.from_address) ? inp.from_address_line_1 + inp.from_address_line_2 : inp.from_address,
+					"seller_state": inp.from_state,
+				}
+			}
+		]
+	};
+	return req;
+};
+
+const returnPickup=(inp)=>{
+	let req = {
+		client_order_number: inp.invoice_number,
+		client_request_id:inp.reference_number,
+		seller_attributes: {
+			name: inp.to_name,
+			address_line: _.isEmpty(inp.to_address) ? inp.to_address_line_1 + inp.to_address_line_2 : inp.to_address,
+			city: inp.to_city,
+			pincode: inp.to_pin_code,
+			phone: inp.to_mobile_number
+		},
+		total_amount: inp.declared_value,
+		price: inp.declared_value,
+		skus_attributes: [
+			{
+				name: inp.item_name,
+				client_sku_id: inp.reference_number,
+				price: inp.declared_value
+			}
+		],
+		address_attributes: {
+			name: inp.from_name,
+			address_line: _.isEmpty(inp.from_address) ? inp.from_address_line_1 + inp.from_address_line_2 : inp.from_address,
+			pincode: inp.from_pin_code,
+			city: inp.from_city,
+			state: inp.from_state,
+			country: inp.from_country,
+			phone_number: inp.from_mobile_number,
+		},
+	};
+	return req;
+};
+
 // Declare partner specific variables here.
 // Check out other partners for more information.
 
@@ -21,49 +109,34 @@ module.exports = Template.extend('Shadowfax', {
     },
 
     order: function(params, cb) {
-		let url = "/api/v3/clients/requests";
+		const param= params._obj.order_type==='forward_p2p'? "orders":"requests";
+		let url = `/api/v1/clients/${param}/`;
 		// Check out Order schema file for more information.
-		params.map([], {
-		    // "invoice_number" : "client_order_number",
-		    // "from_name": "name",
-		    // "from_address": "address_line",
-		    // "from_pin_code": "pincode",
-		    // "from_city": "city",
-		    // "from_state": "state",
-		    // "from_country": "country",
-		    // "from_mobile_number": "phone_number",
-		}, function(inp) {
-	    	let req = {
-          client_order_number: inp.invoice_number,
-          client_request_id:inp.reference_number,
-          seller_attributes: {
-					name: inp.to_name,
-					address_line: _.isEmpty(inp.to_address) ? inp.to_address_line_1 + inp.to_address_line_2 : inp.to_address,
-					city: inp.to_city,
-					pincode: inp.to_pin_code,
-					phone: inp.to_mobile_number
-			},
-          total_amount: inp.declared_value,
-          price: inp.declared_value,
-          skus_attributes: [
-                  {
-                          name: inp.item_name,
-                          client_sku_id: inp.reference_number,
-                          price: inp.declared_value
-                  }
-          ],
-          address_attributes: {
-                  name: inp.from_name,
-		  address_line: _.isEmpty(inp.from_address) ? inp.from_address_line_1 + inp.from_address_line_2 : inp.from_address,
-                  pincode: inp.from_pin_code,
-                  city: inp.from_city,
-                  state: inp.from_state,
-                  country: inp.from_country,
-                  phone_number: inp.from_mobile_number,
-          },
-	    	};
-	    	return req;
-		});
+		if(_.isEqual(params._obj.order_type,'forward_p2p')){
+			_.set(defaults,"token",process.env["SHADOWFAX_TOKEN_MARKETPLACE"])
+			params.map([], {
+				// "invoice_number" : "client_order_number",
+				// "from_name": "name",
+				// "from_address": "address_line",
+				// "from_pin_code": "pincode",
+				// "from_city": "city",
+				// "from_state": "state",
+				// "from_country": "country",
+				// "from_mobile_number": "phone_number",
+			}, forwardPickup);
+		}
+		if(_.isEqual(params._obj.order_type,'return_pickup')) {
+			params.map([], {
+				// "invoice_number" : "client_order_number",
+				// "from_name": "name",
+				// "from_address": "address_line",
+				// "from_pin_code": "pincode",
+				// "from_city": "city",
+				// "from_state": "state",
+				// "from_country": "country",
+				// "from_mobile_number": "phone_number",
+			}, returnPickup);
+		}
 
 		params.out_map({
 		    // "client_request_id": "awb",
@@ -82,7 +155,7 @@ module.exports = Template.extend('Shadowfax', {
 
 		// request headers
 		const headers = {
-		    "Authorization": "Token token=" + token,
+		    "Authorization": "Token token=" + defaults.token,
 		    "Content-type": "application/json"
 		};
     //console.log("SHADOWFAX", url, JSON.stringify(inp), JSON.stringify(params), JSON.stringify(headers), JSON.stringify(out));
