@@ -3,6 +3,7 @@ var querystring = require('querystring');
 var _ = require("lodash");
 var request = require('request');
 var host = process.env['DELHIVERY_HOST'];
+const surfaceToken=process.env["DELHIVERY_TOKEN_SURFACE"];
 var pdf = require('../utils/pdf');
 var return_details = {
 /*    "client": "Elanic",
@@ -31,9 +32,10 @@ module.exports = Template.extend('Delhivery', {
     },
 
     order: function(params, cb) {
-	if(_.isEqual(params._obj.delivery_type,'surface')) {
-		_.set(defaults,"token",process.env["DELHIVERY_TOKEN_SURFACE"])
-	}
+		const order_type = params.get().order_type;
+		if(_.isEqual(order_type,'reverse_p2p') || _.isEqual(order_type,'return_pickup')) {
+			_.set(defaults,"token",surfaceToken);
+		}
 	var url = "/cmu/push/json/?" + querystring.stringify(_.pick(defaults, ["token"]));
 	var tracking_url;
 	var self = this;
@@ -262,8 +264,8 @@ module.exports = Template.extend('Delhivery', {
 		const order_type = params.get().order_type;
 		const object = params.get();
 		const assignKey = (order_type === 'return_pickup') ? 'to' : 'from';
-		if(_.isEqual(params._obj.delivery_type,'surface')) {
-			_.set(defaults,"token",process.env["DELHIVERY_TOKEN_SURFACE"])
+		if(_.isEqual(order_type,'reverse_p2p') || _.isEqual(order_type,'return_pickup')) {
+			_.set(defaults,"token",surfaceToken);
 		}
 		/**
 		* assignKey is used to assign  the from or to in  in the body of the request i.e. from_pin_code or to_pin_code
@@ -279,7 +281,9 @@ module.exports = Template.extend('Delhivery', {
 			"phone": `${object[`${assignKey}_mobile_number`]}`,
 			"city": `${object[`${assignKey}_city`]}`,
 			"state": `${object[`${assignKey}_state`]}`,
-			"country": `${object[`${assignKey}_country`]}`
+			"country": `${object[`${assignKey}_country`]}`,
+				"return_address":_.isEmpty(object[`${assignKey}_address`]) ? object[`${assignKey}__address_line_1`] + object[`${assignKey}_address_line_2`] : object[`${assignKey}_address`],
+				"return_pin":object[`${assignKey}_pin_code`]
 			},
 			headers: {
 			  'Content-Type': 'application/json',
