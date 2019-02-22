@@ -32,7 +32,7 @@ module.exports = Template.extend('Delhivery', {
 
     order: function(params, cb) {
 	if(_.isEqual(params._obj.delivery_type,'surface')) {
-		_.set(defaults,token,process.env["DELHIVERY_TOKEN_SURFACE"])
+		_.set(defaults,"token",process.env["DELHIVERY_TOKEN_SURFACE"])
 	}
 	var url = "/cmu/push/json/?" + querystring.stringify(_.pick(defaults, ["token"]));
 	var tracking_url;
@@ -263,7 +263,7 @@ module.exports = Template.extend('Delhivery', {
 		const object = params.get();
 		const assignKey = (order_type === 'return_pickup') ? 'to' : 'from';
 		if(_.isEqual(params._obj.delivery_type,'surface')) {
-			_.set(defaults,token,process.env["DELHIVERY_TOKEN_SURFACE"])
+			_.set(defaults,"token",process.env["DELHIVERY_TOKEN_SURFACE"])
 		}
 		/**
 		* assignKey is used to assign  the from or to in  in the body of the request i.e. from_pin_code or to_pin_code
