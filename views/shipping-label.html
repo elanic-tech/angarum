@@ -1,6 +1,6 @@
-<html>
+<!DOCTYPE html>
   <head>
-      <meta charset="utf8">
+      <meta charset="utf-8">
       <title>Shipping Label</title>
       <script type="text/javascript" src="https://cdn.jsdelivr.net/jsbarcode/3.5.8/JsBarcode.all.min.js"></script>
 
@@ -30,100 +30,159 @@
       @media print, screen {
         body {}
         .page { margin: "auto"; padding-top : 15px; width: 14cm;}
-        .title { font-style: 10px; margin-bottom: 8px; font-weight: bold;}
+        .title { font-size: 21px;font-weight: bold;text-align: center;}
         .subtitle { font-size: 9px; margin-bottom: 20px;}
         .mb20 { margin-bottom: 7px;}
-        .text { font-size: 9px; padding-left: 10px;padding-bottom: 5px;}
-        .tiny-text { font-size: 7px;}
+        .largesection { width: 20%;  }
+        .smallsection { width: 10%; }
+        .text { font-size: 12px;}
+        .smalltext { font-size: 10px;}
+        .zeroheight { line-height: 10px; }
+        .tiny-text { font-size: 8px; line-height: 10px}
         .pad { padding: 9px; position: relative; }
         .canvas { width: 200px; }
-        .bold { font-weight: bold; font-size: 8px; padding: 6px; font-family: 'Helvetica Neue', Arial, Sans serif;}
-        .declare-text-bold { font-weight: bold; font-size: 9px; font-family: 'Helvetica Neue', Arial, Sans serif; }
-        .declare-text-bold-underline { font-weight: bold; font-size: 9px; font-family: 'Helvetica Neue', Arial, Sans serif; text-decoration: underline; }
-        .declare-text { font-size: 9px;  }
-        .declare-heading { font-size: 7px; line-height: 7px; padding-bottom: 20px; }
-        .declare-text-signature { font-size: 8px; text-align: right; padding-bottom: 0px; padding-top: 0px}
+        .bold { font-weight: bold; font-size: 12px; font-family: 'Helvetica Neue', Arial, Sans serif;}
+        .smallbold { font-weight: bold; font-size: 10px; font-family: 'Helvetica Neue', Arial, Sans serif;}
+        .declare-text-bold { font-weight: bold; font-size: 11px; font-family: 'Helvetica Neue', Arial, Sans serif; }
+        .declare-text-bold-underline { font-weight: bold; font-size: 11px; font-family: 'Helvetica Neue', Arial, Sans serif; text-decoration: underline; }
+        .declare-text { font-size: 11px;  }
+        .note-text { font-size: 9px; line-height: 7px; }
+        .note-text-bold { font-size: 9px; font-weight: bold; line-height: 10px;}
+        .declare-heading { font-size: 9px; line-height: 7px; padding-bottom: 20px;margin-top: 7px; }
         .declare-div {padding : 5px;}
         .table {  }
-        .manifest {position: absolute; bottom:0; width: 100%}
-        .declare-manifest { font-size: 7px; }
-        .break-line { float: left; width: 100%; padding-bottom: 10px;}
+        #awb { text-align: center; font-weight: bold; font-size: 15px; margin-bottom: 8px;}
+        .manifest {width: 100%; padding-top: 10px;}
+        .break-line { float: left; width: 100%; padding-bottom: 1px;}
         .scissor {width: 4.5%; float: left; height: 100%; }
-        .break-line hr {width: 95%; height: 100%; float: left;}
-      }
-      }
+        .block { margin: 2.5px 5px; }
+        .break-line hr {width: 95%;  float: left; height: 100%;}
+        }
       </style>
   </head>
   <body>
     <div class="page">
       <table class="table" border="1 solid black" cellpadding="0" cellspacing="0">
         <tr class="pad">
-          <td colspan="3"><div class="title" align="center"><%= partner %></div></td>
+          <td colspan="3"><div class="title"><%= partner %></div></td>
           <td colspan="3" align="center"><img src="http://elanic.in/images/logo.png" width="100px" height="32px"></td>
         </tr>
-        <tr class="pad">
-          <td style="width: 34%" colspan="2"><div><canvas class="canvas" align="center" id="barcode"></canvas><p align="center"> <%= awb %> </p></div></td>
-          <td style="width: 33%" colspan="2">
-            <div class="bold">COURIER PARTNER : <%= partner %></div>
-            <div class="bold">CLIENT INVOICE : <%= invoice_id %></div>
-            <div class="bold">PRODUCT :  <%= product_desc %></div>
-          </td>
-          <td style="width: 33%" colspan="2" >
+        <tr class="pad" valign="top">
+          <td style="width: 34%" colspan="2"><div><canvas class="canvas" align="center" id="barcode"></canvas> <div id="awb"><%= awb %></div></div></td>
+          <td style="width: 33%;padding: 5px;" colspan="2">
             <div class="bold">COD-COLLECT : Rs <%= cod_amount %></div>
             <div class="bold">PAYMENT MODE : <%= payment_mode %></div>
             <% if(destination_code) { %>
             <div class="bold">DEST CODE : <%= destination_code %></div>
             <% } %>
           </td>
+          <td style="width: 33%" colspan="2" rowspan="2" >
+            <div class="block">
+              <div><span class="smallbold">Bill To : </span> <span class="smalltext"><%= fromAddress.name %></span></div>
+              <div class="zeroheight"><span class="smallbold">Courier Partner : </span> <span class="smalltext"><%= partner %></span></div>
+              <div><span class="smallbold">Client Invoice No: </span><span class="smalltext"><%= invoice_id %></span>
+              </div>
+            </div>
+            <div class="block">
+              <div><span class="smallbold">Product :  </span><span class="smalltext"><%= product_desc %></span></div>
+            </div>
+            <div class="block">
+              <div><span class="smallbold">HSN Code :  </span><span class="smalltext"><%= hsn %></span></div>
+            </div>
+            <div class="block">
+              <div><span class="smallbold">Quantity :  </span><span class="smalltext"><%= quantity %></span></div>
+            </div>
+            <div class="block">
+              <div><span class="smallbold">Amount :  </span><span class="smalltext"><%= cod_amount %></span></div>
+            </div>
+            <div class="block">
+              <div><span class="smallbold">GST Number :  </span><span class="smallbold"><%= gst %></span></div>
+            </div>
+          </td>
         </tr>
         <tr class="pad">
-          <td colspan="3">
-            <div class="bold">Ship From</div>
-            <div class="text">Name : <%= fromAddress.name %></div>
-            <div class="text">Address : <%= fromAddress.address %></div>
-            <div class="text">City : <%= fromAddress.city %></div>
-            <div class="text">State : <%= fromAddress.state %></div>
-            <div class="text">PIN : <%= fromAddress.pin %></div>
-            <div class="text">Mobile Number : <%= fromAddress.number %>, <%= fromAddress.alternate_phone %></div>
-            <div class="text">Email : <%= fromAddress.email %></div>
-          </td>
-          <td colspan="3">
-            <div class="bold">Ship To</div>
-            <div class="text">Name : <%= toAddress.name %></div>
-            <div class="text">Address : <%= toAddress.address %></div>
-            <div class="text">City : <%= toAddress.city %></div>
-            <div class="text">State : <%= toAddress.state %></div>
-            <div class="text">PIN : <%= toAddress.pin %></div>
-            <div class="text">Mobile Number : <%= toAddress.number %>, <%= toAddress.alternate_phone %></div>
-            <div class="text">Email : <%= toAddress.email %></div>
+          <td colspan="4">
+            <div class="block">
+              <div class="bold">Ship To</div>
+              <div class="zeroheight"><span class="bold">Name : </span><span class="text"><%= toAddress.name %></span></div>
+              <div><span class="bold">Address : </span><span class="text"><%= toAddress.address %></span></div>
+            </div>
+            <div class="block">
+              <table style="width: 100%;">
+                <tr>
+                  <td class="bold" style="width:20%;">Locality :</td>
+                  <td class="text" style="width:40%;"><%= toAddress.locality %></td>
+                  <td class="bold" style="width:15%;">City :</td>
+                  <td class="text" style="width:25%;"><%= toAddress.city %></td>
+                </tr>
+                <tr class="zeroheight">
+                  <td class="bold">State :</td>
+                  <td class="text"><%= toAddress.state %></td>
+                  <td class="bold">PIN :</td>
+                  <td class="text"><%= toAddress.pin + "" %></td>
+                </tr>
+              </table>
+              <div>
+                <span class="bold" style="font-size: 12px">Mobile Number : </span>
+                <span class = "bold" style="font-size: 12px"><%= toAddress.number + "" %></span>
+              </div>
+            </div>
           </td>
         </tr>
         <tr class="pad">
           <td colspan="6">
           <div class="declare-div">
             <div><span class="declare-text-bold">Self Declaration Form : To whomsoever it may concern</span></div>
-            <div><span class="declare-text">Name :</span><span class="declare-text"><%= fromAddress.name + " " + fromAddress.address %></span></div>
-            <div><span class="declare-text">PIN :</span><span class="declare-text"><%= fromAddress.pin + " "%></span>
-            <span class="declare-text">Mobile Number : <%= fromAddress.number + " " %></span><span class="declare-text">Email : <%=  fromAddress.email %></span></div>
-            <%if(declaration) {%>
-              <div><span class="tiny-text"><%= declaration %></span></div>
-            <%} else {%>
-              <div><span class="tiny-text">I hereby declare that the above mentioned information is true and correct and value declared(value) is for transportation purpose and has no
-commercial value.Signature:</span></div>
-            <%}%>
+              <div class="tiny-text">I hereby declare that the above mentioned information including the GST number is true and correct and I am liable to deposit any taxes if applicable on such transaction. In case my GST number is not mentioned above then I declare that I do not require a GST registration as per the government rules and regulations and I take the sole liability with respect to any legal issue arising.</div>
+            <div>
+              <span class="bold">Name :</span>
+              <span class="text"><%= fromAddress.name %></span>
+              <span class="bold">, Pickup / Return Address :</span>
+              <span class="text"><%= fromAddress.address %></span>
+            </div>
+            <div class="zeroheight">
+              <span class="bold">Locality :</span>
+              <span class="text"><%= fromAddress.locality %></span>
+            </div>
+            <table style="width: 100%;">
+              <tr>
+                <td class="bold" colspan="1">City :</td>
+                <td class="text" colspan="2"><%= fromAddress.city %></td>
+                <td class="bold" colspan="1">State :</td>
+                <td class="text" colspan="2"><%= fromAddress.state %></td>
+                <td class="bold" colspan="1">PIN :</td>
+                <td class="text" colspan="2"><%= fromAddress.pin + "" %></td>
+                <td class="tiny-text" style="vertical-align: bottom;font-style: weight;" colspan="1">Signature : </td>
+              </tr>
+            </table>
+          </div>
           </div>
           </td>
         </tr>
       </table>
+      <div class="break-line">
+        <span class="scissor">&#x2702;</span><hr style="border: dashed 1px;"/>
+      </div>
       <% if(order_type==="forward_p2p" || order_type==="reverse_p2p") { %>
-        <img src="https://s3-ap-south-1.amazonaws.com/elanicimages/banner_164b4acc3584c8783ffb0ea185ce3040_Shipping%20Label-03.jpg" width="100%">
         <div class="manifest">
-          <div class="break-line">
-            <span class="scissor">&#x2702;</span><hr style="border: dashed 1px;"/>
+          <div class="note">
+            <div class="tiny-text">
+              If Pickup is not happening kindly report the same by reaching out to us through chat support on your Elanic app or email at: <span style="color:blue;text-decoration: underline">reach@elanic.in </span>
+            </div>
+            <div class="note-text-bold">
+              Please Note:
+            </div>
+            <div class="tiny-text block">
+    Elanic merely collects the payment on behalf of the seller. All applicable taxes and levies, the rates thereof and the manner of applicability of
+    such taxes on the bill are being charged and determined by the seller. Elanic holds no responsibility for the legal correctness/validity of the levy
+    of such taxes. The sole liability with respect to any legal issue arising on the taxes payable shall be with the seller.
+    The transaction is bilateral between the seller and the buyer and therefore, Elanic is not liable to charge or deposit any taxes applicable on such
+    transaction.
           </div>
+        </div>
           <div class="declare-heading">
             <span class="declare-text-bold-underline">Customer Copy</span>
-            <span class="declare-text">[ Please take Pickup executive's signature on this and retain this as a proof of pickup ( If required). ]</span>
+            <span class="note-text">[Please take Pickup executive's signature on this and retain this as a proof of pickup]</span>
           </div>
           <table border="solid black" cellpadding="0" cellspacing="0">
             <tr class="pad">
@@ -167,13 +226,13 @@ commercial value.Signature:</span></div>
               </div></td>
             </tr>
           </table>
-          <div class="declare-text-signature" align="right">Pickup Executive's Signature</div>
+          <div class="declare-text-bold" align="right" style="padding:10px">Pickup Executive's Signature</div>
           <div class="break-line">
             <span class="scissor">&#x2702;</span><hr style="border: dashed 1px;"/>
           </div>
           <div class="declare-heading">
             <span class="declare-text-bold-underline">Pickup Executive Copy</span>
-            <span class="declare-text">[ Please sign and handover this copy to the Pickup Executive (If required) ]</span>
+            <span class="note-text">[Please sign and handover this copy to the Pickup Executive ]</span>
           </div>
           <table border="solid black" cellpadding="0" cellspacing="0">
             <tr class="pad">
@@ -217,7 +276,7 @@ commercial value.Signature:</span></div>
               </div></td>
             </tr>
           </table>
-          <div class="declare-text-signature">Customer's Signature</div>
+          <div class="declare-text-bold" align="right" style="padding:10px">Customer's Signature</div>
         </div>
       <% } %>
       </div>
