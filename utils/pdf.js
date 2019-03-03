@@ -66,6 +66,9 @@ function parseOrder(object,done) {
 	data.partner = object.partner_name;
 	data.awb = object.reference_number;
 	data.invoice_id = object.orders[0];
+	data.hsn = '';
+	data.quantity = 1;
+	data.gst = object.gst || 'NA';
 	// @TODO: support multiple orders for pickup
 	data.routing_code = object.order_ids[0];
 	data.product_desc = object.item_name;
@@ -82,6 +85,7 @@ function parseOrder(object,done) {
 		city : object.from_city,
 		state : object.from_state,
 		pin : object.from_pin_code,
+		locality: object.from_locality || '',
 		number : /*_.get(object, "order_type", "") === "forward_p2p" ? "CONFIDENTIAL" :*/ object.from_mobile_number,
 		alternate_phone: object.from_alternate_mobile_number,
 		email : 'None'
@@ -92,6 +96,7 @@ function parseOrder(object,done) {
 		city : object.to_city,
 		state : object.to_state,
 		pin : object.to_pin_code,
+		locality: object.to_locality || '',
 		number : /*_.get(object, "order_type", "") === "forward_p2p" ? "CONFIDENTIAL" :*/ object.to_mobile_number,
 		alternate_phone: object.to_alternate_mobile_number,
 		email : 'None'
