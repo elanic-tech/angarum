@@ -43,12 +43,13 @@
         .canvas { width: 200px; }
         .bold { font-weight: bold; font-size: 12px; font-family: 'Helvetica Neue', Arial, Sans serif;}
         .smallbold { font-weight: bold; font-size: 10px; font-family: 'Helvetica Neue', Arial, Sans serif;}
+        .billsection { font-size: 9px;}
         .declare-text-bold { font-weight: bold; font-size: 11px; font-family: 'Helvetica Neue', Arial, Sans serif; }
         .declare-text-bold-underline { font-weight: bold; font-size: 11px; font-family: 'Helvetica Neue', Arial, Sans serif; text-decoration: underline; }
         .declare-text { font-size: 11px;  }
         .note-text { font-size: 9px; line-height: 7px; }
         .note-text-bold { font-size: 9px; font-weight: bold; line-height: 10px;}
-        .declare-heading { font-size: 9px; line-height: 7px; padding-bottom: 20px;margin-top: 7px; }
+        .declare-heading { font-size: 9px; line-height: 7px; padding-bottom: 15px;margin-top: 7px; }
         .declare-div {padding : 5px;}
         .table {  }
         #awb { text-align: center; font-weight: bold; font-size: 15px; margin-bottom: 8px;}
@@ -70,17 +71,17 @@
         <tr class="pad" valign="top">
           <td style="width: 34%" colspan="2"><div><canvas class="canvas" align="center" id="barcode"></canvas> <div id="awb"><%= awb %></div></div></td>
           <td style="width: 33%;padding: 5px;" colspan="2">
-            <div class="bold">COD-COLLECT : Rs <%= cod_amount %></div>
-            <div class="bold">PAYMENT MODE : <%= payment_mode %></div>
+            <div class="smallbold">COD-COLLECT : Rs <%= cod_amount %></div>
+            <div class="smallbold">PAYMENT MODE : <%= payment_mode %></div>
             <% if(destination_code) { %>
-            <div class="bold">DEST CODE : <%= destination_code %></div>
+            <div class="smallbold">DEST CODE : <%= destination_code %></div>
             <% } %>
           </td>
           <td style="width: 33%" colspan="2" rowspan="2" >
             <div class="block">
-              <div><span class="smallbold">Bill To : </span> <span class="smalltext"><%= fromAddress.name %></span></div>
-              <div class="zeroheight"><span class="smallbold">Courier Partner : </span> <span class="smalltext"><%= partner %></span></div>
-              <div><span class="smallbold">Client Invoice No: </span><span class="smalltext"><%= invoice_id %></span>
+              <div><span class="bold" style="font-size: 9px">Bill To : </span> <span class="billsection"><%= fromAddress.name %></span></div>
+              <div class="zeroheight"><span class="bold" style="font-size: 9px">Courier Partner : </span> <span class="billsection"><%= partner %></span></div>
+              <div><span class="bold" style="font-size: 9px">Client Invoice No: </span><span class="billsection"><%= invoice_id %></span>
               </div>
             </div>
             <div class="block">
@@ -94,6 +95,7 @@
             </div>
             <div class="block">
               <div><span class="smallbold">Amount :  </span><span class="smalltext"><%= cod_amount %></span></div>
+              <div class="tiny-text">(Includes GST or any other Govt. taxes if applicable)</div>
             </div>
             <div class="block">
               <div><span class="smallbold">GST Number :  </span><span class="smallbold"><%= gst %></span></div>
@@ -123,9 +125,12 @@
                 </tr>
               </table>
               <div>
-                <span class="bold" style="font-size: 12px">Mobile Number : </span>
-                <span class = "bold" style="font-size: 12px"><%= toAddress.number + "" %></span>
+                <span class="bold">Mobile Number : </span>
+                <span class = "bold"><%= toAddress.number + "" %></span>
               </div>
+              <% if(toAddress.alternate_phone) { %>
+                <span class = "bold">, <%= toAddress.alternate_phone + "" %></span>
+              <% } %>
             </div>
           </td>
         </tr>
@@ -139,9 +144,7 @@
               <span class="text"><%= fromAddress.name %></span>
               <span class="bold">, Pickup / Return Address :</span>
               <span class="text"><%= fromAddress.address %></span>
-            </div>
-            <div class="zeroheight">
-              <span class="bold">Locality :</span>
+              <span class="bold">, Locality :</span>
               <span class="text"><%= fromAddress.locality %></span>
             </div>
             <table style="width: 100%;">
@@ -226,7 +229,7 @@
               </div></td>
             </tr>
           </table>
-          <div class="declare-text-bold" align="right" style="padding:10px">Pickup Executive's Signature</div>
+          <div class="declare-text-bold" align="left" style="margin: 10px 0;">Pickup Executive's Signature : </div>
           <div class="break-line">
             <span class="scissor">&#x2702;</span><hr style="border: dashed 1px;"/>
           </div>
@@ -276,7 +279,7 @@
               </div></td>
             </tr>
           </table>
-          <div class="declare-text-bold" align="right" style="padding:10px">Customer's Signature</div>
+          <div class="declare-text-bold" align="left" style="margin: 10px 0;">Customer's Signature : </div>
         </div>
       <% } %>
       </div>
