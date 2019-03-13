@@ -260,7 +260,38 @@ module.exports = Template.extend('Delhivery', {
 
 	// return this.post_req(url, params, cb, {headers: {"Authorization": "Token " + defaults.token}});
 	},
-	
+	notify : (params,cb)=>{
+		const data={
+			"data": [
+				{
+					"waybill": _.get(params,'awb'),
+					"act": "RE-ATTEMPT"
+				}
+			]
+		};
+		const options={
+			url: 'https://track.delhivery.com/api/p/update',
+			method: 'POST',
+			json: true,
+			body: data,
+			headers:{
+				'Content-Type': 'application/json',
+				'Authorization': "Token " + defaults.token
+			}
+		};
+		function  callback(error,response, body) {
+			if (error) {
+				_.set(params,'success',false);
+				cb(response, params);
+			}
+			//because delivery always sends success even if data is wrong.
+			_.set(params,'success',true);
+			cb(response,params);
+
+		}
+
+		return request(options,callback);
+	},
 	warehouse: (params, cb) => {
 		const order_type = params.get().order_type;
 		const object = params.get();
