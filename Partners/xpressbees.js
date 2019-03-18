@@ -157,6 +157,36 @@ module.exports = Template.extend('XpressBees', {
 		}
 		return request(options, callback);
 	},
+	notify: (params,cb)=>{
+	const url= `${host}/UpdateNDRDeferredDeliveryDate`;
+	const body={
+		"ShippingID": params.awb,
+		"DeferredDeliveryDate": params.deliveryDate,
+		"AlternateCustomerMobileNumber": params.customer_mobile,
+		"AlternateCustomerAddress": params.address,
+		"CustomerPincode": params.pincode
+	};
+	const options={
+		url:url,
+		method:'POST',
+		json: true,
+		body:body,
+		headers:{
+			'Content-Type': 'application/json',
+			'XBKey': token
+		}
+	};
+	function  callback(error, response,body) {
+		if(!_.isEqual(_.get(body,'UpdateNDRDeferredDeliveryDate.ReturnCode'),'100')){
+			_.set(params,'success',false);
+			_.set(body,'message',_.get(body,'UpdateNDRDeferredDeliveryDate.ReturnMessage'));
+			cb(body,params);
+		}
+		_.set(params,'success',true);
+		cb(body,params);
+	}
+	return request(options,callback);
+},
 
 	track: function(params, cb) {
 	params.set({"tracking_url": this.get_tracking_url(params.get().awb_number) });
