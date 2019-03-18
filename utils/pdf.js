@@ -78,6 +78,7 @@ function parseOrder(object,done) {
 	data.declaration = object.declaration;
 	data.invoice_date = GetFormattedDate(object.invoice_date);
 	data.order_type = object.order_type;
+	data.selling_price = object.declared_value;
 	data.destination_code = (object.destination_code) ? object.destination_code : undefined;
 	data.fromAddress = {
 		name : object.from_name,
@@ -123,6 +124,7 @@ function parseFedexOrder(object,done) {
 	data.declaration = object.declaration;
 	data.is_cod = object.is_cod;
 	data.formId = object.formId;
+	data.selling_price = object.declared_value;
 	data.codFormId = (object.is_cod) ? object.codFormId : '';
 	data.routing = object.routing_number;
 	data.date = date_part[1] + " " + date_part[2] + ", " + date_part[3];
@@ -137,7 +139,6 @@ function parseFedexOrder(object,done) {
 	data.routing_code = object.order_ids[0];
 	data.product_desc = object.item_name;
 	data.cod_amount = object.cod_amount;
-	data.declaration = object.declaration;
 	data.shipDate = GetFormattedDate();
 	data.AirportId = object.AirportId;
 	data.AstraPlannedServiceLevel = object.AstraPlannedServiceLevel;
