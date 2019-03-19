@@ -149,6 +149,33 @@ module.exports = Template.extend('EcomExpress', {
 			});
 		});
     },
+	notify:(params,cb)=>{
+	const url=`${host}/apiv2/ndr_resolutions/`;
+	const body=[];
+	const param= {
+		"awb":_.get(params,'awb'),
+		"comments":_.get(params,'message'),
+		"instruction": "RAD"
+	};
+	body.push(param);
+	unirest.post(url)
+		.headers('Content-Type','application/x-www-form-urlencoded')
+		.send('username='+username+'')
+		.send('password='+password+'')
+		.send('json_input='+JSON.stringify(body)+'')
+		.end((response)=>{
+			//since ecomexpress send array of objects
+			const responseData= response.body[0];
+			if(responseData.status){
+				_.set(params,'success',false);
+				_.set(responseData,'message',_.get(responseData,'error'));
+				cb(responseData,params);
+			}
+			_.set(params,'success',true);
+			cb(responseData,params);
+		});
+
+},
 
     cancel: function(params, cb) {
     	var url = host + "apiv2/cancel_awb/";
