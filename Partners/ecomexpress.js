@@ -59,7 +59,8 @@ module.exports = Template.extend('EcomExpress', {
 			"RETURN_ADDRESS_LINE2" : "",
 			"RETURN_PINCODE" : inp.from_pin_code+"",
 			"RETURN_MOBILE": inp.from_mobile_number+"",
-			"RETURN_PHONE" : ""
+			"RETURN_PHONE" : "",
+			"ROUTE": inp.destination_code
 		}]
 		unirest.post(url)
 			.header('Content-Type','application/x-www-form-urlencoded')
