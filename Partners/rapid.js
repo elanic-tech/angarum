@@ -160,26 +160,6 @@ module.exports = Template.extend('Rapid', {
 	return this.post_req(url, params, cb);
     },
 
-  // pickup: function(params, cb) {
-  //   var url = "/api/pickup.php";
-  //   params.map(["to_be_omitted_1", "to_be_omitted_2"], {
-  //     "from_mapping_1" : "to_mapping_1",
-  //     "from_mapping_2" : "to_mapping_2",
-  //   }, function(inp) {
-  //     return _.extend({
-  //       "token": token,
-  //       "client": client,
-  //     }, inp);
-  //   });
-  //
-  //   params.out_map({}, function(out) {
-  //     out.success = !Boolean(out.err);
-  //     return out;
-  //   });
-  //
-  //   return this.post_req(url, params, cb);
-  // },
-
   pickup: function(params, cb) {
     var url = `${host}/api/pickup.php`;
     // Check out Order schema file for more information.
