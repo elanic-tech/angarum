@@ -17,90 +17,66 @@ module.exports = Template.extend('Rapid', {
     },
 
     order: function(params, cb) {
-	var url = `${host}/api/createpackage.php`;
-	// Check out Order schema file for more information.
+      var url = `${host}/api/createpackage.php`;
+      // Check out Order schema file for more information.
 
-  const inp = params.get();
-  if(_.isEmpty(inp.from_address_line_1)) {
-    inp.from_address_line_1 = inp.from_address;
-  }
-  if(_.isEmpty(inp.to_address_line_1)) {
-    inp.to_address_line_1 = inp.to_address;
-  }
-  let req = {};
+      const inp = params.get();
+      if (_.isEmpty(inp.from_address_line_1)) {
+        inp.from_address_line_1 = inp.from_address;
+      }
+      if (_.isEmpty(inp.to_address_line_1)) {
+        inp.to_address_line_1 = inp.to_address;
+      }
+      let req = {};
 
-  if (inp.order_type === "pickup") {
-    req = {
-      client,
-      token,
-      oid: inp.invoice_number,
-      consignee: inp.from_name,
-      add1: inp.from_address_line_1,
-      add2: inp.from_address_line_2,
-      pin: inp.from_pin_code,
-      city: inp.from_city,
-      state: inp.from_state,
-      country: inp.from_country,
-      phone: inp.from_mobile_number,
-      weight: 0.4,
-      mode: imp.is_cod? 'cod' : 'prepaid',
-      ret_add: inp.to_address_line_1 + inp.to_address_line_2,
-      ship_pin: inp.to_pin_code,
-      ship_phone: inp.to_mobile_number,
-      ship_company: 'Elanic',
-      amt: inp.declared_value,
-      product: inp.item_name
-    }
-  }
+      if (inp.order_type === "pickup") {
+        req = {
+          client,
+          token,
+          oid: inp.invoice_number,
+          consignee: inp.from_name,
+          add1: inp.from_address_line_1,
+          add2: inp.from_address_line_2,
+          pin: inp.from_pin_code,
+          city: inp.from_city,
+          state: inp.from_state,
+          country: inp.from_country,
+          phone: inp.from_mobile_number,
+          weight: 0.4,
+          mode: imp.is_cod ? 'cod' : 'prepaid',
+          ret_add: inp.to_address_line_1 + inp.to_address_line_2,
+          ship_pin: inp.to_pin_code,
+          ship_phone: inp.to_mobile_number,
+          ship_company: 'Elanic',
+          amt: inp.declared_value,
+          product: inp.item_name
+        }
+      }
 
-  const postReq = unirest.post(url);
-  postReq.header('Content-Type', 'application/x-www-form-urlencoded');
+      const postReq = unirest.post(url);
+      postReq.header('Content-Type', 'application/x-www-form-urlencoded');
 
-  for (let key in req) {
-    postReq.send(`${key}=${req[key]}`);
-  }
+      for (let key in req) {
+        postReq.send(`${key}=${req[key]}`);
+      }
 
-  postReq.end((response) => {
-    const body = _.get(response, "body");
-    if (_.isEmpty(body)) {
-      params.set({
-        success: false,
-        err: "Rapid Unknown Error"
+      postReq.end((response) => {
+        const error = _.get(response, "body.error");
+        const waybill = _.get(response, "body.waybill");
+        if (!response.ok || error || _.isEmpty(waybill)) {
+          params.set({
+            success: false,
+            err: error,
+          });
+        } else {
+          params.set({
+            success: true,
+            tracking_url: this.get_tracking_url(waybill),
+            awb: waybill
+          });
+          return cb(response, params);
+        }
       });
-    }
-    // RAPID IS FUCKED UP - THEY DON'T SEND PROPER ERROR/SUCCESS RESPONSE CODES.
-    // HENCE USING LENGTH of body as the success as a hack
-    if (_.toNumber(body)) {
-      params.set({
-        success: true,
-        tracking_url: this.get_tracking_url(body),
-        awb: body
-      });
-    } else {
-      params.set({
-        success: false,
-        err: body
-      });
-    }
-    return cb(response, params);
-  });
-
-
-	// params.map([], {
-	// }, function(inp) {
-  //
-  //
-  //
-	//     // return req;
-	// });
-  //
-	// params.out_map({
-	// }, function(out) {
-	//    console.log(out);
-	//    return out;
-	// });
-  //
-	// // return this.post_req(url, params, cb);
   },
 
     track: function(params, cb) {
@@ -115,14 +91,33 @@ module.exports = Template.extend('Rapid', {
     },
 
     single_tracking_status: function (params, cb) {
-      const awb = params.get().awb_number;
-      const url = get_tracking_url(params.get().awb_number);
-      const headers = {};
-      params.out_map({
-        "err": "error"
-      }, (out) => {
-        if (String == out.constructor) out = JSON.parse(out);
-        if (out.scans) {
+      var url = `${host}/api/track.php`;
+      // Check out Order schema file for more information.
+
+      let queryParams = {
+        client,
+        token,
+        waybill: params.get().awb_number
+      };
+
+      const getReq = unirest.get(url);
+
+      getReq.query(queryParams);
+
+      getReq.end((response) => {
+        const responseBody = _.get(response, "body");
+        if (!response.ok ||
+            !responseBody ||
+            responseBody.status === null ||
+            responseBody.flow === null ||
+            !Array.isArray(responseBody.scans) ||
+            responseBody.scans.filter(s => !s.flow).length !== 0
+          ) {
+          params.set({
+            success: false,
+            err: "Invalid waybill number or Bad request",
+          });
+        } else {
           var details = out.scans.map((scan) => {
             return {
               "time": scan.timestamp,
@@ -130,34 +125,47 @@ module.exports = Template.extend('Rapid', {
               "description": scan.remarks,
             }
           });
-          var res = {
+          params.set({
             success: true,
-            awb,
-            details
-          }
+            details: details,
+            awb: params.get().awb_number
+          });
+          return cb(response, params);
         }
-        return res;
-      })
-      return this.get_req(url, params, cb, {url, headers});
+      });
     },
 
     cancel: function(params, cb) {
-	var url = "/api/packages/cancel/";
-	params.map(["to_be_omitted_1", "to_be_omitted_2"], {
-	    "from_mapping_1" : "to_mapping_1",
-	    "from_mapping_2" : "to_mapping_2",
-	}, function(inp) {
-	    return _.extend({
-		"auth_token": 'sfwerlkjwevs',
-	    }, inp);
-	});
+      var url = `${host}/api/v2/cancel.php`;
+      // Check out Order schema file for more information.
 
-	params.out_map({}, function(out) {
-	    out.success = !Boolean(out.err);
-	    return out;
-	});
+      let requestBody = {
+        client,
+        token,
+        waybill: params.get().awb_number
+      };
 
-	return this.post_req(url, params, cb);
+      const postReq = unirest.get(url);
+
+      postReq.send(requestBody);
+
+      postReq.end((response) => {
+        const responseBody = _.get(response, "body");
+        if (!response.ok ||
+            !responseBody ||
+            (responseBody.status_code !== "200" && responseBody.status_code !== "201")
+        ) {
+          params.set({
+            success: false,
+            err: responseBody.message,
+          });
+        } else {
+          params.set({
+            success: true
+          });
+          return cb(response, params);
+        }
+      });
     },
 
   pickup: function(params, cb) {
