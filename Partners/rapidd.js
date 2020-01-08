@@ -72,10 +72,10 @@ module.exports = Template.extend('Rapidd', {
         error = _.get(response, "body")
       }
       const waybill = _.get(body, "waybill");
-      if (!response.ok || error || _.isEmpty(waybill)) {
+      if (!response.ok || error || _.isEmpty(waybill) || _.get(response, "status_code") !== "200") {
         params.set({
           success: false,
-          err: error,
+          err: error || _.get(response, "message"),
         });
       } else {
         params.set({
@@ -151,29 +151,32 @@ module.exports = Template.extend('Rapidd', {
     let requestBody = {
       client,
       token,
-      waybill: params.get().awb_number
+      waybill: params.get().awb
     };
 
-    const postReq = unirest.get(url);
+    const postReq = unirest.post(url);
 
     postReq.send(requestBody);
 
     postReq.end((response) => {
-      const responseBody = _.get(response, "body");
-      if (!response.ok ||
-          !responseBody ||
-          (responseBody.status_code !== "200" && responseBody.status_code !== "201")
-      ) {
+      let body;
+      try{
+        body = JSON.parse(_.get(response, "body"));
+        error = body.error;
+      } catch (err) {
+        error = _.get(response, "body")
+      }
+      if (!response.ok || error || _.get(body, "status_code") !== "200") {
         params.set({
           success: false,
-          err: responseBody.message,
+          err: error || _.get(body, "message"),
         });
       } else {
         params.set({
-          success: true
+          success: true,
         });
-        return cb(response, params);
       }
+      return cb(response, params);
     });
   },
 
@@ -216,10 +219,10 @@ module.exports = Template.extend('Rapidd', {
       } catch (err) {
         error = _.get(response, "body")
       }
-      if (error || _.isEmpty(body)) {
+      if (error || _.isEmpty(body) || _.get(body, "status_code") !== "200") {
         Object.assign(params, {
           success: false,
-          err: error,
+          err: error || _.get(body, "message"),
         });
       } else {
         Object.assign(params, {
