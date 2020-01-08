@@ -64,6 +64,7 @@ module.exports = Template.extend('Rapidd', {
     }
 
     postReq.end((response) => {
+      let body;
       try{
         body = JSON.parse(_.get(response, "body"));
         error = body.error;
@@ -181,12 +182,12 @@ module.exports = Template.extend('Rapidd', {
     // Check out Order schema file for more information.
 
     var date = new Date(params.date);
-    var difference = date.getTime() - Date.now().getTime();
+    var difference = date.getTime() - Date.now();
     var day = Math.floor(difference / (1000 * 60 * 60 * 24));
     if(_.isEmpty(params.from_address_line_1)) {
       params.from_address_line_1 = params.from_address;
     }
-    if(_.isEmpty(inp.to_address_line_1)) {
+    if(_.isEmpty(params.to_address_line_1)) {
       params.to_address_line_1 = params.to_address;
     }
     let req = {
@@ -208,14 +209,20 @@ module.exports = Template.extend('Rapidd', {
     }
 
     postReq.end((response) => {
-      const body = _.get(response, "body");
-      if (_.isEmpty(body) || _.get(response, "body.Pickup", []).filter((obj) => obj.status === 'Error').length !== 0) {
-        params.set({
+      let body;
+      try{
+        body = JSON.parse(_.get(response, "body"));
+        error = _.get(response, _.get(response, "body.Pickup", []).filter((obj) => obj.status === 'Error').map(obj => obj.remarks).join('|'), "Rapidd Unknown Error");
+      } catch (err) {
+        error = _.get(response, "body")
+      }
+      if (error || _.isEmpty(body)) {
+        Object.assign(params, {
           success: false,
-          err: _.get(response, _.get(response, "body.Pickup", []).filter((obj) => obj.status === 'Error').map(obj => obj.remarks).join('|'), "Rapidd Unknown Error"),
+          err: error,
         });
       } else {
-        params.set({
+        Object.assign(params, {
           success: true,
           err: null,
           details: body
