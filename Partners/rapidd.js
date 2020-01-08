@@ -212,7 +212,7 @@ module.exports = Template.extend('Rapidd', {
       if (_.isEmpty(body) || _.get(response, "body.Pickup", []).filter((obj) => obj.status === 'Error').length !== 0) {
         params.set({
           success: false,
-          err: _.get(response, _.get(response, "body.Pickup", []).filter((obj) => obj.status === 'Error').map(obj => obj.remarks).join('|'), "Rapid Unknown Error"),
+          err: _.get(response, _.get(response, "body.Pickup", []).filter((obj) => obj.status === 'Error').map(obj => obj.remarks).join('|'), "Rapidd Unknown Error"),
         });
       } else {
         params.set({
