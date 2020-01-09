@@ -72,10 +72,10 @@ module.exports = Template.extend('Rapidd', {
         error = _.get(response, "body")
       }
       const waybill = _.get(body, "waybill");
-      if (!response.ok || error || _.isEmpty(waybill) || _.get(response, "status_code") !== "200") {
+      if (!response.ok || error || _.isEmpty(waybill) || _.get(body, "status") !== "200") {
         params.set({
           success: false,
-          err: error || _.get(response, "message"),
+          err: error || _.get(body, "message"),
         });
       } else {
         params.set({
@@ -114,20 +114,23 @@ module.exports = Template.extend('Rapidd', {
     getReq.query(queryParams);
 
     getReq.end((response) => {
-      const responseBody = _.get(response, "body");
-      if (!response.ok ||
-          !responseBody ||
-          responseBody.status === null ||
-          responseBody.flow === null ||
-          !Array.isArray(responseBody.scans) ||
-          responseBody.scans.filter(s => !s.flow).length !== 0
-      ) {
+      let body;
+      try{
+        body = JSON.parse(_.get(response, "body"));
+        error = body.error;
+      } catch (err) {
+        error = _.get(response, "body")
+      }
+      if (!response.ok || error || _.get(body, "status") === null ||
+          _.get(body, "flow") == null || !Array.isArray(body.scans) ||
+          body.scans.filter(s => !s.flow).length !== 0) {
         params.set({
           success: false,
-          err: "Invalid waybill number or Bad request",
+          err: error || "Invalid waybill number or Bad request",
         });
       } else {
-        var details = out.scans.map((scan) => {
+
+        var details = body.scans.map((scan) => {
           return {
             "time": scan.timestamp,
             "status": `${scan.flow}_${scan.status}`,
@@ -186,6 +189,7 @@ module.exports = Template.extend('Rapidd', {
 
     var date = new Date(params.date);
     var difference = date.getTime() - Date.now();
+    difference= difference < 0? 0 : difference;
     var day = Math.floor(difference / (1000 * 60 * 60 * 24));
     if(_.isEmpty(params.from_address_line_1)) {
       params.from_address_line_1 = params.from_address;
@@ -215,14 +219,14 @@ module.exports = Template.extend('Rapidd', {
       let body;
       try{
         body = JSON.parse(_.get(response, "body"));
-        error = _.get(response, _.get(response, "body.Pickup", []).filter((obj) => obj.status === 'Error').map(obj => obj.remarks).join('|'), "Rapidd Unknown Error");
+        error = _.get(response, _.get(response, "body.Pickup", []).filter((obj) => obj.status === 'Error').map(obj => obj.remarks).join('|'));
       } catch (err) {
         error = _.get(response, "body")
       }
-      if (error || _.isEmpty(body) || _.get(body, "status_code") !== "200") {
+      if (error || _.isEmpty(body)) {
         Object.assign(params, {
           success: false,
-          err: error || _.get(body, "message"),
+          err: error || "Rapidd Unknow Error",
         });
       } else {
         Object.assign(params, {
