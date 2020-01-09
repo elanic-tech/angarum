@@ -1,5 +1,4 @@
 var Template = require('./template.js');
-var querystring = require('querystring');
 var _ = require("lodash");
 const unirest = require('unirest');
 
@@ -18,7 +17,6 @@ module.exports = Template.extend('Rapidd', {
 
   order: function(params, cb) {
     var url = `${host}/api/v2/createpackage.php`;
-    // Check out Order schema file for more information.
 
     const inp = params.get();
     if (_.isEmpty(inp.from_address_line_1)) {
@@ -55,9 +53,6 @@ module.exports = Template.extend('Rapidd', {
 
     const postReq = unirest.post(url);
     postReq.header('Content-Type', 'application/x-www-form-urlencoded');
-    // postReq.header('Accept-Encodinge', 'gzip, deflate');
-    postReq.header('Accept', 'text/html; charset=UTF-8');
-    // postReq.header('Transfer-Encoding', 'chunked');
 
     for (let key in req) {
       postReq.send(`${key}=${req[key]}`);
@@ -101,7 +96,6 @@ module.exports = Template.extend('Rapidd', {
 
   single_tracking_status: function (params, cb) {
     var url = `${host}/api/track.php`;
-    // Check out Order schema file for more information.
 
     let queryParams = {
       client,
@@ -114,7 +108,7 @@ module.exports = Template.extend('Rapidd', {
     getReq.query(queryParams);
 
     getReq.end((response) => {
-      let body;
+      let error, body;
       try{
         body = JSON.parse(_.get(response, "body"));
         error = body.error;
@@ -162,7 +156,7 @@ module.exports = Template.extend('Rapidd', {
     postReq.send(requestBody);
 
     postReq.end((response) => {
-      let body;
+      var body, error;
       try{
         body = JSON.parse(_.get(response, "body"));
         error = body.error;
@@ -216,7 +210,7 @@ module.exports = Template.extend('Rapidd', {
     }
 
     postReq.end((response) => {
-      let body;
+      let body, error;
       try{
         body = JSON.parse(_.get(response, "body"));
         error = _.get(response, _.get(response, "body.Pickup", []).filter((obj) => obj.status === 'Error').map(obj => obj.remarks).join('|'));
