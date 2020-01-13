@@ -15,41 +15,43 @@ module.exports = Template.extend('Rapidd', {
     this._super(host);
   },
 
-  order: function(params, cb) {
+  order: function(params, callback) {
     var url = `${host}/api/v2/createpackage.php`;
 
-    const inp = params.get();
-    if (_.isEmpty(inp.from_address_line_1)) {
-      inp.from_address_line_1 = inp.from_address;
+    const inputParameters = params.get();
+    if (_.isEmpty(inputParameters.from_address_line_1)) {
+      inputParameters.from_address_line_1 = inputParameters.from_address;
     }
-    if (_.isEmpty(inp.to_address_line_1)) {
-      inp.to_address_line_1 = inp.to_address;
+    if (_.isEmpty(inputParameters.to_address_line_1)) {
+      inputParameters.to_address_line_1 = inputParameters.to_address;
     }
-    let req = {};
+    let mode;
+    if(_.includes(['forward_p2p','delivery', 'sbs'],inputParameters.order_type)) {
+      mode = inputParameters.is_cod ? 'cod' : 'prepaid';
+    } else {
+      mode = 'reverse';
+    }
 
-    if (inp.order_type === "forward_p2p") {
-      req = {
-        client,
-        token,
-        oid: inp.invoice_number,
-        consignee: inp.from_name,
-        add1: inp.from_address_line_1,
-        add2: inp.from_address_line_2,
-        pin: inp.from_pin_code,
-        city: inp.from_city,
-        state: inp.from_state,
-        country: inp.from_country,
-        phone: inp.from_mobile_number,
-        weight: 0.4,
-        mode: inp.is_cod ? 'cod' : 'prepaid',
-        ret_add: inp.to_address_line_1 + inp.to_address_line_2,
-        ship_pin: inp.to_pin_code,
-        ship_phone: inp.to_mobile_number,
-        ship_company: 'Elanic',
-        amt: inp.declared_value,
-        product: inp.item_name
-      }
-    }
+    let req  = {
+      client,
+      token,
+      oid: inputParameters.invoice_number,
+      consignee: inputParameters.to_name,
+      add1: inputParameters.to_address_line_1,
+      add2: inputParameters.to_address_line_2,
+      pin: inputParameters.to_pin_code,
+      city: inputParameters.to_city,
+      state: inputParameters.to_state,
+      country: inputParameters.to_country,
+      phone: inputParameters.to_mobile_number,
+      mode: mode,
+      ret_add: inputParameters.from_address_line_1 + inputParameters.from_address_line_2,
+      ship_pin: inputParameters.from_pin_code,
+      ship_phone: inputParameters.from_mobile_number,
+      ship_company: 'Elanic',
+      amt: inputParameters.declared_value,
+      product: inputParameters.item_name
+    };
 
     const postReq = unirest.post(url);
     postReq.header('Content-Type', 'application/x-www-form-urlencoded');
@@ -59,7 +61,7 @@ module.exports = Template.extend('Rapidd', {
     }
 
     postReq.end((response) => {
-      let body;
+      let body, error;
       try{
         body = JSON.parse(_.get(response, "body"));
         error = body.error;
@@ -78,7 +80,7 @@ module.exports = Template.extend('Rapidd', {
           tracking_url: this.get_tracking_url(waybill),
           awb: waybill
         });
-        return cb(response, params);
+        return callback(response, params);
       }
     });
   },
