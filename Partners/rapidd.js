@@ -15,6 +15,11 @@ module.exports = Template.extend('Rapidd', {
     this._super(host);
   },
 
+  /**
+   * function to register or create order at 3rd party logistics partner system end
+   * @param params: object containing order details
+   * @param callback
+   */
   order: function(params, callback) {
     var url = `${host}/api/v2/createpackage.php`;
 
@@ -25,9 +30,8 @@ module.exports = Template.extend('Rapidd', {
     if (_.isEmpty(inputParameters.to_address_line_1)) {
       inputParameters.to_address_line_1 = inputParameters.to_address;
     }
-    let mode, req;
+    let req;
     if(_.includes(['forward_p2p','delivery', 'sbs'],inputParameters.order_type)) {
-      mode = inputParameters.is_cod ? 'cod' : 'prepaid';
       req  = {
         client,
         token,
@@ -40,7 +44,7 @@ module.exports = Template.extend('Rapidd', {
         state: inputParameters.to_state,
         country: inputParameters.to_country,
         phone: inputParameters.to_mobile_number,
-        mode: mode,
+        mode: inputParameters.is_cod ? 'cod' : 'prepaid',
         ret_add: inputParameters.from_address_line_1 + inputParameters.from_address_line_2,
         ship_pin: inputParameters.from_pin_code,
         ship_phone: inputParameters.from_mobile_number,
@@ -49,7 +53,6 @@ module.exports = Template.extend('Rapidd', {
         product: inputParameters.item_name
       };
     } else {
-      mode = 'reverse';
       req  = {
         client,
         token,
@@ -62,7 +65,7 @@ module.exports = Template.extend('Rapidd', {
         state: inputParameters.from_state,
         country: inputParameters.from_country,
         phone: inputParameters.from_mobile_number,
-        mode: mode,
+        mode: 'reverse',
         ret_add: inputParameters.to_address_line_1 + inputParameters.to_address_line_1,
         ship_pin: inputParameters.to_pin_code,
         ship_phone: inputParameters.to_mobile_number,
@@ -72,8 +75,6 @@ module.exports = Template.extend('Rapidd', {
       };
 
     }
-
-
 
     const postReq = unirest.post(url);
     postReq.header('Content-Type', 'application/x-www-form-urlencoded');
@@ -107,6 +108,12 @@ module.exports = Template.extend('Rapidd', {
     });
   },
 
+  /**
+   * function to fetch tracking related properties
+   * @param params: object containing awb_number
+   * @param cb
+   * @returns {*}
+   */
   track: function(params, cb) {
     params.set({
       "tracking_url": this.get_tracking_url(params.get().awb_number),
@@ -114,10 +121,18 @@ module.exports = Template.extend('Rapidd', {
     return cb(null, params);
   },
 
+  /**
+   * function to get tracking url
+   **/
   get_tracking_url: function(awb) {
     return `${host}/api/track.php?client=${client}&token=${token}&waybill=${awb}`;
   },
 
+  /**
+   * function to fetch tracking details
+   * @param params: order details to fetch tracking details
+   * @param cb
+   */
   single_tracking_status: function (params, cb) {
     var url = `${host}/api/track.php`;
 
@@ -165,6 +180,11 @@ module.exports = Template.extend('Rapidd', {
     });
   },
 
+  /**
+   * cancel order
+   * @param params: details related order
+   * @param cb
+   */
   cancel: function(params, cb) {
     var url = `${host}/api/v2/cancel.php`;
     // Check out Order schema file for more information.
@@ -201,7 +221,12 @@ module.exports = Template.extend('Rapidd', {
     });
   },
 
-  pickup: function(params, cb) {
+  /**
+   * register pickup
+   * @param params: order details
+   * @param callback callback
+   */
+  pickup: function(params, callback) {
     var url = `${host}/api/pickup.php`;
     // Check out Order schema file for more information.
 
@@ -253,7 +278,7 @@ module.exports = Template.extend('Rapidd', {
           details: body
         });
       }
-      return cb(response, params);
+      return callback(response, params);
     });
   },
 });
