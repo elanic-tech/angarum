@@ -25,33 +25,55 @@ module.exports = Template.extend('Rapidd', {
     if (_.isEmpty(inputParameters.to_address_line_1)) {
       inputParameters.to_address_line_1 = inputParameters.to_address;
     }
-    let mode;
+    let mode, req;
     if(_.includes(['forward_p2p','delivery', 'sbs'],inputParameters.order_type)) {
       mode = inputParameters.is_cod ? 'cod' : 'prepaid';
+      req  = {
+        client,
+        token,
+        oid: inputParameters.invoice_number,
+        consignee: inputParameters.to_name,
+        add1: inputParameters.to_address_line_1,
+        add2: inputParameters.to_address_line_2,
+        pin: inputParameters.to_pin_code,
+        city: inputParameters.to_city,
+        state: inputParameters.to_state,
+        country: inputParameters.to_country,
+        phone: inputParameters.to_mobile_number,
+        mode: mode,
+        ret_add: inputParameters.from_address_line_1 + inputParameters.from_address_line_2,
+        ship_pin: inputParameters.from_pin_code,
+        ship_phone: inputParameters.from_mobile_number,
+        ship_company: 'Elanic',
+        amt: inputParameters.declared_value,
+        product: inputParameters.item_name
+      };
     } else {
       mode = 'reverse';
+      req  = {
+        client,
+        token,
+        oid: inputParameters.invoice_number,
+        consignee: inputParameters.to_name,
+        add1: inputParameters.from_address_line_1,
+        add2: inputParameters.from_address_line_1,
+        pin: inputParameters.from_pin_code,
+        city: inputParameters.from_city,
+        state: inputParameters.from_state,
+        country: inputParameters.from_country,
+        phone: inputParameters.from_mobile_number,
+        mode: mode,
+        ret_add: inputParameters.to_address_line_1 + inputParameters.to_address_line_1,
+        ship_pin: inputParameters.to_pin_code,
+        ship_phone: inputParameters.to_mobile_number,
+        ship_company: 'Elanic',
+        amt: inputParameters.declared_value,
+        product: inputParameters.item_name
+      };
+
     }
 
-    let req  = {
-      client,
-      token,
-      oid: inputParameters.invoice_number,
-      consignee: inputParameters.to_name,
-      add1: inputParameters.to_address_line_1,
-      add2: inputParameters.to_address_line_2,
-      pin: inputParameters.to_pin_code,
-      city: inputParameters.to_city,
-      state: inputParameters.to_state,
-      country: inputParameters.to_country,
-      phone: inputParameters.to_mobile_number,
-      mode: mode,
-      ret_add: inputParameters.from_address_line_1 + inputParameters.from_address_line_2,
-      ship_pin: inputParameters.from_pin_code,
-      ship_phone: inputParameters.from_mobile_number,
-      ship_company: 'Elanic',
-      amt: inputParameters.declared_value,
-      product: inputParameters.item_name
-    };
+
 
     const postReq = unirest.post(url);
     postReq.header('Content-Type', 'application/x-www-form-urlencoded');
@@ -118,7 +140,7 @@ module.exports = Template.extend('Rapidd', {
         error = _.get(response, "body")
       }
       if (!response.ok || error || _.get(body, "status") === null ||
-          _.get(body, "flow") == null || !Array.isArray(body.scans) ||
+          !Array.isArray(body.scans) ||
           body.scans.filter(s => !s.flow).length !== 0) {
         params.set({
           success: false,
@@ -129,7 +151,7 @@ module.exports = Template.extend('Rapidd', {
         var details = body.scans.map((scan) => {
           return {
             "time": scan.timestamp,
-            "status": `${scan.flow}_${scan.status}`,
+            "status": scan.flow? `${scan.flow}_${scan.status}_${scan.remarks}` : `${scan.status}_${scan.remarks}`,
             "description": scan.remarks,
           }
         });
