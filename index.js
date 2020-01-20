@@ -17,6 +17,7 @@ var partners = {
     'fedex': require('./Partners/fedex.js'),
     'ecomexpress': require('./Partners/ecomexpress.js'),
     'ecom express': require('./Partners/ecomexpress'),
+    'rapid': require('./Partners/rapid.js'),
     'rapidd': require('./Partners/rapidd.js'),
     'dotzot': require('./Partners/dotzot'),
     'hipship':require('./Partners/hipship'),
