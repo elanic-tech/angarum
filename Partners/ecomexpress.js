@@ -193,7 +193,6 @@ function track_awb(awb,aggregator,params,done) {
 		.send('password='+track_password+'')
 		.end(function (response) {
 		  parser(response.body,function(err,result){
-		  	console.log('ecommtracking', JSON.stringify(result));
 		  	if(err) {
 				params.set({
 					success: false,
