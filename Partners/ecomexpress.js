@@ -20,7 +20,7 @@ module.exports = Template.extend('EcomExpress', {
     order: function(params, cb) {
 		var url = host + "apiv2/manifest_awb/";
 		var inp = params.get();
-		if(_.isEmpty(inp.from_address_line_1)) { 
+		if(_.isEmpty(inp.from_address_line_1)) {
 			inp.from_address_line_1 = inp.from_address;
 		}
 		if(_.isEmpty(inp.to_address_line_1)) {
@@ -193,6 +193,7 @@ function track_awb(awb,aggregator,params,done) {
 		.send('password='+track_password+'')
 		.end(function (response) {
 		  parser(response.body,function(err,result){
+		  	console.log('ecommtracking', JSON.stringify(result));
 		  	if(err) {
 				params.set({
 					success: false,
