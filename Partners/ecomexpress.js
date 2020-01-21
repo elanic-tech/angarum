@@ -179,7 +179,7 @@ module.exports = Template.extend('EcomExpress', {
 });
 
 function track_awb(awb,aggregator,params,done) {
-	var url = 'http://plapi.ecomexpress.in/track_me/api/mawbd/';
+	var url = 'https://plapi.ecomexpress.in/track_me/api/mawbd/';
 	let track_username = username;
 	let track_password = password;
 	if(aggregator === 'hipship') {
