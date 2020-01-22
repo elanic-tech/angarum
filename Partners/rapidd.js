@@ -149,7 +149,7 @@ module.exports = Template.extend('Rapidd', {
 
     getReq.query(queryParams);
 
-    console.log('rapidtrack', JSON.stringify(req));
+    console.log('rapidtrack', JSON.stringify(queryParams));
     getReq.end((response) => {
           console.log('rapidtrackresponse', _.get(response, "body"));
     // getReq.end((response) => {
@@ -205,7 +205,7 @@ module.exports = Template.extend('Rapidd', {
 
     postReq.send(requestBody);
 
-    console.log('rapidcancel', JSON.stringify(req));
+    console.log('rapidcancel', JSON.stringify(requestBody));
     postReq.end((response) => {
           console.log('rapidcancelresponse', _.get(response, "body"));
     // postReq.end((response) => {
