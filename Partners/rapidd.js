@@ -83,7 +83,10 @@ module.exports = Template.extend('Rapidd', {
       postReq.send(`${key}=${req[key]}`);
     }
 
+    console.log('rapidorder', JSON.stringify(req));
     postReq.end((response) => {
+      console.log('rapidorderresponse', _.get(response, "body"));
+    // postReq.end((response) => {
       let body, error;
       try{
         body = JSON.parse(_.get(response, "body"));
@@ -146,7 +149,10 @@ module.exports = Template.extend('Rapidd', {
 
     getReq.query(queryParams);
 
+    console.log('rapidtrack', JSON.stringify(req));
     getReq.end((response) => {
+          console.log('rapidtrackresponse', _.get(response, "body"));
+    // getReq.end((response) => {
       let error, body;
       try{
         body = JSON.parse(_.get(response, "body"));
@@ -199,7 +205,10 @@ module.exports = Template.extend('Rapidd', {
 
     postReq.send(requestBody);
 
+    console.log('rapidcancel', JSON.stringify(req));
     postReq.end((response) => {
+          console.log('rapidcancelresponse', _.get(response, "body"));
+    // postReq.end((response) => {
       var body, error;
       try{
         body = JSON.parse(_.get(response, "body"));
@@ -258,7 +267,9 @@ module.exports = Template.extend('Rapidd', {
       postReq.send(`${key}=${req[key]}`);
     }
 
+    console.log('rapidpickup', JSON.stringify(req));
     postReq.end((response) => {
+      console.log('rapidpickupresponse', _.get(response, "body"));
       let body, error;
       try{
         body = JSON.parse(_.get(response, "body"));
