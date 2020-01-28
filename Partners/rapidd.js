@@ -106,8 +106,8 @@ module.exports = Template.extend('Rapidd', {
           tracking_url: this.get_tracking_url(waybill),
           awb: waybill
         });
-        return callback(response, params);
       }
+      return callback(response, params);
     });
   },
 
@@ -181,8 +181,8 @@ module.exports = Template.extend('Rapidd', {
           details: details,
           awb: params.get().awb_number
         });
-        return cb(response, params);
       }
+      return cb(response, params);
     });
   },
 
