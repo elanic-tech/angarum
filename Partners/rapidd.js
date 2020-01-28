@@ -5,6 +5,7 @@ const unirest = require('unirest');
 var host = process.env['RAPID_HOST'];
 const client = process.env['RAPID_CLIENT'];
 const token = process.env['RAPID_TOKEN'];
+const pdf = require('../utils/pdf');
 
 // Declare partner specific variables here.
 // Check out other partners for more information.
@@ -86,7 +87,7 @@ module.exports = Template.extend('Rapidd', {
     console.log('rapidorder', JSON.stringify(req));
     postReq.end((response) => {
       console.log('rapidorderresponse', _.get(response, "body"));
-    // postReq.end((response) => {
+      // postReq.end((response) => {
       let body, error;
       try{
         body = JSON.parse(_.get(response, "body"));
@@ -100,14 +101,19 @@ module.exports = Template.extend('Rapidd', {
           success: false,
           err: error || _.get(body, "message"),
         });
+        return callback(response, params);
       } else {
-        params.set({
-          success: true,
-          tracking_url: this.get_tracking_url(waybill),
-          awb: waybill
+        pdf.generatePdf(inputParameters,function(err,tracking_url){
+          console.error('rapidshippinglablegenerationerror', JSON.stringify(err));
+          params.set({
+            success: true,
+            tracking_url: tracking_url,
+            awb: waybill
+          });
+          return callback(response, params);
         });
+
       }
-      return callback(response, params);
     });
   },
 
@@ -151,8 +157,8 @@ module.exports = Template.extend('Rapidd', {
 
     console.log('rapidtrack', JSON.stringify(queryParams));
     getReq.end((response) => {
-          console.log('rapidtrackresponse', _.get(response, "body"));
-    // getReq.end((response) => {
+      console.log('rapidtrackresponse', _.get(response, "body"));
+      // getReq.end((response) => {
       let error, body;
       try{
         body = JSON.parse(_.get(response, "body"));
@@ -207,8 +213,8 @@ module.exports = Template.extend('Rapidd', {
 
     console.log('rapidcancel', JSON.stringify(requestBody));
     postReq.end((response) => {
-          console.log('rapidcancelresponse', _.get(response, "body"));
-    // postReq.end((response) => {
+      console.log('rapidcancelresponse', _.get(response, "body"));
+      // postReq.end((response) => {
       var body, error;
       try{
         body = JSON.parse(_.get(response, "body"));
