@@ -103,12 +103,14 @@ module.exports = Template.extend('Rapid', {
         });
         return callback(response, params);
       } else {
+        inputParameters.reference_number = waybill;
         pdf.generatePdf(inputParameters,function(err,tracking_url){
           console.error('rapidshippinglablegenerationerror', JSON.stringify(err));
           params.set({
-            success: true,
             tracking_url: tracking_url,
-            awb: waybill
+            reference_number: waybill,
+            success: true,
+            awb: waybill,
           });
           return callback(response, params);
         });
