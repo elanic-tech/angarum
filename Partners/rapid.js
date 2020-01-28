@@ -9,7 +9,7 @@ const token = process.env['RAPID_TOKEN'];
 // Declare partner specific variables here.
 // Check out other partners for more information.
 
-module.exports = Template.extend('Rapidd', {
+module.exports = Template.extend('Rapid', {
 
   init: function() {
     this._super(host);
