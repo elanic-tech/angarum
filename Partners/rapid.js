@@ -50,7 +50,7 @@ module.exports = Template.extend('Rapid', {
         ship_pin: inputParameters.from_pin_code,
         ship_phone: inputParameters.from_mobile_number,
         ship_company: 'Elanic',
-        amt: inputParameters.declared_value,
+        amt: inputParameters.is_cod ? inputParameters.cod_amount : inputParameters.declared_value,
         product: inputParameters.item_name
       };
     } else {
