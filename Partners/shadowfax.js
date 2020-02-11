@@ -82,7 +82,7 @@ module.exports = Template.extend('Shadowfax', {
 
 		// request headers
 		const headers = {
-		    "Authorization": "Token token=" + token,
+		    "Authorization": "Token " + token,
 		    "Content-type": "application/json"
 		};
     //console.log("SHADOWFAX", url, JSON.stringify(inp), JSON.stringify(params), JSON.stringify(headers), JSON.stringify(out));
@@ -108,7 +108,7 @@ module.exports = Template.extend('Shadowfax', {
 			// "Connection":"keep-alive",
 			// "Accept":"application/json, text/javascript, */*; q=0.01",
 			// "Origin":"http://track.shadowfax.in",
-			"Authorization":"Token token="+process.env["SHADOWFAX_TOKEN"],
+			"Authorization":"Token "+process.env["SHADOWFAX_TOKEN"],
 			// "User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.82 Safari/537.36",
 			// "Referer":"http://track.shadowfax.in/track?order=return&trackingId=" + awb,
 			// "Accept-Encoding":"gzip, deflate, sdch",
