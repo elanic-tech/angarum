@@ -180,7 +180,7 @@ module.exports = Template.extend('Rapidd', {
         var details = body.scans.map((scan) => {
           return {
             "time": scan.timestamp,
-            "status": scan.flow? `${scan.flow}_${scan.status}_${scan.remarks}` : `${scan.status}_${scan.remarks}`,
+            "status": scan.flow? `${scan.flow}_${scan.status}` : `${scan.status}`,
             "description": scan.remarks,
           }
         });
