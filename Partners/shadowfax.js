@@ -117,6 +117,7 @@ module.exports = Template.extend('Shadowfax', {
 		params.out_map({
 		    "err": "error",
 		}, function(out) {
+			console.log("shadowfaxtrack res", url, JSON.stringify(out));
 			if (String == out.constructor)
 				out = JSON.parse(out);
 
@@ -134,10 +135,16 @@ module.exports = Template.extend('Shadowfax', {
 					awb: awb,
 					details: details
 				};
+				return res;
 			}
+			let res = {
+				success: false,
+				err: "Invalid waybill number or Bad request",
+			};
 			return res;
 		});
-		return this.get_req(url, params, cb, {url: url, headers: headers})
+		console.log("shadowfaxtrack req", url, JSON.stringify(headers), JSON.stringify(params.get()) );
+		return this.get_req(url, params, cb, {url: url, headers: headers});
     },
 
     cancel: function(params, cb) {
