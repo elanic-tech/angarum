@@ -132,6 +132,7 @@ function parseFedexOrder(object,done) {
 	data.cod_service_type = (object.is_cod) ? object.cod_service_type.split("_").join(" ") : '';
 	data.weight = (object.delivery_type && object.delivery_type === 'surface') ? "8" : "0.4KG";
 	data.carrier = object.carrier;
+	data.gst = object.gst;
 	data.meter = object.meter_number;
 	data.invoice_id = object.orders[0];
 	data.invoice_date = GetFormattedDate(object.invoice_date);
