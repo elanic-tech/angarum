@@ -292,8 +292,6 @@ module.exports = Template.extend('Delhivery', {
 			},
 		};
 		function callback(error, response, body) {
-			console.log(JSON.stringify(options.body) );
-			console.log(JSON.stringify(body));
 			if (error) {
 				params.set({
 					success: false
